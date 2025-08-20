@@ -1,6 +1,6 @@
 HELP.md
 target/
-.mvn/wrapper/maven-wrapper.jar
+food-delivery-backend/.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
@@ -14,7 +14,7 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
+food-delivery-backend/.idea
 *.iws
 *.iml
 *.ipr
@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Ignore modules for front-end ###
+node_modules/
