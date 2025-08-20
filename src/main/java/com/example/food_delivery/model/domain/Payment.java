@@ -1,3 +1,4 @@
+
 package com.example.food_delivery.model.domain;
 
 import com.example.food_delivery.model.enums.PaymentProvider;
@@ -5,33 +6,58 @@ import com.example.food_delivery.model.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.Instant;
 
 @Data
 @NoArgsConstructor
 @Entity
+@Table(name = "payments")
 public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
+
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private PaymentProvider provider = PaymentProvider.STRIPE;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private PaymentStatus status = PaymentStatus.REQUIRES_ACTION;
 
+    @Column(nullable = false)
     private Double amount;
-    private String currency = "EUR";
 
+    @Column(nullable = false, length = 3)
+    private String currency = "usd";
+
+    // e.g. Stripe PaymentIntent id in real integrations
+    @Column(name = "provider_intent_id")
     private String providerIntentId;
 
-    @OneToOne
-    private Order order;
+    @Column(name = "created_at", updatable = false, nullable = false)
+    private Instant createdAt;
 
-    private Instant createdAt = Instant.now();
-    private Instant updatedAt = Instant.now();
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        Instant now = Instant.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = Instant.now();
+    }
 
     public Long getId() {
         return id;
@@ -39,6 +65,14 @@ public class Payment {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public PaymentProvider getProvider() {
@@ -79,14 +113,6 @@ public class Payment {
 
     public void setProviderIntentId(String providerIntentId) {
         this.providerIntentId = providerIntentId;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
     }
 
     public Instant getCreatedAt() {

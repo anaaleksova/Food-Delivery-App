@@ -93,7 +93,8 @@ public class JwtSecurityWebConfig {
                                         "/api/Products/{id}/remove-from-order",
                                         "/api/orders/pending",
                                         "/api/orders/pending/confirm",
-                                        "/api/orders/pending/cancel"
+                                        "/api/orders/pending/cancel",
+                                        "/api/payments/**"
                                 )
                                 .hasRole("CUSTOMER")
                                 .requestMatchers(

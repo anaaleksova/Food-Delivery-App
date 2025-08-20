@@ -2,17 +2,13 @@ package com.example.food_delivery.model.domain;
 
 import com.example.food_delivery.model.enums.OrderStatus;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -53,6 +49,25 @@ public class Order {
     public Order(User user) {
         this.user = user;
         this.status = OrderStatus.PENDING;
+    }
+
+    public Order(Long id, User user, OrderStatus status, List<Product> products, List<OrderItem> items, Double subtotal, Double deliveryFee, Double platformFee, Double discount, Double total, Address deliveryAddress, Restaurant restaurant, Instant placedAt) {
+        this.id = id;
+        this.user = user;
+        this.status = status;
+        Products = products;
+        this.items = items;
+        this.subtotal = subtotal;
+        this.deliveryFee = deliveryFee;
+        this.platformFee = platformFee;
+        this.discount = discount;
+        this.total = total;
+        this.deliveryAddress = deliveryAddress;
+        this.restaurant = restaurant;
+        this.placedAt = placedAt;
+    }
+
+    public Order() {
     }
 
     public void confirm() {

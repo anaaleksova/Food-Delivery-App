@@ -1,3 +1,4 @@
+
 package com.example.food_delivery.service.domain.impl;
 
 import com.example.food_delivery.model.domain.Order;
@@ -24,11 +25,18 @@ public class PaymentServiceImpl implements PaymentService {
     public Payment createOrUpdateIntent(Order order) {
         Payment payment = paymentRepository.findByOrder(order).orElseGet(Payment::new);
         payment.setOrder(order);
-        payment.setAmount(order.getTotal());
-        payment.setStatus(PaymentStatus.REQUIRES_ACTION);
-        if (payment.getProviderIntentId() == null) {
-            payment.setProviderIntentId("test_" + UUID.randomUUID());
+        // set from order totals if present, otherwise use 0.0 to avoid NPEs
+        Double amount = order.getTotal();
+        if (amount == null) {
+            amount = 0.0;
         }
+        payment.setAmount(amount);
+        payment.setCurrency("usd");
+        if (payment.getProviderIntentId() == null) {
+            // Simulate a provider intent id (e.g. Stripe PaymentIntent id)
+            payment.setProviderIntentId("pi_" + UUID.randomUUID());
+        }
+        payment.setStatus(PaymentStatus.REQUIRES_ACTION);
         return paymentRepository.save(payment);
     }
 

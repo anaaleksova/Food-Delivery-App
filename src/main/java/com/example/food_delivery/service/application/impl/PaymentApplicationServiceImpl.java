@@ -1,3 +1,4 @@
+
 package com.example.food_delivery.service.application.impl;
 
 import com.example.food_delivery.dto.domain.PaymentDto;
@@ -8,7 +9,6 @@ import com.example.food_delivery.repository.OrderRepository;
 import com.example.food_delivery.repository.PaymentRepository;
 import com.example.food_delivery.service.application.PaymentApplicationService;
 import com.example.food_delivery.service.domain.PaymentService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,7 +18,11 @@ public class PaymentApplicationServiceImpl implements PaymentApplicationService 
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
 
-    public PaymentApplicationServiceImpl(PaymentService paymentService, PaymentRepository paymentRepository, OrderRepository orderRepository) {
+    public PaymentApplicationServiceImpl(
+            PaymentService paymentService,
+            PaymentRepository paymentRepository,
+            OrderRepository orderRepository
+    ) {
         this.paymentService = paymentService;
         this.paymentRepository = paymentRepository;
         this.orderRepository = orderRepository;
