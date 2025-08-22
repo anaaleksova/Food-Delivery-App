@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-//OVA GO SMENIV SO OD CHAT IMA DODATOCI VO LOGIKA KAKO RECALCULATE TOTALS
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -99,5 +98,15 @@ public class OrderServiceImpl implements OrderService {
             return Optional.of(orderRepository.save(order));
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<Order> findConfirmed() {
+        return orderRepository.findConfirmed();
+    }
+
+    @Override
+    public List<Order> findOrdersForCourier(String username) {
+        return orderRepository.findByCourierUsername(username);
     }
 }

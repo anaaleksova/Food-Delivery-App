@@ -1,9 +1,11 @@
 package com.example.food_delivery.config.initialization;
 
+import com.example.food_delivery.model.domain.Courier;
 import com.example.food_delivery.model.domain.Product;
 import com.example.food_delivery.model.domain.Restaurant;
 import com.example.food_delivery.model.domain.User;
 import com.example.food_delivery.model.enums.Role;
+import com.example.food_delivery.repository.CourierRepository;
 import com.example.food_delivery.repository.ProductRepository;
 import com.example.food_delivery.repository.RestaurantRepository;
 import com.example.food_delivery.repository.UserRepository;
@@ -20,17 +22,19 @@ public class DataInitializer {
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
     private final ProductRepository productRepository;
+    private final CourierRepository courierRepository;
 
     public DataInitializer(
             PasswordEncoder passwordEncoder,
             UserRepository userRepository,
             RestaurantRepository restaurantRepository,
             ProductRepository ProductRepository,
-            ProductRepository productRepository) {
+            ProductRepository productRepository, CourierRepository courierRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.restaurantRepository = restaurantRepository;
         this.productRepository = productRepository;
+        this.courierRepository = courierRepository;
     }
 
     @PostConstruct
@@ -44,6 +48,15 @@ public class DataInitializer {
                 Role.ROLE_CUSTOMER
         ));
 
+//        User courierUser = userRepository.save(new User(
+//                "courier",
+//                passwordEncoder.encode("courier"),
+//                "Mike",
+//                "Courier",
+//                "courier@email.com",
+//                Role.ROLE_COURIER
+//        ));
+
         User admin = userRepository.save(new User(
                 "admin",
                 passwordEncoder.encode("admin"),
@@ -53,6 +66,7 @@ public class DataInitializer {
                 Role.ROLE_ADMIN
         ));
 
+//        Courier courier = courierRepository.save(new Courier(courierUser,"078596256",true));
         Restaurant greenGarden = restaurantRepository.save(new Restaurant(
                 "The Green Garden",
                 "A vegetarian and vegan-friendly restaurant offering fresh, organic meals and locally-sourced produce."

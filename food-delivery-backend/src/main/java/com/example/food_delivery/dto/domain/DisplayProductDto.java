@@ -11,17 +11,19 @@ public record DisplayProductDto(
         String description,
         Double price,
         Integer quantity,
-        Long restaurantId
+        Long restaurantId,
+        Boolean isAvailable
 ) {
 
-    public static DisplayProductDto from(Product Product) {
+    public static DisplayProductDto from(Product product) {
         return new DisplayProductDto(
-                Product.getId(),
-                Product.getName(),
-                Product.getDescription(),
-                Product.getPrice(),
-                Product.getQuantity(),
-                Product.getRestaurant().getId()
+                product.getId(),
+                product.getName(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getQuantity(),
+                product.getRestaurant().getId(),
+                product.getIsAvailable()
         );
     }
 

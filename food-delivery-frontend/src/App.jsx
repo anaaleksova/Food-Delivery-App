@@ -8,30 +8,53 @@ import CartPage from './ui/pages/CartPage/CartPage.jsx'
 import LoginPage from './ui/pages/LoginPage/LoginPage.jsx'
 import RegisterPage from './ui/pages/RegisterPage/RegisterPage.jsx'
 import CheckoutPage from './ui/pages/CheckoutPage/CheckoutPage.jsx'
+import TrackOrderPage from './ui/pages/TrackOrderPage/TrackOrderPage.jsx'
 import ProtectedRoute from './ui/components/routing/ProtectedRoute/ProtectedRoute.jsx'
-import OwnerProducts from './ui/pages/Owner/Products/OwnerProducts.jsx'
-import OwnerRestaurants from './ui/pages/Owner/Restaurants/OwnerRestaurants.jsx'
+
+// Courier pages
+import CourierDashboard from './ui/pages/Courier/CourierDashboard/CourierDashboard.jsx'
+
+// Admin pages
+import AdminDashboard from './ui/pages/Admin/AdminDashboard/AdminDashboard.jsx'
+import AdminUsers from './ui/pages/Admin/Users/AdminUsers.jsx'
+import AdminRestaurants from './ui/pages/Admin/Restaurants/AdminRestaurants.jsx'
+import AdminProducts from './ui/pages/Admin/Products/AdminProducts.jsx'
 
 const App = () => null
 
 App.routes = createRoutesFromElements(
-  <Route element={<Layout/>}>
-    <Route index element={<HomePage/>}/>
-    <Route path="/products/:id" element={<ProductPage/>}/>
-    <Route path="/restaurants/:id" element={<RestaurantPage/>}/>
-    <Route path="/cart" element={<ProtectedRoute role={"CUSTOMER"}/>}>
-      <Route index element={<CartPage/>}/>
+    <Route element={<Layout/>}>
+        {/* Public routes */}
+        <Route index element={<HomePage/>}/>
+        <Route path="/restaurants/:id" element={<RestaurantPage/>}/>
+        <Route path="/login" element={<LoginPage/>}/>
+        <Route path="/register" element={<RegisterPage/>}/>
+
+        {/* Customer routes */}
+        <Route path="/products/:id" element={<ProductPage/>}/>
+        <Route path="/cart" element={<ProtectedRoute role={"CUSTOMER"}/>}>
+            <Route index element={<CartPage/>}/>
+        </Route>
+        <Route path="/checkout" element={<ProtectedRoute role={"CUSTOMER"}/>}>
+            <Route index element={<CheckoutPage/>}/>
+        </Route>
+        <Route path="/track/:orderId" element={<ProtectedRoute role={"CUSTOMER"}/>}>
+            <Route index element={<TrackOrderPage/>}/>
+        </Route>
+
+        {/* Courier routes */}
+        <Route path="/courier" element={<ProtectedRoute role={"COURIER"}/>}>
+            <Route index element={<CourierDashboard/>}/>
+        </Route>
+
+        {/* Admin routes */}
+        <Route path="/admin" element={<ProtectedRoute role={"ADMIN"}/>}>
+            <Route index element={<AdminDashboard/>}/>
+            <Route path="users" element={<AdminUsers/>}/>
+            <Route path="restaurants" element={<AdminRestaurants/>}/>
+            <Route path="products" element={<AdminProducts/>}/>
+        </Route>
     </Route>
-    <Route path="/checkout" element={<ProtectedRoute role={"CUSTOMER"}/>}>
-      <Route index element={<CheckoutPage/>}/>
-    </Route>
-    <Route path="/owner" element={<ProtectedRoute role={"OWNER"}/>}>
-      <Route path="products" element={<OwnerProducts/>}/>
-      <Route path="restaurants" element={<OwnerRestaurants/>}/>
-    </Route>
-    <Route path="/login" element={<LoginPage/>}/>
-    <Route path="/register" element={<RegisterPage/>}/>
-  </Route>
 )
 
 export default App

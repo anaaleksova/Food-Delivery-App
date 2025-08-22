@@ -17,4 +17,8 @@ public interface OrderService {
     Optional<Order> confirm(String username);
 
     Optional<Order> cancel(String username);
+
+    List<Order> findConfirmed();
+
+    List<Order> findOrdersForCourier(String username);
 }

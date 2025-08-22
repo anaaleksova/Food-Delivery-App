@@ -1,8 +1,6 @@
 package com.example.food_delivery.service.application.impl;
 
-import com.example.food_delivery.dto.domain.CourierDto;
-import com.example.food_delivery.dto.domain.DisplayCourierDto;
-import com.example.food_delivery.dto.domain.DisplayProductDto;
+import com.example.food_delivery.dto.domain.*;
 import com.example.food_delivery.model.domain.Courier;
 import com.example.food_delivery.model.mapper.BasicMappers;
 import com.example.food_delivery.service.application.CourierApplicationService;
@@ -49,5 +47,20 @@ public class CourierApplicationServiceImpl implements CourierApplicationService 
         return courierService
                 .deleteById(id)
                 .map(BasicMappers::toDto);
+    }
+
+    @Override
+    public DisplayOrderDto assignToOrder(String courierUsername, Long orderId) {
+        return DisplayOrderDto.from(courierService.assignToOrder(courierUsername,orderId));
+    }
+
+    @Override
+    public DisplayOrderDto completeDelivery(String courierUsername, Long orderId) {
+        return DisplayOrderDto.from(courierService.completeDelivery(courierUsername,orderId));
+    }
+
+    @Override
+    public List<DisplayCourierDto> findAvailable() {
+        return courierService.findAvailable().stream().map(DisplayCourierDto::from).toList();
     }
 }

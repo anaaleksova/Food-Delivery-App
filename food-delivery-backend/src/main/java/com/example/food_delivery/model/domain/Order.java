@@ -22,6 +22,9 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status = OrderStatus.PENDING;
 
+    @ManyToOne
+    private Courier courier;
+
     // Legacy field for compatibility with existing UI (flat list of Products)
     @ManyToMany
     private List<Product> Products = new ArrayList<>();
@@ -200,5 +203,13 @@ public class Order {
 
     public void setPlacedAt(Instant placedAt) {
         this.placedAt = placedAt;
+    }
+
+        public Courier getCourier() {
+        return courier;
+    }
+
+    public void setCourier(Courier courier) {
+        this.courier = courier;
     }
 }

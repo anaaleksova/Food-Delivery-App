@@ -27,6 +27,8 @@ public class Restaurant {
     private String openHours; // e.g. JSON or "Mon-Fri 09:00-21:00; Sat-Sun 10:00-20:00"
     private Integer deliveryTimeEstimate; // in minutes
     private Boolean isOpen = true;
+    private String imageUrl = "";
+    private String category = "";
 
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DeliveryZone> deliveryZones = new ArrayList<>();
@@ -118,5 +120,21 @@ public class Restaurant {
 
     public void setProducts(List<Product> products) {
         Products = products;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

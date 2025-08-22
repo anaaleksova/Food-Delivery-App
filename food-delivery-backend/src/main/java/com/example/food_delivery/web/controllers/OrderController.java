@@ -5,6 +5,7 @@ import com.example.food_delivery.dto.domain.DisplayProductDto;
 import com.example.food_delivery.dto.domain.OrderDto;
 import com.example.food_delivery.model.domain.User;
 import com.example.food_delivery.service.application.OrderApplicationService;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +21,9 @@ public class OrderController {
     public OrderController(OrderApplicationService orderApplicationService) {
         this.orderApplicationService = orderApplicationService;
     }
-    @GetMapping
-    public ResponseEntity<List<DisplayOrderDto>> findAll() {
-        return ResponseEntity.ok(orderApplicationService.findAll());
+    @GetMapping("/confirmed")
+    public ResponseEntity<List<OrderDto>> findConfirmed() {
+        return ResponseEntity.ok(orderApplicationService.findAllConfirmed());
     }
 
     @GetMapping("/{id}")
@@ -54,4 +55,12 @@ public class OrderController {
 
     }
 
+    @GetMapping("/track/{id}")
+    public ResponseEntity<DisplayOrderDto> trackOrder(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        return orderApplicationService
+                .findById(id)
+                .filter(order -> order.username().equals(user.getUsername()))
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }

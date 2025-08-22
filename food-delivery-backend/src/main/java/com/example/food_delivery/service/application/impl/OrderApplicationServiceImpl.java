@@ -35,8 +35,13 @@ public class OrderApplicationServiceImpl implements OrderApplicationService {
     }
 
     @Override
-    public List<DisplayOrderDto> findAll() {
-        return orderDomain.findAll().stream().map(DisplayOrderDto::from).toList();
+    public List<OrderDto> findAll() {
+        return orderDomain.findAll().stream().map(BasicMappers::toDto).toList();
+    }
+
+    @Override
+    public List<OrderDto> findAllConfirmed() {
+        return orderDomain.findConfirmed().stream().map(BasicMappers::toDto).toList();
     }
 
     @Override
@@ -80,6 +85,11 @@ public class OrderApplicationServiceImpl implements OrderApplicationService {
     public Optional<OrderDto> cancel(String username) {
         Order updated = orderDomain.cancel(username).orElseThrow();
         return Optional.of(BasicMappers.toDto(updated));
+    }
+
+    @Override
+    public List<OrderDto> findOrdersForCourier(String username) {
+        return orderDomain.findOrdersForCourier(username).stream().map(BasicMappers::toDto).toList();
     }
 
     @Override

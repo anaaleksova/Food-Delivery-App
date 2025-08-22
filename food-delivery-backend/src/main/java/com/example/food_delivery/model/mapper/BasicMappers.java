@@ -86,6 +86,7 @@ public final class BasicMappers {
         d.setUserUsername(o.getUser() != null ? o.getUser().getUsername() : null);
         d.setStatus(o.getStatus() != null ? o.getStatus().name() : null);
         d.setSubtotal(o.getSubtotal());
+        d.setProducts( DisplayProductDto.from(o.getProducts()));
         d.setDeliveryFee(o.getDeliveryFee());
         d.setPlatformFee(o.getPlatformFee());
         d.setDiscount(o.getDiscount());
@@ -124,26 +125,25 @@ public final class BasicMappers {
         if (dto == null) return null;
 
         Courier courier = new Courier();
-        courier.setName(dto.getName());
         courier.setPhone(dto.getPhone());
         courier.setActive(dto.getActive());
         return courier;
     }
 
     // ===== DeliveryAssignment =====
-    public static DeliveryAssignmentDto toDto(DeliveryAssignment a) {
-        if (a == null) return null;
-        DeliveryAssignmentDto d = new DeliveryAssignmentDto();
-        d.setId(a.getId());
-        d.setOrderId(a.getOrder() != null ? a.getOrder().getId() : null);
-        if (a.getCourier() != null) {
-            d.setCourierName(a.getCourier().getName());
-        }
-        d.setStatus(a.getStatus() != null ? a.getStatus().name() : null);
-        d.setAssignedAt(a.getAssignedAt());
-        d.setDeliveredAt(a.getDeliveredAt());
-        return d;
-    }
+//    public static DeliveryAssignmentDto toDto(DeliveryAssignment a) {
+//        if (a == null) return null;
+//        DeliveryAssignmentDto d = new DeliveryAssignmentDto();
+//        d.setId(a.getId());
+//        d.setOrderId(a.getOrder() != null ? a.getOrder().getId() : null);
+//        if (a.getCourier() != null) {
+//            d.setCourierName(a.getCourier().getName());
+//        }
+//        d.setStatus(a.getStatus() != null ? a.getStatus().name() : null);
+//        d.setAssignedAt(a.getAssignedAt());
+//        d.setDeliveredAt(a.getDeliveredAt());
+//        return d;
+//    }
 
     // ===== Review =====
     public static ReviewDto toDto(Review r) {

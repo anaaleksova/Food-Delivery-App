@@ -1,12 +1,13 @@
 package com.example.food_delivery.web.controllers;
 
-import com.example.food_delivery.dto.domain.CourierDto;
-import com.example.food_delivery.dto.domain.CreateProductDto;
-import com.example.food_delivery.dto.domain.DisplayCourierDto;
-import com.example.food_delivery.dto.domain.DisplayProductDto;
+import com.example.food_delivery.dto.domain.*;
+import com.example.food_delivery.model.domain.Order;
+import com.example.food_delivery.model.domain.User;
 import com.example.food_delivery.model.mapper.BasicMappers;
 import com.example.food_delivery.service.application.CourierApplicationService;
+import com.example.food_delivery.service.application.OrderApplicationService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,9 +16,11 @@ import java.util.List;
 @RequestMapping("/api/couriers")
 public class CourierController {
     private final CourierApplicationService courierApplicationService;
+    private final OrderApplicationService orderApplicationService;
 
-    public CourierController(CourierApplicationService courierApplicationService) {
+    public CourierController(CourierApplicationService courierApplicationService, OrderApplicationService orderApplicationService) {
         this.courierApplicationService = courierApplicationService;
+        this.orderApplicationService = orderApplicationService;
     }
 
     @GetMapping
@@ -52,6 +55,25 @@ public class CourierController {
                 .deleteById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/assign/{orderId}")
+    public ResponseEntity<DisplayOrderDto> assignToOrder(
+            @PathVariable Long orderId,
+            @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(courierApplicationService.assignToOrder(user.getUsername(), orderId));
+    }
+
+    @PostMapping("/complete/{orderId}")
+    public ResponseEntity<DisplayOrderDto> completeDelivery(
+            @PathVariable Long orderId,
+            @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(courierApplicationService.completeDelivery(user.getUsername(), orderId));
+    }
+
+    @GetMapping("/my-orders")
+    public ResponseEntity<List<OrderDto>> getMyOrders(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(orderApplicationService.findOrdersForCourier(user.getUsername()));
     }
 
 }

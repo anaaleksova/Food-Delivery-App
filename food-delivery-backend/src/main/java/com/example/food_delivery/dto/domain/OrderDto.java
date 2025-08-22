@@ -1,5 +1,6 @@
 package com.example.food_delivery.dto.domain;
 
+import com.example.food_delivery.model.domain.Product;
 import lombok.Data;
 
 import java.time.Instant;
@@ -15,7 +16,8 @@ public class OrderDto {
     private String restaurantName;
     private AddressDto deliveryAddress;
 
-    private List<OrderItemDto> items;     // canonical contents
+    private List<OrderItemDto> items;
+    private List<DisplayProductDto> products;
 
     private Double subtotal;
     private Double deliveryFee;
@@ -75,6 +77,13 @@ public class OrderDto {
 
     public List<OrderItemDto> getItems() {
         return items;
+    }
+    public List<DisplayProductDto> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<DisplayProductDto> products) {
+        this.products = products;
     }
 
     public void setItems(List<OrderItemDto> items) {
