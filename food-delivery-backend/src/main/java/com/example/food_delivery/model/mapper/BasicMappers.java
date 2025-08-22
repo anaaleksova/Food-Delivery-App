@@ -137,7 +137,6 @@ public final class BasicMappers {
         d.setId(a.getId());
         d.setOrderId(a.getOrder() != null ? a.getOrder().getId() : null);
         if (a.getCourier() != null) {
-            d.setCourierId(a.getCourier().getId());
             d.setCourierName(a.getCourier().getName());
         }
         d.setStatus(a.getStatus() != null ? a.getStatus().name() : null);

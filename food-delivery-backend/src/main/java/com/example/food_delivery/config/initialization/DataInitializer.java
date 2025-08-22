@@ -44,15 +44,6 @@ public class DataInitializer {
                 Role.ROLE_CUSTOMER
         ));
 
-        User owner = userRepository.save(new User(
-                "owner",
-                passwordEncoder.encode("owner"),
-                "owner",
-                "owner",
-                "owner@email.com",
-                Role.ROLE_OWNER
-        ));
-
         User admin = userRepository.save(new User(
                 "admin",
                 passwordEncoder.encode("admin"),

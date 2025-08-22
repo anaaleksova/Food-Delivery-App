@@ -12,7 +12,7 @@ const HomePage = () => {
   }
   return (
       <div>
-        <Typography variant="h4" sx={{mb:2}}>Browse dishes</Typography>
+        <Typography variant="h4" sx={{mb:2}}>Browse products</Typography>
         {loading ? <Typography>Loading...</Typography> : <ProductGrid items={items} onAdd={handleAdd}/>}
       </div>
   );

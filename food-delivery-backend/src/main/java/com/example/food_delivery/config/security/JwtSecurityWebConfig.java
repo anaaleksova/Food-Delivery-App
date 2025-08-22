@@ -50,8 +50,8 @@ public class JwtSecurityWebConfig {
     @Bean
     public RoleHierarchy roleHierarchy() {
         return RoleHierarchyImpl.withDefaultRolePrefix()
-                .role("ADMIN").implies("OWNER")
-                .role("OWNER").implies("CUSTOMER")
+                .role("ADMIN").implies("COURIER")
+                .role("COURIER").implies("CUSTOMER")
                 .build();
     }
 
@@ -98,7 +98,8 @@ public class JwtSecurityWebConfig {
                                         "/api/orders/pending",
                                         "/api/orders/pending/confirm",
                                         "/api/orders/pending/cancel",
-                                        "/api/payments/**"
+                                        "/api/payments/**",
+                                        "/api/reviews/**"
                                 )
                                 .hasAnyRole("CUSTOMER", "ADMIN")
                                 .requestMatchers(
@@ -109,7 +110,7 @@ public class JwtSecurityWebConfig {
                                         "/api/restaurants/edit/{id}",
                                         "/api/restaurants/delete/{id}"
                                 )
-                                .hasAnyRole("OWNER", "ADMIN")
+                                .hasAnyRole("ADMIN")
                                 .anyRequest()
                                 .hasRole("ADMIN")
                 )

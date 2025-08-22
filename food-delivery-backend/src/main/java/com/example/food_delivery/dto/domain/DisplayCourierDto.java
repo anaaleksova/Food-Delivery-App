@@ -1,7 +1,6 @@
 package com.example.food_delivery.dto.domain;
 
 import com.example.food_delivery.model.domain.Courier;
-import com.example.food_delivery.model.domain.Order;
 
 public class DisplayCourierDto {
     private Long id;
@@ -9,7 +8,7 @@ public class DisplayCourierDto {
     private String phone;
     private Boolean active;
 
-    public DisplayCourierDto(Long id, String name, String phone, Boolean active) {
+    public DisplayCourierDto(String name, String phone, Boolean active) {
         this.id = id;
         this.name = name;
         this.phone = phone;
@@ -49,7 +48,6 @@ public class DisplayCourierDto {
 
     public static DisplayCourierDto from(Courier courier) {
         return new DisplayCourierDto(
-                courier.getId(),
                 courier.getName(),
                 courier.getPhone(),
                 courier.getActive()
