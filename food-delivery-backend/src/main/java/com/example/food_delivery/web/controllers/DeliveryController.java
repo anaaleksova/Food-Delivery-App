@@ -19,8 +19,8 @@ public class DeliveryController {
         this.deliveryApplicationService = deliveryApplicationService;
     }
 
-    @PostMapping("/assign/{orderId}")
-    public ResponseEntity<DeliveryAssignmentDto> assign(@PathVariable Long orderId) {
-        return ResponseEntity.ok(deliveryApplicationService.assignCourier(orderId));
+    @PostMapping("/{orderId}/assign/{courierId}")
+    public ResponseEntity<DeliveryAssignmentDto> assign(@PathVariable Long orderId,@PathVariable Long courierId) {
+        return ResponseEntity.ok(deliveryApplicationService.assignCourier(orderId,courierId));
     }
 }

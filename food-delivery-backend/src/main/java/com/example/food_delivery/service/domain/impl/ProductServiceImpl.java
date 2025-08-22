@@ -65,16 +65,16 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Optional<Product> deleteById(Long id) {
-        Optional<Product> Product = productRepository.findById(id);
-        Product.ifPresent(productRepository::delete);
-        return Product;
+        Optional<Product> product = productRepository.findById(id);
+        product.ifPresent(productRepository::delete);
+        return product;
     }
 
     @Override
     @Transactional
-    public Order addToOrder(Product Product, Order order) {
-        if (Product.getQuantity() == null || Product.getQuantity() <= 0 || Boolean.FALSE.equals(Product.getIsAvailable())) {
-            throw new ProductOutOfStockException(Product.getId());
+    public Order addToOrder(Product product, Order order) {
+        if (product.getQuantity() == null || product.getQuantity() <= 0 || Boolean.FALSE.equals(product.getIsAvailable())) {
+            throw new ProductOutOfStockException(product.getId());
         }
 
         // Single-restaurant policy
@@ -87,22 +87,22 @@ public class ProductServiceImpl implements ProductService {
 
         // Set order restaurant from first item
         if (order.getRestaurant() == null) {
-            order.setRestaurant(Product.getRestaurant());
+            order.setRestaurant(product.getRestaurant());
         }
 
         // Reserve stock immediately
-        Product.decreaseQuantity();
-        productRepository.save(Product);
+        product.decreaseQuantity();
+        productRepository.save(product);
 
         // Legacy: also maintain flat list for compatibility
-        order.getProducts().add(Product);
+        order.getProducts().add(product);
 
         // New: add or increment OrderItem
         OrderItem item = new OrderItem();
         item.setOrder(order);
-        item.setProduct(Product);
+        item.setProduct(product);
         item.setQuantity(1);
-        item.setUnitPriceSnapshot(Product.getPrice());
+        item.setUnitPriceSnapshot(product.getPrice());
         order.getItems().add(item);
         orderItemRepository.save(item);
 

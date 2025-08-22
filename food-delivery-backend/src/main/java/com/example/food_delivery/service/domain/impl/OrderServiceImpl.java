@@ -1,6 +1,7 @@
 package com.example.food_delivery.service.domain.impl;
 
 import com.example.food_delivery.model.domain.Order;
+import com.example.food_delivery.model.domain.Product;
 import com.example.food_delivery.model.domain.User;
 import com.example.food_delivery.model.enums.OrderStatus;
 import com.example.food_delivery.model.exceptions.EmptyOrderException;
@@ -12,6 +13,7 @@ import com.example.food_delivery.service.domain.OrderTotalsService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 //OVA GO SMENIV SO OD CHAT IMA DODATOCI VO LOGIKA KAKO RECALCULATE TOTALS
@@ -28,6 +30,16 @@ public class OrderServiceImpl implements OrderService {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.orderTotalsService = orderTotalsService;
+    }
+
+    @Override
+    public List<Order> findAll() {
+        return orderRepository.findAll();
+    }
+
+    @Override
+    public Optional<Order> findById(Long id) {
+        return orderRepository.findById(id);
     }
 
     @Override
@@ -81,6 +93,8 @@ public class OrderServiceImpl implements OrderService {
             if (!hasItems) {
                 throw new EmptyOrderException();
             }
+            order.getProducts()
+                    .forEach(Product::increaseQuantity);
             order.cancel();
             return Optional.of(orderRepository.save(order));
         }

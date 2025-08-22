@@ -35,9 +35,13 @@ public class JwtSecurityWebConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
-        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        corsConfiguration.setAllowedOrigins(List.of(
+                "http://localhost:3000",  // React frontend
+                "http://localhost:8080"   // Swagger UI
+        ));
+        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
+        corsConfiguration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
@@ -86,26 +90,26 @@ public class JwtSecurityWebConfig {
                                 .requestMatchers(
                                         "/api/restaurants",
                                         "/api/restaurants/{id}",
-                                        "/api/Products",
-                                        "/api/Products/{id}",
-                                        "/api/Products/{id}/details",
-                                        "/api/Products/{id}/add-to-order",
-                                        "/api/Products/{id}/remove-from-order",
+                                        "/api/products",
+                                        "/api/products/{id}",
+                                        "/api/products/details/{id}",
+                                        "/api/products/add-to-order/{id}",
+                                        "/api/products/remove-from-order/{id}",
                                         "/api/orders/pending",
                                         "/api/orders/pending/confirm",
                                         "/api/orders/pending/cancel",
                                         "/api/payments/**"
                                 )
-                                .hasRole("CUSTOMER")
+                                .hasAnyRole("CUSTOMER", "ADMIN")
                                 .requestMatchers(
-                                        "/api/Products/add",
-                                        "/api/Products/{id}/edit",
-                                        "/api/Products/{id}/delete",
+                                        "/api/products/add",
+                                        "/api/products/edit/{id}",
+                                        "/api/products/delete/{id}",
                                         "/api/restaurants/add",
-                                        "/api/restaurants/{id}/edit",
-                                        "/api/restaurants/{id}/delete"
+                                        "/api/restaurants/edit/{id}",
+                                        "/api/restaurants/delete/{id}"
                                 )
-                                .hasRole("OWNER")
+                                .hasAnyRole("OWNER", "ADMIN")
                                 .anyRequest()
                                 .hasRole("ADMIN")
                 )

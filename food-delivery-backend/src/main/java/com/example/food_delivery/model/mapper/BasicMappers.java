@@ -114,11 +114,20 @@ public final class BasicMappers {
     public static CourierDto toDto(Courier c) {
         if (c == null) return null;
         CourierDto d = new CourierDto();
-        d.setId(c.getId());
         d.setName(c.getName());
         d.setPhone(c.getPhone());
         d.setActive(c.getActive());
         return d;
+    }
+
+    public static Courier fromDto(CourierDto dto) {
+        if (dto == null) return null;
+
+        Courier courier = new Courier();
+        courier.setName(dto.getName());
+        courier.setPhone(dto.getPhone());
+        courier.setActive(dto.getActive());
+        return courier;
     }
 
     // ===== DeliveryAssignment =====

@@ -22,7 +22,7 @@ public class Review {
     private User user;
 
     private Integer rating; // 1..5
-    @Lob
+
     private String comment;
 
     private Instant createdAt = Instant.now();

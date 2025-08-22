@@ -2,12 +2,17 @@ package com.example.food_delivery.service.application;
 
 import com.example.food_delivery.dto.domain.AddressDto;
 import com.example.food_delivery.dto.domain.DisplayOrderDto;
+import com.example.food_delivery.dto.domain.DisplayProductDto;
 import com.example.food_delivery.dto.domain.OrderDto;
 
+import java.util.List;
 import java.util.Optional;
 
 //SMENETO
 public interface OrderApplicationService {
+    List<DisplayOrderDto> findAll();
+
+    Optional<DisplayOrderDto> findById(Long id);
     OrderDto getCart(String username);
     OrderDto addProductToCart(String username, Long ProductId);
     OrderDto removeProductFromCart(String username, Long ProductId);

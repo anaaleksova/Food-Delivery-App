@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,6 +32,16 @@ public class OrderApplicationServiceImpl implements OrderApplicationService {
         ProductDomain = productDomain;
         this.totalsDomain = totalsDomain;
         this.productRepository = productRepository;
+    }
+
+    @Override
+    public List<DisplayOrderDto> findAll() {
+        return orderDomain.findAll().stream().map(DisplayOrderDto::from).toList();
+    }
+
+    @Override
+    public Optional<DisplayOrderDto> findById(Long id) {
+        return orderDomain.findById(id).map(DisplayOrderDto::from);
     }
 
     @Override

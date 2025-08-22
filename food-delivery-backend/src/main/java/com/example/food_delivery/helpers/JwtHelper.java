@@ -66,7 +66,7 @@ public class JwtHelper {
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> extraClaims = new HashMap<>();
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority) // "ROLE_CUSTOMER"
+                .map(GrantedAuthority::getAuthority)
                 .toList();
         extraClaims.put("roles", roles);
 

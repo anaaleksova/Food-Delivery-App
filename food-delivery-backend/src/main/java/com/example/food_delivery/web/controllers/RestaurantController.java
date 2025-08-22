@@ -36,7 +36,7 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantApplicationService.save(createRestaurantDto));
     }
 
-    @PutMapping("/{id}/edit")
+    @PutMapping("/edit/{id}")
     public ResponseEntity<DisplayRestaurantDto> update(
             @PathVariable Long id,
             @RequestBody CreateRestaurantDto createRestaurantDto
@@ -47,7 +47,7 @@ public class RestaurantController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<DisplayRestaurantDto> deleteById(@PathVariable Long id) {
         return restaurantApplicationService
                 .deleteById(id)

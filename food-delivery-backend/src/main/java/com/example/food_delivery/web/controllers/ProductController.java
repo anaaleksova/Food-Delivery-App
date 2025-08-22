@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/Products")
+@RequestMapping("/api/products")
 public class ProductController {
 
     private final ProductApplicationService productApplicationService;
@@ -38,7 +38,7 @@ public class ProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{id}/details")
+    @GetMapping("/details/{id}")
     public ResponseEntity<DisplayProductDetailsDto> findByIdWithDetails(@PathVariable Long id) {
         return productApplicationService
                 .findByIdWithDetails(id)
@@ -46,13 +46,13 @@ public class ProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasRole('OWNER')")
+
     @PostMapping("/add")
     public ResponseEntity<DisplayProductDto> save(@RequestBody CreateProductDto createMenuItemDto) {
         return ResponseEntity.ok(productApplicationService.save(createMenuItemDto));
     }
 
-    @PutMapping("/{id}/edit")
+    @PutMapping("/edit/{id}")
     public ResponseEntity<DisplayProductDto> update(@PathVariable Long id, @RequestBody CreateProductDto createMenuItemDto) {
         return productApplicationService
                 .update(id, createMenuItemDto)
@@ -60,7 +60,7 @@ public class ProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<DisplayProductDto> deleteById(@PathVariable Long id) {
         return productApplicationService
                 .deleteById(id)
@@ -68,12 +68,12 @@ public class ProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/{id}/add-to-order")
+    @PostMapping("/add-to-order/{id}")
     public ResponseEntity<DisplayOrderDto> addToOrder(@PathVariable Long id, @AuthenticationPrincipal User user) {
         return ResponseEntity.ok(productApplicationService.addToOrder(id, user.getUsername()));
     }
 
-    @PostMapping("/{id}/remove-from-order")
+    @PostMapping("/remove-from-order/{id}")
     public ResponseEntity<DisplayOrderDto> removeFromOrder(@PathVariable Long id, @AuthenticationPrincipal User user) {
         return ResponseEntity.ok(productApplicationService.removeFromOrder(id, user.getUsername()));
     }

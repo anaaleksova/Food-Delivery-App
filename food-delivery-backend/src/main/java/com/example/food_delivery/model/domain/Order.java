@@ -12,7 +12,6 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 public class Order {
-// SMENETO CELO TREBA DA SE VIDI KAKO KE SE VKLOPI
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

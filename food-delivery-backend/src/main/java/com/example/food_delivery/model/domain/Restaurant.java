@@ -11,8 +11,6 @@ import java.util.List;
 @Entity
 public class Restaurant {
 
-
-    //SMENETO CELO TREBA DA SE PROVERI KKAO KE SE VKLOPI
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
