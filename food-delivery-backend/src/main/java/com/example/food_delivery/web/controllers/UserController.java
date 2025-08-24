@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -50,6 +52,12 @@ public class UserController {
                 .login(loginUserRequestDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<RegisterUserResponseDto>> findAll()
+    {
+        return ResponseEntity.ok(userApplicationService.findAll());
     }
 
 }

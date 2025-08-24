@@ -4,6 +4,7 @@ import com.example.food_delivery.model.domain.Product;
 import lombok.Data;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -16,7 +17,6 @@ public class OrderDto {
     private String restaurantName;
     private AddressDto deliveryAddress;
 
-    private List<OrderItemDto> items;
     private List<DisplayProductDto> products;
 
     private Double subtotal;
@@ -26,6 +26,7 @@ public class OrderDto {
     private Double total;
 
     private Instant placedAt;
+    private LocalDateTime deliveredAt;
 
     public Long getId() {
         return id;
@@ -75,19 +76,12 @@ public class OrderDto {
         this.deliveryAddress = deliveryAddress;
     }
 
-    public List<OrderItemDto> getItems() {
-        return items;
-    }
     public List<DisplayProductDto> getProducts() {
         return products;
     }
 
     public void setProducts(List<DisplayProductDto> products) {
         this.products = products;
-    }
-
-    public void setItems(List<OrderItemDto> items) {
-        this.items = items;
     }
 
     public Double getSubtotal() {

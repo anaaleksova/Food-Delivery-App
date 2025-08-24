@@ -19,4 +19,5 @@ public interface CourierService {
     Order assignToOrder(String courierUsername, Long orderId);
     Order completeDelivery(String courierUsername, Long orderId);
     List<Courier> findAvailable();
+    List<Order> findDeliveredOrders(String courierUsername);
 }

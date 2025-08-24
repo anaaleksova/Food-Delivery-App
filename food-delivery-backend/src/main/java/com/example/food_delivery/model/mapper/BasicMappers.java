@@ -86,12 +86,15 @@ public final class BasicMappers {
         d.setUserUsername(o.getUser() != null ? o.getUser().getUsername() : null);
         d.setStatus(o.getStatus() != null ? o.getStatus().name() : null);
         d.setSubtotal(o.getSubtotal());
+        d.setRestaurantId(o.getRestaurant().getId());
+        d.setRestaurantName(o.getRestaurant().getName());
         d.setProducts( DisplayProductDto.from(o.getProducts()));
         d.setDeliveryFee(o.getDeliveryFee());
         d.setPlatformFee(o.getPlatformFee());
         d.setDiscount(o.getDiscount());
         d.setTotal(o.getTotal());
         d.setPlacedAt(o.getPlacedAt());
+        d.setDeliveredAt(o.getDeliveredAt());
         return d;
     }
 

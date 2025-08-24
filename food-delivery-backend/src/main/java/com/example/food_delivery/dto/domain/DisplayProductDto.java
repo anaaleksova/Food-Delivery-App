@@ -12,7 +12,9 @@ public record DisplayProductDto(
         Double price,
         Integer quantity,
         Long restaurantId,
-        Boolean isAvailable
+        Boolean isAvailable,
+        String category,
+        String imageUrl
 ) {
 
     public static DisplayProductDto from(Product product) {
@@ -23,7 +25,9 @@ public record DisplayProductDto(
                 product.getPrice(),
                 product.getQuantity(),
                 product.getRestaurant().getId(),
-                product.getIsAvailable()
+                product.getIsAvailable(),
+                product.getCategory(),
+                product.getImageUrl()
         );
     }
 

@@ -2,6 +2,7 @@ package com.example.food_delivery.service.application.impl;
 
 import com.example.food_delivery.dto.domain.*;
 import com.example.food_delivery.model.domain.Courier;
+import com.example.food_delivery.model.domain.Order;
 import com.example.food_delivery.model.mapper.BasicMappers;
 import com.example.food_delivery.service.application.CourierApplicationService;
 import com.example.food_delivery.service.domain.CourierService;
@@ -62,5 +63,11 @@ public class CourierApplicationServiceImpl implements CourierApplicationService 
     @Override
     public List<DisplayCourierDto> findAvailable() {
         return courierService.findAvailable().stream().map(DisplayCourierDto::from).toList();
+    }
+
+    @Override
+    public List<OrderDto> findDeliveredOrders(String courierUsername)
+    {
+        return courierService.findDeliveredOrders(courierUsername).stream().map(BasicMappers::toDto).toList();
     }
 }

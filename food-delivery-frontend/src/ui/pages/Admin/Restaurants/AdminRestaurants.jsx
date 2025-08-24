@@ -64,11 +64,19 @@ const AdminRestaurants = () => {
     const handleSave = async () => {
         try {
             if (editingRestaurant) {
-                await restaurantRepository.edit(editingRestaurant.id, form);
+                const payload = { ...form, id: editingRestaurant.id };
+                const { data: updated } = await restaurantRepository.edit(editingRestaurant.id, form);
+
+                setRestaurants(prev =>
+                    prev.map(r => (r.id === updated.id ? updated : r))
+                );
             } else {
-                await restaurantRepository.add(form);
+                // Add new
+                const { data: created } = await restaurantRepository.add(form);
+
+                // Append the new one to keep order consistent
+                setRestaurants(prev => [...prev, created]);
             }
-            await fetchRestaurants();
             setDialogOpen(false);
             alert('Restaurant saved successfully!');
         } catch (err) {

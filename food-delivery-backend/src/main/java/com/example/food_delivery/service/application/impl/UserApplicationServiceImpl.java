@@ -10,6 +10,7 @@ import com.example.food_delivery.service.application.UserApplicationService;
 import com.example.food_delivery.service.domain.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,6 +45,11 @@ public class UserApplicationServiceImpl implements UserApplicationService {
         return userService
                 .findByUsername(username)
                 .map(RegisterUserResponseDto::from);
+    }
+
+    @Override
+    public List<RegisterUserResponseDto> findAll() {
+        return userService.findAll().stream().map(RegisterUserResponseDto::from).toList();
     }
 
 }

@@ -9,6 +9,7 @@ import com.example.food_delivery.service.domain.CourierService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,6 +101,7 @@ public class CourierServiceImpl implements CourierService {
         // Mark courier as available and order as delivered
         courier.setActive(true);
         order.setStatus(OrderStatus.DELIVERED);
+        order.setDeliveredAt(LocalDateTime.now());
 
         courierRepository.save(courier);
         return orderRepository.save(order);
@@ -109,4 +111,10 @@ public class CourierServiceImpl implements CourierService {
     public List<Courier> findAvailable() {
         return courierRepository.findAllActiveCouriers();
     }
+    @Override
+    public List<Order> findDeliveredOrders(String courierUsername)
+    {
+        return orderRepository.findByCourierUsernameAndDelivered(courierUsername);
+    }
+
 }

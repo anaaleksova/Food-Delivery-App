@@ -34,10 +34,14 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public Optional<Restaurant> update(Long id, Restaurant restaurant) {
-        return findById(id)
+        return restaurantRepository.findById(id)
                 .map(existingRestaurant -> {
                     existingRestaurant.setName(restaurant.getName());
                     existingRestaurant.setDescription(restaurant.getDescription());
+                    existingRestaurant.setAddress(restaurant.getAddress());
+                    existingRestaurant.setCategory(restaurant.getCategory());
+                    existingRestaurant.setDeliveryTimeEstimate(restaurant.getDeliveryTimeEstimate());
+                    existingRestaurant.setImageUrl(restaurant.getImageUrl());
                     return restaurantRepository.save(existingRestaurant);
                 });
     }

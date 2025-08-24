@@ -76,4 +76,9 @@ public class CourierController {
         return ResponseEntity.ok(orderApplicationService.findOrdersForCourier(user.getUsername()));
     }
 
+    @GetMapping("/my-delivered-orders")
+    public ResponseEntity<List<OrderDto>> getMyDeliveredOrders(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(courierApplicationService.findDeliveredOrders(user.getUsername()));
+    }
+
 }

@@ -93,11 +93,12 @@ const AdminProducts = () => {
     const handleSave = async () => {
         try {
             if (editingProduct) {
-                await productRepository.edit(editingProduct.id, form);
+                const updated = await productRepository.edit(editingProduct.id, form);
+                setProducts(products.map(p => p.id === editingProduct.id ? updated.data : p));
             } else {
-                await productRepository.add(form);
+                const added = await productRepository.add(form);
+                setProducts([...products, added.data]);
             }
-            await fetchData();
             setDialogOpen(false);
             alert('Product saved successfully!');
         } catch (err) {

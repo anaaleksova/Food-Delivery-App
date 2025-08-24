@@ -8,7 +8,9 @@ public record CreateProductDto(
         String description,
         Double price,
         Integer quantity,
-        Long restaurantId
+        Long restaurantId,
+        String category,
+        String imageUrl
 ) {
 
     public Product toProduct(Restaurant restaurant) {
@@ -17,7 +19,9 @@ public record CreateProductDto(
                 description,
                 price,
                 quantity,
-                restaurant
+                restaurant,
+                category,
+                imageUrl
         );
     }
 

@@ -23,4 +23,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o FROM Order o WHERE o.courier.user.username = :courierUsername")
     List<Order> findByCourierUsername(@Param("courierUsername") String courierUsername);
 
+    @Query("SELECT o FROM Order o WHERE o.courier.user.username = :courierUsername AND o.status = 'DELIVERED'")
+    List<Order> findByCourierUsernameAndDelivered(@Param("courierUsername") String courierUsername);
+
+
 }

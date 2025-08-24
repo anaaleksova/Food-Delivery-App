@@ -54,7 +54,13 @@ const Header = () => {
 
                 {user ? (
                     <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                        <Typography variant="body2">Hello, {user.username}</Typography>
+                        <Button
+                            color="inherit"
+                            onClick={() => navigate(`/user/me`)} // navigate to profile page
+                            sx={{ textTransform: 'none' }}
+                        >
+                            Hello, {user.username}
+                        </Button>
                         <Button color="inherit" onClick={() => {
                             logout();
                             navigate('/');

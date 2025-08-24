@@ -23,4 +23,5 @@ public interface CourierApplicationService {
     DisplayOrderDto assignToOrder(String courierUsername, Long orderId);
     DisplayOrderDto completeDelivery(String courierUsername, Long orderId);
     List<DisplayCourierDto> findAvailable();
+    List<OrderDto> findDeliveredOrders(String courierUsername);
 }

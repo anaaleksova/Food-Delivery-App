@@ -17,15 +17,10 @@ const AdminUsers = () => {
     const fetchUsers = async () => {
         try {
             // This endpoint needs to be implemented in the backend
-            const response = await axiosInstance.get('/admin/users');
+            const response = await axiosInstance.get('user/users');
             setUsers(response.data);
         } catch (err) {
             console.error('Error fetching users:', err);
-            // For now, mock some data
-            setUsers([
-                { username: 'customer', role: 'ROLE_CUSTOMER', name: 'Customer', surname: 'User', email: 'customer@email.com' },
-                { username: 'admin', role: 'ROLE_ADMIN', name: 'Admin', surname: 'User', email: 'admin@email.com' },
-            ]);
         } finally {
             setLoading(false);
         }

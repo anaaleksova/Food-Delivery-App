@@ -10,7 +10,7 @@ import RegisterPage from './ui/pages/RegisterPage/RegisterPage.jsx'
 import CheckoutPage from './ui/pages/CheckoutPage/CheckoutPage.jsx'
 import TrackOrderPage from './ui/pages/TrackOrderPage/TrackOrderPage.jsx'
 import ProtectedRoute from './ui/components/routing/ProtectedRoute/ProtectedRoute.jsx'
-
+import ProfilePage from "./ui/pages/ProfilePage";
 // Courier pages
 import CourierDashboard from './ui/pages/Courier/CourierDashboard/CourierDashboard.jsx'
 
@@ -54,6 +54,9 @@ App.routes = createRoutesFromElements(
             <Route path="restaurants" element={<AdminRestaurants/>}/>
             <Route path="products" element={<AdminProducts/>}/>
         </Route>
+
+        {/* User routes */}
+        <Route path="/user/me" element={<ProfilePage />} />
     </Route>
 )
 

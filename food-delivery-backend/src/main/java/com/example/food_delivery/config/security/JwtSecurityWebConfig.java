@@ -106,7 +106,8 @@ public class JwtSecurityWebConfig {
                                         "/api/orders/confirmed",
                                         "/api/couriers/assign/{orderId}",
                                         "/api/couriers/complete/{orderId}",
-                                        "/api/couriers/my-orders"
+                                        "/api/couriers/my-orders",
+                                        "/api/couriers/my-delivered-orders"
                                 )
                                 .hasAnyRole("COURIER", "ADMIN")
                                 .requestMatchers(
@@ -117,7 +118,7 @@ public class JwtSecurityWebConfig {
                                         "/api/restaurants/edit/{id}",
                                         "/api/restaurants/delete/{id}"
                                 )
-                                .hasAnyRole("ADMIN")
+                                .hasRole("ADMIN")
                                 .anyRequest()
                                 .hasRole("ADMIN")
                 )

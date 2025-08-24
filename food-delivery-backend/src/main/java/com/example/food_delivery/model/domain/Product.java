@@ -38,6 +38,16 @@ public class Product {
         this.restaurant = restaurant;
     }
 
+    public Product(String name, String description, Double price, Integer quantity, Restaurant restaurant, String category, String imageUrl) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.quantity = quantity;
+        this.restaurant = restaurant;
+        this.category = category;
+        this.imageUrl = imageUrl;
+    }
+
     public void increaseQuantity(){ if (quantity == null) quantity = 0;
     quantity += 1;
     }

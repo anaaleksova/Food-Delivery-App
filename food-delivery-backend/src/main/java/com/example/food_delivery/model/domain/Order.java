@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +48,7 @@ public class Order {
     private Restaurant restaurant; // set from first item
 
     private Instant placedAt;
+    private LocalDateTime deliveredAt;
 
     public Order(User user) {
         this.user = user;
@@ -211,5 +213,13 @@ public class Order {
 
     public void setCourier(Courier courier) {
         this.courier = courier;
+    }
+
+    public LocalDateTime getDeliveredAt() {
+        return deliveredAt;
+    }
+
+    public void setDeliveredAt(LocalDateTime deliveredAt) {
+        this.deliveredAt = deliveredAt;
     }
 }
