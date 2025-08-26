@@ -24,10 +24,9 @@ const RegisterPage = () => {
       <TextField label="Surname" value={form.surname} onChange={e=>setForm({...form, surname:e.target.value})} required/>
       <TextField label="Email" type="email" value={form.email} onChange={e=>setForm({...form, email:e.target.value})} required/>
       <TextField label="Password" type="password" value={form.password} onChange={e=>setForm({...form, password:e.target.value})} required/>
-      <TextField select label="Role" value={form.role} onChange={e=>setForm({...form, role:e.target.value})}>
-        <MenuItem value="CUSTOMER">Customer</MenuItem>
-        <MenuItem value="OWNER">Owner</MenuItem>
-      </TextField>
+      {/*<TextField select label="Role" value={form.role} onChange={e=>setForm({...form, role:e.target.value})}>*/}
+      {/*  <MenuItem value="CUSTOMER">Customer</MenuItem>*/}
+      {/*</TextField>*/}
       <Button type="submit" variant="contained">Create account</Button>
     </Box>
   );
