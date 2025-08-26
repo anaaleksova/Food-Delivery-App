@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+//@NoArgsConstructor
 @Entity
 public class Courier{
 
@@ -23,6 +23,9 @@ public class Courier{
         this.user = user;
         this.phone = phone;
         this.active = active;
+    }
+
+    public Courier() {
     }
 
     public Long getId() {

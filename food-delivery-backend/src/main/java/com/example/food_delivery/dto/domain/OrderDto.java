@@ -28,6 +28,14 @@ public class OrderDto {
     private Instant placedAt;
     private LocalDateTime deliveredAt;
 
+    public LocalDateTime getDeliveredAt() {
+        return deliveredAt;
+    }
+
+    public void setDeliveredAt(LocalDateTime deliveredAt) {
+        this.deliveredAt = deliveredAt;
+    }
+
     public Long getId() {
         return id;
     }

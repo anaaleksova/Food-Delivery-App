@@ -13,6 +13,7 @@ public class PaymentDto {
     private Double amount;
     private String currency;
     private String providerIntentId;
+    private String clientSecret; // added for Stripe
     private Instant createdAt;
     private Instant updatedAt;
 
@@ -71,6 +72,9 @@ public class PaymentDto {
     public void setProviderIntentId(String providerIntentId) {
         this.providerIntentId = providerIntentId;
     }
+
+    public String getClientSecret() { return clientSecret; }
+    public void setClientSecret(String clientSecret) { this.clientSecret = clientSecret; }
 
     public Instant getCreatedAt() {
         return createdAt;

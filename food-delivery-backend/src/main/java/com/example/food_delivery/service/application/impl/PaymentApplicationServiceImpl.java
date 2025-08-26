@@ -1,4 +1,3 @@
-
 package com.example.food_delivery.service.application.impl;
 
 import com.example.food_delivery.dto.domain.PaymentDto;
@@ -10,6 +9,8 @@ import com.example.food_delivery.repository.PaymentRepository;
 import com.example.food_delivery.service.application.PaymentApplicationService;
 import com.example.food_delivery.service.domain.PaymentService;
 import org.springframework.stereotype.Service;
+import com.stripe.Stripe;
+import com.stripe.model.PaymentIntent;
 
 @Service
 public class PaymentApplicationServiceImpl implements PaymentApplicationService {
@@ -18,11 +19,9 @@ public class PaymentApplicationServiceImpl implements PaymentApplicationService 
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
 
-    public PaymentApplicationServiceImpl(
-            PaymentService paymentService,
-            PaymentRepository paymentRepository,
-            OrderRepository orderRepository
-    ) {
+    public PaymentApplicationServiceImpl(PaymentService paymentService,
+                                         PaymentRepository paymentRepository,
+                                         OrderRepository orderRepository) {
         this.paymentService = paymentService;
         this.paymentRepository = paymentRepository;
         this.orderRepository = orderRepository;
@@ -32,7 +31,19 @@ public class PaymentApplicationServiceImpl implements PaymentApplicationService 
     public PaymentDto createIntent(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow();
         Payment p = paymentService.createOrUpdateIntent(order);
-        return BasicMappers.toDto(p);
+        PaymentDto dto = BasicMappers.toDto(p);
+
+        try {
+            // Use the same hard-coded secret key as in PaymentServiceImpl for retrieving the client secret.
+            String secret = "sk_test_51S0LPxISIz2c7ED1ibtNR7LSQkqDizaWVJwByGfoGy0OZ2kV0dnLmgEuv1BFauTtnc9jvIRB74eGMzFnbKQKbrsE000zt0avdC";
+            if (p.getProviderIntentId() != null && p.getProviderIntentId().startsWith("pi_")) {
+                Stripe.apiKey = secret;
+                PaymentIntent intent = PaymentIntent.retrieve(p.getProviderIntentId());
+                dto.setClientSecret(intent.getClientSecret());
+            }
+        } catch (Exception ignored) {}
+
+        return dto;
     }
 
     @Override
