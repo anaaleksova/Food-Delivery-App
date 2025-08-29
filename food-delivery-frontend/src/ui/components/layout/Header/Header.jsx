@@ -1,15 +1,20 @@
 import React from 'react';
-import {AppBar, Toolbar, Typography, Box, Button, IconButton} from "@mui/material";
+import { AppBar, Toolbar, Typography, Box, Button } from "@mui/material";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import DeliveryDiningIcon from '@mui/icons-material/DeliveryDining';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import {Link, useNavigate} from "react-router";
+import { Link, useNavigate, useLocation } from "react-router";
 import useAuth from "../../../../hooks/useAuth.js";
 
 const Header = () => {
-    const {user, logout} = useAuth();
+    const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // Hide header on auth pages
+    const hideHeader = /^\/(login|register)(\/|$)/.test(location.pathname);
+    if (hideHeader) return null;
 
     const getDashboardLink = () => {
         if (!user) return null;
@@ -35,14 +40,18 @@ const Header = () => {
 
     return (
         <AppBar position="static" color="primary">
-            <Toolbar sx={{display: 'flex', gap: 2}}>
+            <Toolbar sx={{ display: 'flex', gap: 2 }}>
                 <RestaurantIcon/>
 
-                <Typography variant="h6" sx={{flexGrow: 1}} component={Link} to="/"
-                                style={{color: "#fff", textDecoration: "none"}}>
-                        Food Delivery
+                <Typography
+                    variant="h6"
+                    sx={{ flexGrow: 1 }}
+                    component={Link}
+                    to="/"
+                    style={{ color: "#fff", textDecoration: "none" }}
+                >
+                    Food Delivery
                 </Typography>
-
 
                 {user?.roles?.includes('CUSTOMER') && (
                     <Button color="inherit" startIcon={<ShoppingCartIcon/>} component={Link} to="/cart">
@@ -53,21 +62,26 @@ const Header = () => {
                 {getDashboardLink()}
 
                 {user ? (
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Button
                             color="inherit"
-                            onClick={() => navigate(`/user/me`)} // navigate to profile page
+                            onClick={() => navigate(`/user/me`)}
                             sx={{ textTransform: 'none' }}
                         >
                             Hello, {user.username}
                         </Button>
-                        <Button color="inherit" onClick={() => {
-                            logout();
-                            navigate('/');
-                        }}>Logout</Button>
+                        <Button
+                            color="inherit"
+                            onClick={() => {
+                                logout();
+                                navigate('/');
+                            }}
+                        >
+                            Logout
+                        </Button>
                     </Box>
                 ) : (
-                    <Box sx={{display: 'flex', gap: 1}}>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
                         <Button color="inherit" component={Link} to="/login">Login</Button>
                         <Button color="inherit" component={Link} to="/register">Register</Button>
                     </Box>
@@ -75,5 +89,6 @@ const Header = () => {
             </Toolbar>
         </AppBar>
     );
-}
+};
+
 export default Header;

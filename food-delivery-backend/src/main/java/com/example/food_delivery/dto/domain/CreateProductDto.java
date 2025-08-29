@@ -2,12 +2,13 @@ package com.example.food_delivery.dto.domain;
 
 import com.example.food_delivery.model.domain.Product;
 import com.example.food_delivery.model.domain.Restaurant;
+import jakarta.validation.constraints.*;
 
 public record CreateProductDto(
         String name,
         String description,
-        Double price,
-        Integer quantity,
+        @NotNull @Positive Double price,
+        @NotNull @Positive  Integer quantity,
         Long restaurantId,
         String category,
         String imageUrl

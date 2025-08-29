@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {useParams} from "react-router";
+import React, { useEffect, useState } from 'react';
+import { useParams } from "react-router";
 import {
     Typography, Card, CardContent, Box, Divider, Chip, Grid,
     CardMedia, Button, CardActions
@@ -15,44 +15,51 @@ import ReviewList from "../../components/reviews/ReviewList/ReviewList.jsx";
 import ReviewForm from "../../components/reviews/ReviewForm/ReviewForm.jsx";
 import useAuth from "../../../hooks/useAuth.js";
 
-const ProductCard = ({product, onAdd}) => (
-    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <CardMedia
-            component="img"
-            height="140"
-            image={product.imageUrl || 'https://via.placeholder.com/300x140?text=Food'}
-            alt={product.name}
-        />
-        <CardContent sx={{ flexGrow: 1 }}>
-            <Typography variant="h6" gutterBottom>
-                {product.name}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                {product.description}
-            </Typography>
-            <Typography variant="h6" color="primary">
-                €{product.price?.toFixed(2)}
-            </Typography>
-            {product.category && (
-                <Chip label={product.category} size="small" sx={{ mt: 1 }} />
+const ProductCard = ({ product, onAdd }) => {
+    const { user } = useAuth();
+
+    return (
+        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <CardMedia
+                component="img"
+                height="140"
+                image={product.imageUrl || 'https://via.placeholder.com/300x140?text=Food'}
+                alt={product.name}
+            />
+            <CardContent sx={{ flexGrow: 1 }}>
+                <Typography variant="h6" gutterBottom>
+                    {product.name}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    {product.description}
+                </Typography>
+                <Typography variant="h6" color="primary">
+                    €{product.price?.toFixed(2)}
+                </Typography>
+                {product.category && (
+                    <Chip label={product.category} size="small" sx={{ mt: 1 }} />
+                )}
+            </CardContent>
+
+            {user?.roles?.includes('CUSTOMER') && (
+                <CardActions>
+                    <Button
+                        variant="contained"
+                        onClick={() => onAdd?.(product.id)}
+                        disabled={!product.isAvailable || product.quantity <= 0}
+                        fullWidth
+                    >
+                        {product.quantity <= 0 ? "Out of Stock" : "Add to Cart"}
+                    </Button>
+                </CardActions>
             )}
-        </CardContent>
-        <CardActions>
-            <Button
-                variant="contained"
-                onClick={() => onAdd(product.id)}
-                disabled={!product.isAvailable || product.quantity <= 0}
-                fullWidth
-            >
-                {product.quantity <= 0 ? "Out of Stock" : "Add to Cart"}
-            </Button>
-        </CardActions>
-    </Card>
-);
+        </Card>
+    );
+};
 
 const RestaurantPage = () => {
-    const {id} = useParams();
-    const {user} = useAuth();
+    const { id } = useParams();
+    const { user } = useAuth();
     const [restaurant, setRestaurant] = useState(null);
     const [products, setProducts] = useState([]);
     const [reviews, setReviews] = useState([]);
@@ -86,18 +93,18 @@ const RestaurantPage = () => {
         } catch (err) {
             alert("Failed to add item to cart.");
         }
-    }
+    };
 
-    const handleReview = async ({rating, comment}) => {
+    const handleReview = async ({ rating, comment }) => {
         try {
-            await reviewRepository.add(id, {rating, comment});
+            await reviewRepository.add(id, { rating, comment });
             const rv = await reviewRepository.list(id);
             setReviews(rv.data);
             alert("Review submitted successfully!");
         } catch (err) {
             alert("Failed to submit review.");
         }
-    }
+    };
 
     if (loading) return <Typography>Loading...</Typography>;
     if (!restaurant) return <Typography>Restaurant not found.</Typography>;

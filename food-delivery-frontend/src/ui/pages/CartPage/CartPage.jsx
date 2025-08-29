@@ -8,7 +8,12 @@ const CartPage = () => {
   const {order, loading, refresh} = useOrder();
   const navigate = useNavigate();
   const onCheckout = () => navigate("/checkout");
-  const onCancel = async () => { await orderRepository.cancelPending(); await refresh(); }
+  const onCancel = async () => {
+    const ok = window.confirm("Remove all items from the cart?");
+    if (!ok) return;
+    await orderRepository.cancelPending();
+    await refresh();
+  };
   if (loading) return <>Loading...</>;
   return <OrderList order={order} onCheckout={onCheckout} onCancel={onCancel}/>
 };
