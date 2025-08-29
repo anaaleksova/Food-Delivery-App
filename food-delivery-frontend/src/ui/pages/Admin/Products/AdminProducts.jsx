@@ -1,295 +1,229 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useMemo, useState } from "react";
 import {
-    Typography, Table, TableBody, TableCell, TableContainer,
-    TableHead, TableRow, Paper, Button, Box, Dialog, DialogTitle,
-    DialogContent, DialogActions, TextField, IconButton, MenuItem,
-    Chip, FormControl, InputLabel, Select
+    Box,
+    Typography,
+    TextField,
+    InputAdornment,
+    Button,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Chip,
+    IconButton,
+    MenuItem,
 } from "@mui/material";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
+import SearchIcon from "@mui/icons-material/Search";
+import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Link } from "react-router";
 import productRepository from "../../../../repository/productRepository.js";
 import restaurantRepository from "../../../../repository/restaurantRepository.js";
 
 const AdminProducts = () => {
     const [products, setProducts] = useState([]);
     const [restaurants, setRestaurants] = useState([]);
-    const [filteredProducts, setFilteredProducts] = useState([]);
-    const [selectedRestaurant, setSelectedRestaurant] = useState('');
+    const [restaurantId, setRestaurantId] = useState("");
+    const [q, setQ] = useState("");
     const [loading, setLoading] = useState(true);
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [editingProduct, setEditingProduct] = useState(null);
-    const [form, setForm] = useState({
-        name: '',
-        description: '',
-        price: 0,
-        quantity: 0,
-        restaurantId: '',
-        category: '',
-        imageUrl: ''
-    });
-
-    const fetchData = async () => {
-        try {
-            const [productsRes, restaurantsRes] = await Promise.all([
-                productRepository.findAll(),
-                restaurantRepository.findAll()
-            ]);
-            setProducts(productsRes.data);
-            setRestaurants(restaurantsRes.data);
-            setFilteredProducts(productsRes.data);
-        } catch (err) {
-            console.error('Error fetching data:', err);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     useEffect(() => {
-        fetchData();
+        let live = true;
+        Promise.all([
+            productRepository.findAll(),
+            restaurantRepository.findAll(),
+        ])
+            .then(([p, r]) => {
+                if (!live) return;
+                setProducts(p?.data || []);
+                setRestaurants(r?.data || []);
+            })
+            .catch((err) => console.error("Load failed", err))
+            .finally(() => live && setLoading(false));
+        return () => { live = false; };
     }, []);
 
-    useEffect(() => {
-        if (selectedRestaurant) {
-            setFilteredProducts(products.filter(p => String(p.restaurantId) === String(selectedRestaurant)));
-        } else {
-            setFilteredProducts(products);
+    const filtered = useMemo(() => {
+        let list = products;
+        if (restaurantId) {
+            list = list.filter(
+                (p) => String(p.restaurantId) === String(restaurantId)
+            );
         }
-    }, [selectedRestaurant, products]);
-
-    const getRestaurantName = (restaurantId) => {
-        const restaurant = restaurants.find(r => r.id === restaurantId);
-        return restaurant ? restaurant.name : 'Unknown Restaurant';
-    };
-
-    const handleAdd = () => {
-        setEditingProduct(null);
-        setForm({
-            name: '',
-            description: '',
-            price: 0,
-            quantity: 0,
-            restaurantId: selectedRestaurant || '',
-            category: '',
-            imageUrl: ''
-        });
-        setDialogOpen(true);
-    };
-
-    const handleEdit = (product) => {
-        setEditingProduct(product);
-        setForm({
-            name: product.name || '',
-            description: product.description || '',
-            price: product.price || 0,
-            quantity: product.quantity || 0,
-            restaurantId: product.restaurantId || '',
-            category: product.category || '',
-            imageUrl: product.imageUrl || ''
-        });
-        setDialogOpen(true);
-    };
-
-    const handleSave = async () => {
-        try {
-            if (editingProduct) {
-                const updated = await productRepository.edit(editingProduct.id, form);
-                setProducts(products.map(p => p.id === editingProduct.id ? updated.data : p));
-            } else {
-                const added = await productRepository.add(form);
-                setProducts([...products, added.data]);
-            }
-            setDialogOpen(false);
-            alert('Product saved successfully!');
-        } catch (err) {
-            alert('Failed to save product: ' + (err.response?.data?.message || err.message));
+        const s = q.trim().toLowerCase();
+        if (s) {
+            list = list.filter(
+                (p) =>
+                    p.name?.toLowerCase().includes(s) ||
+                    p.description?.toLowerCase().includes(s) ||
+                    p.category?.toLowerCase().includes(s)
+            );
         }
+        return list;
+    }, [products, restaurantId, q]);
+
+    const onAdd = () => alert("TODO: open Add Product dialog");
+    const onEdit = (p) => alert(`TODO: edit product ${p.name}`);
+    const onDelete = (p) => {
+        const ok = window.confirm(`Delete "${p.name}"?`);
+        if (!ok) return;
+        alert("TODO: call delete endpoint, then refresh list.");
     };
-
-    const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this product?')) return;
-
-        try {
-            await productRepository.remove(id);
-            await fetchData();
-            alert('Product deleted successfully!');
-        } catch (err) {
-            alert('Failed to delete product: ' + (err.response?.data?.message || err.message));
-        }
-    };
-
-    if (loading) return <Typography>Loading...</Typography>;
 
     return (
         <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Typography variant="h4">
+            {/* Toolbar: title, filter, search, add */}
+            <Box
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
+                    flexWrap: "wrap",
+                    mb: 3,
+                }}
+            >
+                <Typography variant="h4" sx={{ fontWeight: 800, mr: "auto" }}>
                     Product Management
                 </Typography>
+
+                <Box sx={{ display: "grid", gap: 1 }}>
+                    <Typography
+                        variant="body2"
+                        sx={{ color: "text.secondary", fontWeight: 600 }}
+                    >
+                        Filter by Restaurant
+                    </Typography>
+                    <TextField
+                        select
+                        value={restaurantId}
+                        onChange={(e) => setRestaurantId(e.target.value)}
+                        placeholder="All restaurants"
+                        sx={{
+                            minWidth: { xs: "100%", sm: 260 },
+                            background: "#fff",
+                            borderRadius: 2,
+                            "& .MuiOutlinedInput-root": { borderRadius: 2 },
+                        }}
+                    >
+                        <MenuItem value="">All restaurants</MenuItem>
+                        {restaurants.map((r) => (
+                            <MenuItem key={r.id} value={r.id}>
+                                {r.name}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </Box>
+
+                <TextField
+                    placeholder="Search products…"
+                    value={q}
+                    onChange={(e) => setQ(e.target.value)}
+                    sx={{
+                        width: { xs: "100%", sm: 320, md: 380 },
+                        background: "#fff",
+                        borderRadius: 2,
+                        "& .MuiOutlinedInput-root": { borderRadius: 2 },
+                    }}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon />
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+
                 <Button
+                    onClick={onAdd}
                     variant="contained"
+                    color="secondary"
                     startIcon={<AddIcon />}
-                    onClick={handleAdd}
+                    sx={{ borderRadius: 2, fontWeight: 700 }}
                 >
                     Add Product
                 </Button>
             </Box>
 
-            {/* Restaurant Filter */}
-            <Box sx={{ mb: 3 }}>
-                <FormControl sx={{ minWidth: 200 }}>
-                    <InputLabel>Filter by Restaurant</InputLabel>
-                    <Select
-                        value={selectedRestaurant}
-                        onChange={(e) => setSelectedRestaurant(e.target.value)}
-                        label="Filter by Restaurant"
-                    >
-                        <MenuItem value="">All Restaurants</MenuItem>
-                        {restaurants.map(restaurant => (
-                            <MenuItem key={restaurant.id} value={restaurant.id}>
-                                {restaurant.name}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-            </Box>
-
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Restaurant</TableCell>
-                            <TableCell>Category</TableCell>
-                            <TableCell>Price</TableCell>
-                            <TableCell>Quantity</TableCell>
-                            <TableCell>Available</TableCell>
-                            <TableCell>Actions</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {filteredProducts.map((product) => (
-                            <TableRow key={product.id}>
-                                <TableCell>
-                                    <Box>
-                                        <Typography variant="subtitle2">{product.name}</Typography>
-                                        <Typography variant="caption" color="text.secondary">
-                                            {product.description}
-                                        </Typography>
-                                    </Box>
-                                </TableCell>
-                                <TableCell>{getRestaurantName(product.restaurantId)}</TableCell>
-                                <TableCell>
-                                    {product.category && (
-                                        <Chip label={product.category} size="small" />
-                                    )}
-                                </TableCell>
-                                <TableCell>€{product.price?.toFixed(2)}</TableCell>
-                                <TableCell>{product.quantity}</TableCell>
-                                <TableCell>
-                                    <Chip
-                                        label={product.isAvailable ? "Yes" : "No"}
-                                        color={product.isAvailable ? "success" : "error"}
-                                        size="small"
-                                    />
-                                </TableCell>
-                                <TableCell>
-                                    <IconButton
-                                        color="primary"
-                                        onClick={() => handleEdit(product)}
-                                        size="small"
-                                    >
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton
-                                        color="error"
-                                        onClick={() => handleDelete(product.id)}
-                                        size="small"
-                                    >
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </TableCell>
+            {/* Table */}
+            {loading ? (
+                <Typography>Loading…</Typography>
+            ) : (
+                <TableContainer
+                    component={Paper}
+                    elevation={0}
+                    sx={{
+                        border: "1px solid #E5E7EB",
+                        borderRadius: 2,
+                        overflow: "hidden",
+                    }}
+                >
+                    <Table sx={{ minWidth: 960 }}>
+                        <TableHead>
+                            <TableRow sx={{ bgcolor: "#F9FAFB" }}>
+                                <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
+                                <TableCell sx={{ fontWeight: 700 }}>Restaurant</TableCell>
+                                <TableCell sx={{ fontWeight: 700 }}>Category</TableCell>
+                                <TableCell sx={{ fontWeight: 700 }}>Price</TableCell>
+                                <TableCell sx={{ fontWeight: 700 }}>Quantity</TableCell>
+                                <TableCell sx={{ fontWeight: 700 }}>Available</TableCell>
+                                <TableCell sx={{ fontWeight: 700 }}>Actions</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-
-            {filteredProducts.length === 0 && (
-                <Typography color="text.secondary" sx={{ textAlign: 'center', mt: 4 }}>
-                    No products found.
-                </Typography>
-            )}
-
-            {/* Add/Edit Dialog */}
-            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>
-                <DialogTitle>
-                    {editingProduct ? 'Edit Product' : 'Add Product'}
-                </DialogTitle>
-                <DialogContent>
-                    <Box sx={{ display: 'grid', gap: 2, mt: 1, gridTemplateColumns: 'repeat(2, 1fr)' }}>
-                        <TextField
-                            label="Name"
-                            value={form.name}
-                            onChange={(e) => setForm({...form, name: e.target.value})}
-                            required
-                        />
-                        <TextField
-                            select
-                            label="Restaurant"
-                            value={form.restaurantId}
-                            onChange={(e) => setForm({...form, restaurantId: e.target.value})}
-                            required
-                        >
-                            {restaurants.map(restaurant => (
-                                <MenuItem key={restaurant.id} value={restaurant.id}>
-                                    {restaurant.name}
-                                </MenuItem>
+                        </TableHead>
+                        <TableBody>
+                            {filtered.map((p) => (
+                                <TableRow key={p.id} hover>
+                                    <TableCell sx={{ width: 320 }}>
+                                        <Box sx={{ display: "grid" }}>
+                                            <Typography sx={{ fontWeight: 600 }}>{p.name}</Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                {p.description}
+                                            </Typography>
+                                        </Box>
+                                    </TableCell>
+                                    <TableCell>
+                                        {
+                                            restaurants.find(
+                                                (r) => String(r.id) === String(p.restaurantId)
+                                            )?.name
+                                        }
+                                    </TableCell>
+                                    <TableCell>{p.category}</TableCell>
+                                    <TableCell>€{Number(p.price ?? 0).toFixed(2)}</TableCell>
+                                    <TableCell>{p.quantity ?? 0}</TableCell>
+                                    <TableCell>
+                                        <Chip
+                                            size="small"
+                                            color={p.isAvailable ? "success" : "default"}
+                                            label={p.isAvailable ? "Yes" : "No"}
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <IconButton onClick={() => onEdit(p)} color="primary">
+                                            <EditIcon />
+                                        </IconButton>
+                                        <IconButton onClick={() => onDelete(p)} color="error">
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
                             ))}
-                        </TextField>
-                        <TextField
-                            label="Description"
-                            value={form.description}
-                            onChange={(e) => setForm({...form, description: e.target.value})}
-                            multiline
-                            rows={2}
-                            sx={{ gridColumn: '1 / -1' }}
-                        />
-                        <TextField
-                            label="Price"
-                            type="number"
-                            value={form.price}
-                            onChange={(e) => setForm({...form, price: parseFloat(e.target.value)})}
-                            required
-                        />
-                        <TextField
-                            label="Quantity"
-                            type="number"
-                            value={form.quantity}
-                            onChange={(e) => setForm({...form, quantity: parseInt(e.target.value)})}
-                            required
-                        />
-                        <TextField
-                            label="Category"
-                            value={form.category}
-                            onChange={(e) => setForm({...form, category: e.target.value})}
-                            placeholder="e.g., Appetizer, Main Course"
-                        />
-                        <TextField
-                            label="Image URL"
-                            value={form.imageUrl}
-                            onChange={(e) => setForm({...form, imageUrl: e.target.value})}
-                            placeholder="https://..."
-                        />
-                    </Box>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
-                    <Button onClick={handleSave} variant="contained">
-                        {editingProduct ? 'Update' : 'Create'}
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                            {!filtered.length && (
+                                <TableRow>
+                                    <TableCell colSpan={7} align="center">
+                                        <Typography color="text.secondary">
+                                            No products match your filters.
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            )}
         </Box>
     );
 };

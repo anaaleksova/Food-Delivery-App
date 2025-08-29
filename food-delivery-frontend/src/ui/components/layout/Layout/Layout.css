@@ -1,1 +1,10 @@
-.layout-box { min-height: 100vh; background: #fafafa; } .outlet-container { padding-bottom: 32px; }
+/* Top level layout wrapper */
+.layout-box {
+    min-height: 100vh;
+    background: #f8fafc; /* soft off-white */
+}
+
+/* Container spacing */
+.outlet-container {
+    padding-bottom: 32px;
+}

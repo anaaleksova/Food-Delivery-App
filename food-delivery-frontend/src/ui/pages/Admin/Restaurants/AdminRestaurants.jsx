@@ -1,216 +1,230 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useMemo, useState } from "react";
 import {
-    Typography, Grid, Card, CardContent, Button, Box, Dialog,
-    DialogTitle, DialogContent, DialogActions, TextField, IconButton,
-    CardActions, Chip
+    Box,
+    Typography,
+    TextField,
+    InputAdornment,
+    Button,
+    Grid,
+    Card,
+    CardContent,
+    CardMedia,
+    Chip,
+    IconButton,
+    Stack,
+    Tooltip,
 } from "@mui/material";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
+import SearchIcon from "@mui/icons-material/Search";
+import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import StarIcon from "@mui/icons-material/Star";
+import { Link } from "react-router";
 import restaurantRepository from "../../../../repository/restaurantRepository.js";
 
-const AdminRestaurants = () => {
-    const [restaurants, setRestaurants] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [editingRestaurant, setEditingRestaurant] = useState(null);
-    const [form, setForm] = useState({
-        name: '',
-        description: '',
-        openHours: '09:00-22:00',
-        category: '',
-        imageUrl: ''
-    });
+const FALLBACK =
+    "https://via.placeholder.com/640x360.png?text=Restaurant";
 
-    const fetchRestaurants = async () => {
-        try {
-            const response = await restaurantRepository.findAll();
-            setRestaurants(response.data);
-        } catch (err) {
-            console.error('Error fetching restaurants:', err);
-        } finally {
-            setLoading(false);
-        }
-    };
+const clamp = (lines = 2) => ({
+    display: "-webkit-box",
+    WebkitLineClamp: lines,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+});
+
+const RestaurantRowCard = ({ r, onEdit, onDelete }) => (
+    <Card
+        elevation={0}
+        sx={{
+            border: "1px solid #E5E7EB",
+            borderRadius: 2,
+            boxShadow: "0 1px 6px rgba(0,0,0,.05)",
+            p: 2,
+            display: "flex",
+            alignItems: "stretch",
+            gap: 2,
+        }}
+    >
+        <CardMedia
+            component="img"
+            src={r.imageUrl || FALLBACK}
+            alt={r.name}
+            onError={(e) => {
+                if (e.currentTarget.src !== FALLBACK) e.currentTarget.src = FALLBACK;
+            }}
+            sx={{
+                width: 160,
+                height: 110,
+                objectFit: "cover",
+                flexShrink: 0,
+                borderRadius: 1,
+                background: "#f3f4f6",
+            }}
+        />
+
+        <CardContent
+            sx={{
+                p: 0,
+                flex: 1,
+                display: "grid",
+                gridTemplateRows: "auto auto 1fr auto",
+                rowGap: 0.75,
+            }}
+        >
+            <Typography variant="h6" sx={clamp(1)}>{r.name}</Typography>
+
+            <Typography variant="body2" color="text.secondary" sx={clamp(2)}>
+                {r.description || "No description provided."}
+            </Typography>
+
+            <Stack
+                direction="row"
+                spacing={1.5}
+                alignItems="center"
+                sx={{ color: "text.secondary" }}
+            >
+                <Stack direction="row" spacing={0.5} alignItems="center">
+                    <StarIcon sx={{ color: "#f59e0b", fontSize: 18 }} />
+                    <Typography variant="body2">{r.rating ?? 4.5}</Typography>
+                </Stack>
+
+                <Stack direction="row" spacing={0.5} alignItems="center">
+                    <AccessTimeIcon sx={{ fontSize: 16 }} />
+                    <Typography variant="body2">
+                        {r.deliveryTimeEstimate ?? 30} min
+                    </Typography>
+                </Stack>
+
+                <Chip
+                    size="small"
+                    color={r.isOpen ? "success" : "default"}
+                    label={r.isOpen ? "Open" : "Closed"}
+                    sx={{ fontWeight: 600 }}
+                />
+            </Stack>
+
+            <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+                <Tooltip title="Edit">
+                    <IconButton onClick={() => onEdit?.(r)} size="small" color="primary">
+                        <EditIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete">
+                    <IconButton onClick={() => onDelete?.(r)} size="small" color="error">
+                        <DeleteIcon />
+                    </IconButton>
+                </Tooltip>
+                <Box sx={{ flex: 1 }} />
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    component={Link}
+                    to={`/restaurants/${r.id}`}
+                    sx={{ borderRadius: 1.5, fontWeight: 700 }}
+                >
+                    View Menu
+                </Button>
+            </Stack>
+        </CardContent>
+    </Card>
+);
+
+const AdminRestaurants = () => {
+    const [rows, setRows] = useState([]);
+    const [q, setQ] = useState("");
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchRestaurants();
+        let live = true;
+        restaurantRepository
+            .findAll()
+            .then((res) => live && setRows(res?.data || []))
+            .catch((err) => console.error("Load restaurants failed", err))
+            .finally(() => live && setLoading(false));
+        return () => { live = false; };
     }, []);
 
-    const handleAdd = () => {
-        setEditingRestaurant(null);
-        setForm({
-            name: '',
-            description: '',
-            openHours: '09:00-22:00',
-            category: '',
-            imageUrl: ''
-        });
-        setDialogOpen(true);
+    const filtered = useMemo(() => {
+        const s = q.trim().toLowerCase();
+        if (!s) return rows;
+        return rows.filter(
+            (r) =>
+                r.name?.toLowerCase().includes(s) ||
+                r.description?.toLowerCase().includes(s)
+        );
+    }, [rows, q]);
+
+    const onAdd = () => alert("TODO: open Add Restaurant dialog");
+    const onEdit = (r) => alert(`TODO: edit restaurant ${r.name}`);
+    const onDelete = (r) => {
+        const ok = window.confirm(`Delete "${r.name}"?`);
+        if (!ok) return;
+        alert("TODO: call delete endpoint, then refresh list.");
     };
-
-    const handleEdit = (restaurant) => {
-        setEditingRestaurant(restaurant);
-        setForm({
-            name: restaurant.name || '',
-            description: restaurant.description || '',
-            openHours: restaurant.openHours || '09:00-22:00',
-            category: restaurant.category || '',
-            imageUrl: restaurant.imageUrl || ''
-        });
-        setDialogOpen(true);
-    };
-
-    const handleSave = async () => {
-        try {
-            if (editingRestaurant) {
-                const payload = { ...form, id: editingRestaurant.id };
-                const { data: updated } = await restaurantRepository.edit(editingRestaurant.id, form);
-
-                setRestaurants(prev =>
-                    prev.map(r => (r.id === updated.id ? updated : r))
-                );
-            } else {
-                // Add new
-                const { data: created } = await restaurantRepository.add(form);
-
-                // Append the new one to keep order consistent
-                setRestaurants(prev => [...prev, created]);
-            }
-            setDialogOpen(false);
-            alert('Restaurant saved successfully!');
-        } catch (err) {
-            alert('Failed to save restaurant: ' + (err.response?.data?.message || err.message));
-        }
-    };
-
-    const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this restaurant?')) return;
-
-        try {
-            await restaurantRepository.remove(id);
-            await fetchRestaurants();
-            alert('Restaurant deleted successfully!');
-        } catch (err) {
-            alert('Failed to delete restaurant: ' + (err.response?.data?.message || err.message));
-        }
-    };
-
-    if (loading) return <Typography>Loading...</Typography>;
 
     return (
         <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Typography variant="h4">
+            {/* Toolbar */}
+            <Box
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
+                    flexWrap: "wrap",
+                    mb: 3,
+                }}
+            >
+                <Typography variant="h4" sx={{ fontWeight: 800, mr: "auto" }}>
                     Restaurant Management
                 </Typography>
+
+                <TextField
+                    placeholder="Search restaurants…"
+                    value={q}
+                    onChange={(e) => setQ(e.target.value)}
+                    sx={{
+                        width: { xs: "100%", sm: 340, md: 420 },
+                        background: "#fff",
+                        borderRadius: 2,
+                        "& .MuiOutlinedInput-root": { borderRadius: 2 },
+                    }}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon />
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+
                 <Button
+                    onClick={onAdd}
                     variant="contained"
+                    color="secondary"
                     startIcon={<AddIcon />}
-                    onClick={handleAdd}
+                    sx={{ borderRadius: 2, fontWeight: 700 }}
                 >
                     Add Restaurant
                 </Button>
             </Box>
 
-            <Grid container spacing={3}>
-                {restaurants.map(restaurant => (
-                    <Grid item xs={12} md={6} lg={4} key={restaurant.id}>
-                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                            <CardContent sx={{ flexGrow: 1 }}>
-                                <Typography variant="h6" gutterBottom>
-                                    {restaurant.name}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                    {restaurant.description}
-                                </Typography>
-                                <Typography variant="body2" sx={{ mb: 1 }}>
-                                    <strong>Hours:</strong> {restaurant.openHours || 'Not specified'}
-                                </Typography>
-                                {restaurant.category && (
-                                    <Chip label={restaurant.category} size="small" sx={{ mb: 1 }} />
-                                )}
-                                <Chip
-                                    label={restaurant.isOpen ? "Open" : "Closed"}
-                                    color={restaurant.isOpen ? "success" : "error"}
-                                    size="small"
-                                />
-                            </CardContent>
-                            <CardActions>
-                                <IconButton
-                                    color="primary"
-                                    onClick={() => handleEdit(restaurant)}
-                                    size="small"
-                                >
-                                    <EditIcon />
-                                </IconButton>
-                                <IconButton
-                                    color="error"
-                                    onClick={() => handleDelete(restaurant.id)}
-                                    size="small"
-                                >
-                                    <DeleteIcon />
-                                </IconButton>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                ))}
-            </Grid>
-
-            {restaurants.length === 0 && (
-                <Typography color="text.secondary" sx={{ textAlign: 'center', mt: 4 }}>
-                    No restaurants found.
+            {/* List */}
+            {loading ? (
+                <Typography>Loading…</Typography>
+            ) : filtered.length ? (
+                <Grid container spacing={2}>
+                    {filtered.map((r) => (
+                        <Grid item xs={12} key={r.id}>
+                            <RestaurantRowCard r={r} onEdit={onEdit} onDelete={onDelete} />
+                        </Grid>
+                    ))}
+                </Grid>
+            ) : (
+                <Typography color="text.secondary" sx={{ mt: 2 }}>
+                    No restaurants match “{q}”.
                 </Typography>
             )}
-
-            {/* Add/Edit Dialog */}
-            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
-                <DialogTitle>
-                    {editingRestaurant ? 'Edit Restaurant' : 'Add Restaurant'}
-                </DialogTitle>
-                <DialogContent>
-                    <Box sx={{ display: 'grid', gap: 2, mt: 1 }}>
-                        <TextField
-                            label="Name"
-                            value={form.name}
-                            onChange={(e) => setForm({...form, name: e.target.value})}
-                            required
-                        />
-                        <TextField
-                            label="Description"
-                            value={form.description}
-                            onChange={(e) => setForm({...form, description: e.target.value})}
-                            multiline
-                            rows={3}
-                            required
-                        />
-                        <TextField
-                            label="Opening Hours"
-                            value={form.openHours}
-                            onChange={(e) => setForm({...form, openHours: e.target.value})}
-                            placeholder="09:00-22:00"
-                        />
-                        <TextField
-                            label="Category"
-                            value={form.category}
-                            onChange={(e) => setForm({...form, category: e.target.value})}
-                            placeholder="e.g., Italian, Fast Food"
-                        />
-                        <TextField
-                            label="Image URL"
-                            value={form.imageUrl}
-                            onChange={(e) => setForm({...form, imageUrl: e.target.value})}
-                            placeholder="https://..."
-                        />
-                    </Box>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
-                    <Button onClick={handleSave} variant="contained">
-                        {editingRestaurant ? 'Update' : 'Create'}
-                    </Button>
-                </DialogActions>
-            </Dialog>
         </Box>
     );
 };
