@@ -21,4 +21,5 @@ public interface OrderService {
     List<Order> findConfirmed();
 
     List<Order> findOrdersForCourier(String username);
+    List<Order> findConfirmedOrdersForCustomer(String username);
 }

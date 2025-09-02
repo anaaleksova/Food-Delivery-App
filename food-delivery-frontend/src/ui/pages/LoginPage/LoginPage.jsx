@@ -8,6 +8,7 @@ import userRepository from "../../../repository/userRepository.js";
 import useAuth from "../../../hooks/useAuth.js";
 import { useNavigate, Link, useLocation } from "react-router"; // NOTE: -dom
 import AuthLayout from "../../components/Auth/AuthLayout.jsx";
+import { jwtDecode } from "jwt-decode";
 
 const LoginPage = () => {
     const [form, setForm] = useState({ username: "", password: "" });
@@ -17,10 +18,32 @@ const LoginPage = () => {
     const location = useLocation();
     const redirectTo = location.state?.from || "/";
 
+    // const submit = async (e) => {
+    //     e.preventDefault();
+    //     try {
+    //         // 👇 keep your original working call/shape
+    //         const res = await userRepository.login(form);
+    //         const token = res?.data?.token;
+    //
+    //         if (!token) {
+    //             throw new Error(res?.data?.message || "No token returned.");
+    //         }
+    //
+    //         login(token);
+    //         navigate(redirectTo, { replace: true });
+    //     } catch (err) {
+    //         const msg =
+    //             err?.response?.data?.message ||
+    //             err?.message ||
+    //             "Login failed.";
+    //         alert(msg);
+    //         console.error("Login error:", err);
+    //     }
+    // };
+
     const submit = async (e) => {
         e.preventDefault();
         try {
-            // 👇 keep your original working call/shape
             const res = await userRepository.login(form);
             const token = res?.data?.token;
 
@@ -29,7 +52,22 @@ const LoginPage = () => {
             }
 
             login(token);
-            navigate(redirectTo, { replace: true });
+
+            // decode role(s) from JWT
+            const decoded = jwtDecode(token);
+            const roles = decoded?.roles || []; // array of roles
+            console.log(roles);
+
+            let destination = "/";
+            if (roles.includes("ROLE_COURIER")) {
+                destination = "/courier";
+            } else if (roles.includes("ROLE_ADMIN")) {
+                destination = "/admin";
+            } else if(roles.includes("ROLE_CUSTOMER")) {
+                destination = "/";
+            }
+
+            navigate(destination, { replace: true });
         } catch (err) {
             const msg =
                 err?.response?.data?.message ||

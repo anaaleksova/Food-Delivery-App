@@ -26,5 +26,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o FROM Order o WHERE o.courier.user.username = :courierUsername AND o.status = 'DELIVERED'")
     List<Order> findByCourierUsernameAndDelivered(@Param("courierUsername") String courierUsername);
 
+    @Query("SELECT o FROM Order o WHERE o.user.username = :username AND (o.status = 'CONFIRMED' OR o.status = 'PICKED_UP')")
+    List<Order> findByUsernameAndConfirmed(@Param("username") String username);
+
 
 }

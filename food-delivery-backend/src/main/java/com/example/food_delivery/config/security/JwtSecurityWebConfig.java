@@ -104,6 +104,8 @@ public class JwtSecurityWebConfig {
                                         "/api/orders/pending",
                                         "/api/orders/pending/confirm",
                                         "/api/orders/pending/cancel",
+                                        "/api/orders/my-orders",
+                                        "/api/orders/track/{id}",
                                         "/api/payments/**"
 //                                        "/api/reviews/**"
                                 )

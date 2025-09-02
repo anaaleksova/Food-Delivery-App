@@ -54,9 +54,14 @@ const Header = () => {
                 </Typography>
 
                 {user?.roles?.includes('CUSTOMER') && (
+                    <>
                     <Button color="inherit" startIcon={<ShoppingCartIcon/>} component={Link} to="/cart">
                         Cart
                     </Button>
+                    <Button color="inherit" component={Link} to="/orders/my-orders">
+                        My Orders
+                    </Button>
+                    </>
                 )}
 
                 {getDashboardLink()}

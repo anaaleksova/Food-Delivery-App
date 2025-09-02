@@ -11,6 +11,7 @@ import CheckoutPage from './ui/pages/CheckoutPage/CheckoutPage.jsx'
 import TrackOrderPage from './ui/pages/TrackOrderPage/TrackOrderPage.jsx'
 import ProtectedRoute from './ui/components/routing/ProtectedRoute/ProtectedRoute.jsx'
 import ProfilePage from "./ui/pages/ProfilePage";
+import MyOrdersPage from './ui/pages/MyOrdersPage/MyOrdersPage.jsx'
 // Courier pages
 import CourierDashboard from './ui/pages/Courier/CourierDashboard/CourierDashboard.jsx'
 
@@ -38,7 +39,10 @@ App.routes = createRoutesFromElements(
         <Route path="/checkout" element={<ProtectedRoute role={"CUSTOMER"}/>}>
             <Route index element={<CheckoutPage/>}/>
         </Route>
-        <Route path="/track/:orderId" element={<ProtectedRoute role={"CUSTOMER"}/>}>
+        <Route path="/orders/my-orders" element={<ProtectedRoute role={"CUSTOMER"}/>}>
+            <Route index element={<MyOrdersPage/>}/>
+        </Route>
+        <Route path="orders/track/:orderId" element={<ProtectedRoute role={"CUSTOMER"}/>}>
             <Route index element={<TrackOrderPage/>}/>
         </Route>
 

@@ -109,4 +109,9 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> findOrdersForCourier(String username) {
         return orderRepository.findByCourierUsername(username);
     }
+
+    @Override
+    public List<Order> findConfirmedOrdersForCustomer(String username) {
+        return orderRepository.findByUsernameAndConfirmed(username);
+    }
 }

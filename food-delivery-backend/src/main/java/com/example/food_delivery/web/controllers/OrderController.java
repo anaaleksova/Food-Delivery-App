@@ -27,7 +27,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DisplayOrderDto> findById(@PathVariable Long id) {
+    public ResponseEntity<OrderDto> findById(@PathVariable Long id) {
         return orderApplicationService
                 .findById(id)
                 .map(ResponseEntity::ok)
@@ -56,11 +56,16 @@ public class OrderController {
     }
 
     @GetMapping("/track/{id}")
-    public ResponseEntity<DisplayOrderDto> trackOrder(@PathVariable Long id, @AuthenticationPrincipal User user) {
+    public ResponseEntity<OrderDto> trackOrder(@PathVariable Long id, @AuthenticationPrincipal User user) {
         return orderApplicationService
                 .findById(id)
-                .filter(order -> order.username().equals(user.getUsername()))
+                .filter(order -> order.getUserUsername().equals(user.getUsername()))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/my-orders")
+    public ResponseEntity<List<OrderDto>> findConfirmedOrdersForCustomer(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(orderApplicationService.findConfirmedOrdersForCustomer(user.getUsername()));
     }
 }

@@ -126,6 +126,7 @@ const AdminProducts = () => {
                         width: { xs: "100%", sm: 320, md: 380 },
                         background: "#fff",
                         borderRadius: 2,
+                        marginTop: 3.5,
                         "& .MuiOutlinedInput-root": { borderRadius: 2 },
                     }}
                     InputProps={{

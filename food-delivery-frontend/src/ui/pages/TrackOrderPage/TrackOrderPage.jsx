@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {useParams} from "react-router";
+import React, { useEffect, useState } from 'react';
+import { useParams } from "react-router";
 import {
     Typography, Card, CardContent, Box, Stepper, Step, StepLabel,
     Chip, Divider, LinearProgress
@@ -10,41 +10,10 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import PersonIcon from '@mui/icons-material/Person';
 
 const TrackOrderPage = () => {
-    const {orderId} = useParams();
+    const { orderId } = useParams();
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchOrder = async () => {
-            try {
-                const response = await axiosInstance.get(`/orders/track/${orderId}`);
-                setOrder(response.data);
-            } catch (err) {
-                console.error('Error fetching order:', err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchOrder();
-
-        // Poll for updates every 30 seconds
-        const interval = setInterval(fetchOrder, 30000);
-        return () => clearInterval(interval);
-    }, [orderId]);
-
-    const getActiveStep = (status) => {
-        switch (status) {
-            case 'CONFIRMED': return 0;
-            case 'ACCEPTED_BY_RESTAURANT': return 1;
-            case 'IN_PREPARATION': return 2;
-            case 'READY_FOR_PICKUP': return 3;
-            case 'PICKED_UP': return 4;
-            case 'EN_ROUTE': return 4;
-            case 'DELIVERED': return 5;
-            default: return 0;
-        }
-    };
+    const [currentStep, setCurrentStep] = useState(0);
 
     const steps = [
         'Order Confirmed',
@@ -54,6 +23,67 @@ const TrackOrderPage = () => {
         'Out for Delivery',
         'Delivered'
     ];
+
+    const fetchOrder = async () => {
+        try {
+            const response = await axiosInstance.get(`/orders/track/${orderId}`);
+            setOrder(response.data);
+
+            // Update step based on backend status
+            switch (response.data.status) {
+                case 'PICKED_UP':
+                    setCurrentStep(4); // Out for Delivery
+                    localStorage.setItem(`orderStep-${orderId}`, 4);
+                    break;
+                case 'DELIVERED':
+                    setCurrentStep(5); // Delivered
+                    localStorage.setItem(`orderStep-${orderId}`, 5);
+                    break;
+                default:
+                    break;
+            }
+
+        } catch (err) {
+            console.error('Error fetching order:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Read current step from localStorage for fake progress
+    useEffect(() => {
+        const storedStep = parseInt(localStorage.getItem(`orderStep-${orderId}`), 10);
+        if (!isNaN(storedStep)) {
+            setCurrentStep(storedStep);
+        }
+    }, [orderId]);
+
+    // Initial fetch + polling every 30s
+    useEffect(() => {
+        fetchOrder();
+        const interval = setInterval(fetchOrder, 30000);
+        return () => clearInterval(interval);
+    }, [orderId]);
+
+    // Fake progress simulation up to "Ready for Pickup" (index 3)
+    useEffect(() => {
+        if (!order) return;
+
+        if (order.status === 'PICKED_UP' || order.status === 'DELIVERED') return;
+
+        const progressInterval = setInterval(() => {
+            setCurrentStep(prev => {
+                if (prev < 3) { // Stop at "Ready for Pickup"
+                    const nextStep = prev + 1;
+                    localStorage.setItem(`orderStep-${orderId}`, nextStep);
+                    return nextStep;
+                }
+                return prev;
+            });
+        }, 10000); // 10s per step
+
+        return () => clearInterval(progressInterval);
+    }, [order, orderId]);
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -67,8 +97,6 @@ const TrackOrderPage = () => {
 
     if (loading) return <LinearProgress />;
     if (!order) return <Typography>Order not found.</Typography>;
-
-    const activeStep = getActiveStep(order.status);
 
     return (
         <Box>
@@ -88,9 +116,9 @@ const TrackOrderPage = () => {
                         />
                     </Box>
 
-                    <Stepper activeStep={activeStep} alternativeLabel>
-                        {steps.map((label) => (
-                            <Step key={label}>
+                    <Stepper activeStep={currentStep} alternativeLabel>
+                        {steps.map((label, index) => (
+                            <Step key={label} completed={index < currentStep}>
                                 <StepLabel>{label}</StepLabel>
                             </Step>
                         ))}
@@ -134,7 +162,7 @@ const TrackOrderPage = () => {
                     <Divider sx={{ my: 2 }} />
 
                     <Typography variant="subtitle1" sx={{ mb: 1 }}>Items:</Typography>
-                    {order.Products?.map((item, index) => (
+                    {order.products?.map((item, index) => (
                         <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                             <Typography>{item.name}</Typography>
                             <Typography>€{item.price?.toFixed(2)}</Typography>

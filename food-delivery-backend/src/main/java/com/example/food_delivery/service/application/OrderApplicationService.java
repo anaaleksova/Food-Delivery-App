@@ -12,13 +12,14 @@ import java.util.Optional;
 public interface OrderApplicationService {
     List<OrderDto> findAll();
     List<OrderDto> findAllConfirmed();
-    Optional<DisplayOrderDto> findById(Long id);
+    Optional<OrderDto> findById(Long id);
     OrderDto getCart(String username);
     OrderDto addProductToCart(String username, Long ProductId);
     OrderDto removeProductFromCart(String username, Long ProductId);
     Optional<OrderDto> confirm(String username);
     Optional<OrderDto> cancel(String username);
     List<OrderDto> findOrdersForCourier(String username);
+    List<OrderDto> findConfirmedOrdersForCustomer(String username);
     OrderDto setDeliveryAddress(String username, AddressDto address);
     OrderDto applyDiscount(String username, Double discountAmount);
 

@@ -45,8 +45,8 @@ public class OrderApplicationServiceImpl implements OrderApplicationService {
     }
 
     @Override
-    public Optional<DisplayOrderDto> findById(Long id) {
-        return orderDomain.findById(id).map(DisplayOrderDto::from);
+    public Optional<OrderDto> findById(Long id) {
+        return orderDomain.findById(id).map(BasicMappers::toDto);
     }
 
     @Override
@@ -90,6 +90,11 @@ public class OrderApplicationServiceImpl implements OrderApplicationService {
     @Override
     public List<OrderDto> findOrdersForCourier(String username) {
         return orderDomain.findOrdersForCourier(username).stream().map(BasicMappers::toDto).toList();
+    }
+
+    @Override
+    public List<OrderDto> findConfirmedOrdersForCustomer(String username) {
+        return orderDomain.findConfirmedOrdersForCustomer(username).stream().map(BasicMappers::toDto).toList();
     }
 
     @Override
