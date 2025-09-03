@@ -81,12 +81,12 @@ public class JwtSecurityWebConfig {
                                         "/h2/**",
                                         "/api/user/register",
                                         "/api/user/login",
-                                        "/api/restaurants", //od ovde dodadeno
+                                        "/api/restaurants",
                                         "/api/restaurants/{id}",
                                         "/api/products",
                                         "/api/products/{id}",
                                         "/api/products/details/{id}",
-                                        "/api/reviews/**"// do ovde
+                                        "/api/reviews/**"
                                 )
                                 .permitAll()
                                 .requestMatchers(
@@ -94,11 +94,6 @@ public class JwtSecurityWebConfig {
                                 )
                                 .authenticated()
                                 .requestMatchers(
-//                                        "/api/restaurants",
-//                                        "/api/restaurants/{id}",
-//                                        "/api/products",
-//                                        "/api/products/{id}",
-//                                    3    "/api/products/details/{id}",
                                         "/api/products/add-to-order/{id}",
                                         "/api/products/remove-from-order/{id}",
                                         "/api/orders/pending",
@@ -107,7 +102,6 @@ public class JwtSecurityWebConfig {
                                         "/api/orders/my-orders",
                                         "/api/orders/track/{id}",
                                         "/api/payments/**"
-//                                        "/api/reviews/**"
                                 )
                                 .hasAnyRole("CUSTOMER", "ADMIN")
                                 .requestMatchers(

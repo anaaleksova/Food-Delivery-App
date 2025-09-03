@@ -5,14 +5,15 @@ import {
     TextField,
     InputAdornment,
     Button,
-    Grid,
-    Card,
-    CardContent,
-    CardMedia,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
     Chip,
     IconButton,
-    Stack,
-    Tooltip,
     Dialog,
     DialogTitle,
     DialogContent,
@@ -23,121 +24,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import StarIcon from "@mui/icons-material/Star";
-import { Link } from "react-router";
 import restaurantRepository from "../../../../repository/restaurantRepository.js";
 
-const FALLBACK = "https://via.placeholder.com/640x360.png?text=Restaurant";
-
-const clamp = (lines = 2) => ({
-    display: "-webkit-box",
-    WebkitLineClamp: lines,
-    WebkitBoxOrient: "vertical",
-    overflow: "hidden",
-});
-
-const RestaurantRowCard = ({ r, onEdit, onDelete }) => (
-    <Card
-        elevation={0}
-        sx={{
-            border: "1px solid #E5E7EB",
-            borderRadius: 2,
-            boxShadow: "0 1px 6px rgba(0,0,0,.05)",
-            p: 2,
-            display: "flex",
-            alignItems: "stretch",
-            gap: 2,
-        }}
-    >
-        <CardMedia
-            component="img"
-            src={r.imageUrl || FALLBACK}
-            alt={r.name}
-            onError={(e) => {
-                if (e.currentTarget.src !== FALLBACK) e.currentTarget.src = FALLBACK;
-            }}
-            sx={{
-                width: 160,
-                height: 110,
-                objectFit: "cover",
-                flexShrink: 0,
-                borderRadius: 1,
-                background: "#f3f4f6",
-            }}
-        />
-
-        <CardContent
-            sx={{
-                p: 0,
-                flex: 1,
-                display: "grid",
-                gridTemplateRows: "auto auto 1fr auto",
-                rowGap: 0.75,
-            }}
-        >
-            <Typography variant="h6" sx={clamp(1)}>
-                {r.name}
-            </Typography>
-
-            <Typography variant="body2" color="text.secondary" sx={clamp(2)}>
-                {r.description || "No description provided."}
-            </Typography>
-
-            <Stack
-                direction="row"
-                spacing={1.5}
-                alignItems="center"
-                sx={{ color: "text.secondary" }}
-            >
-                <Stack direction="row" spacing={0.5} alignItems="center">
-                    <StarIcon sx={{ color: "#f59e0b", fontSize: 18 }} />
-                    <Typography variant="body2">{r.rating ?? 4.5}</Typography>
-                </Stack>
-
-                <Stack direction="row" spacing={0.5} alignItems="center">
-                    <AccessTimeIcon sx={{ fontSize: 16 }} />
-                    <Typography variant="body2">
-                        {r.deliveryTimeEstimate ?? 30} min
-                    </Typography>
-                </Stack>
-
-                <Chip
-                    size="small"
-                    color={r.isOpen ? "success" : "default"}
-                    label={r.isOpen ? "Open" : "Closed"}
-                    sx={{ fontWeight: 600 }}
-                />
-            </Stack>
-
-            <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                <Tooltip title="Edit">
-                    <IconButton onClick={() => onEdit?.(r)} size="small" color="primary">
-                        <EditIcon />
-                    </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete">
-                    <IconButton onClick={() => onDelete?.(r)} size="small" color="error">
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
-                <Box sx={{ flex: 1 }} />
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    component={Link}
-                    to={`/restaurants/${r.id}`}
-                    sx={{ borderRadius: 1.5, fontWeight: 700 }}
-                >
-                    View Menu
-                </Button>
-            </Stack>
-        </CardContent>
-    </Card>
-);
-
 const AdminRestaurants = () => {
-    const [rows, setRows] = useState([]);
+    const [restaurants, setRestaurants] = useState([]);
     const [q, setQ] = useState("");
     const [loading, setLoading] = useState(true);
 
@@ -150,7 +40,7 @@ const AdminRestaurants = () => {
         let live = true;
         restaurantRepository
             .findAll()
-            .then((res) => live && setRows(res?.data || []))
+            .then((res) => live && setRestaurants(res?.data || []))
             .catch((err) => console.error("Load restaurants failed", err))
             .finally(() => live && setLoading(false));
         return () => {
@@ -160,13 +50,13 @@ const AdminRestaurants = () => {
 
     const filtered = useMemo(() => {
         const s = q.trim().toLowerCase();
-        if (!s) return rows;
-        return rows.filter(
+        if (!s) return restaurants;
+        return restaurants.filter(
             (r) =>
                 r.name?.toLowerCase().includes(s) ||
                 r.description?.toLowerCase().includes(s)
         );
-    }, [rows, q]);
+    }, [restaurants, q]);
 
     const validate = (restaurant) => {
         const newErrors = {};
@@ -200,7 +90,7 @@ const AdminRestaurants = () => {
         if (!ok) return;
         try {
             await restaurantRepository.remove(r.id);
-            setRows((prev) => prev.filter((x) => x.id !== r.id));
+            setRestaurants((prev) => prev.filter((x) => x.id !== r.id));
         } catch (err) {
             console.error("Delete failed:", err);
         }
@@ -216,10 +106,12 @@ const AdminRestaurants = () => {
         try {
             if (editing?.id) {
                 const res = await restaurantRepository.edit(editing.id, editing);
-                setRows((prev) => prev.map((x) => (x.id === editing.id ? res.data : x)));
+                setRestaurants((prev) =>
+                    prev.map((x) => (x.id === editing.id ? res.data : x))
+                );
             } else {
                 const res = await restaurantRepository.add(editing);
-                setRows((prev) => [...prev, res.data]);
+                setRestaurants((prev) => [...prev, res.data]);
             }
             setOpenDialog(false);
         } catch (err) {
@@ -229,7 +121,7 @@ const AdminRestaurants = () => {
 
     return (
         <Box>
-            {/* Toolbar */}
+            {/* Toolbar: title, search, add */}
             <Box
                 sx={{
                     display: "flex",
@@ -248,7 +140,7 @@ const AdminRestaurants = () => {
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
                     sx={{
-                        width: { xs: "100%", sm: 340, md: 420 },
+                        width: { xs: "100%", sm: 320, md: 380 },
                         background: "#fff",
                         borderRadius: 2,
                         "& .MuiOutlinedInput-root": { borderRadius: 2 },
@@ -261,37 +153,82 @@ const AdminRestaurants = () => {
                         ),
                     }}
                 />
-
-                <Button
-                    onClick={onAdd}
-                    variant="contained"
-                    color="secondary"
-                    startIcon={<AddIcon />}
-                    sx={{ borderRadius: 2, fontWeight: 700 }}
-                >
-                    Add Restaurant
-                </Button>
             </Box>
-
-            {/* List */}
+            <Button
+                onClick={onAdd}
+                variant="contained"
+                color="secondary"
+                startIcon={<AddIcon />}
+                sx={{ borderRadius: 2, fontWeight: 700 , marginBottom: 3}}
+            >
+                Add Restaurant
+            </Button>
+            {/* Table */}
             {loading ? (
                 <Typography>Loading…</Typography>
-            ) : filtered.length ? (
-                <Grid container spacing={2}>
-                    {filtered.map((r) => (
-                        <Grid item xs={12} key={r.id}>
-                            <RestaurantRowCard
-                                r={r}
-                                onEdit={onEdit}
-                                onDelete={onDelete}
-                            />
-                        </Grid>
-                    ))}
-                </Grid>
             ) : (
-                <Typography color="text.secondary" sx={{ mt: 2 }}>
-                    No restaurants match “{q}”.
-                </Typography>
+                <TableContainer
+                    component={Paper}
+                    elevation={0}
+                    sx={{
+                        border: "1px solid #E5E7EB",
+                        borderRadius: 2,
+                        overflow: "hidden",
+                    }}
+                >
+                    <Table sx={{ minWidth: 960 }}>
+                        <TableHead>
+                            <TableRow sx={{ bgcolor: "#F9FAFB" }}>
+                                <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
+                                <TableCell sx={{ fontWeight: 700 }}>Description</TableCell>
+                                <TableCell sx={{ fontWeight: 700 }}>Delivery Time</TableCell>
+                                <TableCell sx={{ fontWeight: 700 }}>Rating</TableCell>
+                                <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
+                                <TableCell sx={{ fontWeight: 700 }}>Actions</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {filtered.map((r) => (
+                                <TableRow key={r.id} hover>
+                                    <TableCell sx={{ width: 260 }}>
+                                        <Typography sx={{ fontWeight: 600 }}>{r.name}</Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {r.description}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>{r.deliveryTimeEstimate ?? 30} min</TableCell>
+                                    <TableCell>{r.rating ?? 4.5}</TableCell>
+                                    <TableCell>
+                                        <Chip
+                                            size="small"
+                                            color={r.isOpen ? "success" : "default"}
+                                            label={r.isOpen ? "Open" : "Closed"}
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <IconButton onClick={() => onEdit(r)} color="primary">
+                                            <EditIcon />
+                                        </IconButton>
+                                        <IconButton onClick={() => onDelete(r)} color="error">
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                            {!filtered.length && (
+                                <TableRow>
+                                    <TableCell colSpan={6} align="center">
+                                        <Typography color="text.secondary">
+                                            No restaurants match your search.
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             )}
 
             {/* Add/Edit Dialog */}

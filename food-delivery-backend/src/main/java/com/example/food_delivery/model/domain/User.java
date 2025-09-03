@@ -38,14 +38,14 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String username, String password, String name, String surname, String email) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        role = Role.ROLE_CUSTOMER;
-    }
+//    public User(String username, String password, String name, String surname, String email) {
+//        this.username = username;
+//        this.password = password;
+//        this.name = name;
+//        this.surname = surname;
+//        this.email = email;
+//        role = Role.ROLE_CUSTOMER;
+//    }
 
     public User(String username, String password, String name, String surname, String email, Role role) {
         this.username = username;

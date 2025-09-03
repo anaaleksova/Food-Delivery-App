@@ -1,14 +1,18 @@
 package com.example.food_delivery.service.domain.impl;
 
+import com.example.food_delivery.model.domain.Courier;
 import com.example.food_delivery.model.domain.User;
+import com.example.food_delivery.model.enums.Role;
 import com.example.food_delivery.model.exceptions.IncorrectPasswordException;
 import com.example.food_delivery.model.exceptions.UsernameAlreadyExistsException;
+import com.example.food_delivery.repository.CourierRepository;
 import com.example.food_delivery.repository.UserRepository;
 import com.example.food_delivery.service.domain.UserService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,24 +22,38 @@ public class UserServiceImpl implements UserService {
 
    private final UserRepository userRepository;
    private final PasswordEncoder passwordEncoder;
+   private final CourierRepository courierRepository;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, CourierRepository courierRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.courierRepository = courierRepository;
     }
 
     @Override
-    public User register(User user) {
-        if (findByUsername(user.getUsername()).isPresent())
-            throw new UsernameAlreadyExistsException(user.getUsername());
+    @Transactional
+    public User register(User dto) {
+        if (findByUsername(dto.getUsername()).isPresent()) {
+            throw new UsernameAlreadyExistsException(dto.getUsername());
+        }
 
-        return userRepository.save(new User(
-                user.getUsername(),
-                passwordEncoder.encode(user.getPassword()),
-                user.getName(),
-                user.getSurname(),
-                user.getEmail()
-        ));
+        User user = new User();
+        user.setUsername(dto.getUsername());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setName(dto.getName());
+        user.setSurname(dto.getSurname());
+        user.setEmail(dto.getEmail());
+        user.setRole(dto.getRole());
+
+        User savedUser = userRepository.save(user);
+
+        if (dto.getRole()==Role.ROLE_COURIER) {
+            Courier courier = new Courier();
+            courier.setUser(savedUser);
+            courierRepository.save(courier);
+        }
+
+        return savedUser;
     }
 
     @Override
@@ -59,7 +77,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
-        return userRepository.save(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User savedUser = userRepository.save(user);
+        if (user.getRole()==Role.ROLE_COURIER) {
+            Courier courier = new Courier();
+            courier.setUser(savedUser);
+            courierRepository.save(courier);
+        }
+
+        return savedUser;
     }
 
     @Override
@@ -70,8 +96,10 @@ public class UserServiceImpl implements UserService {
                     existingUser.setUsername(user.getUsername());
                     existingUser.setSurname(user.getSurname());
                     existingUser.setRole(user.getRole());
-                    existingUser.setPassword(user.getPassword());
                     existingUser.setEmail(user.getEmail());
+                    if (user.getPassword() != null && !user.getPassword().isBlank()) {
+                        existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+                    }
                     return userRepository.save(existingUser);
                 });
     }

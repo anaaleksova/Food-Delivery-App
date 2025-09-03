@@ -200,7 +200,35 @@ const RestaurantPage = () => {
                 </Card>
             )}
 
-            <ReviewList reviews={reviews} />
+            {reviews.length > 0 ? (
+                reviews.map((r) => (
+                    <Card key={r.id} sx={{ mb: 2 }}>
+                        <CardContent>
+                            {/* Username */}
+                            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
+                                {r.userUsername || "Anonymous"}
+                            </Typography>
+
+                            {/* Rating with stars (1–5) */}
+                            <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                    <StarIcon
+                                        key={i}
+                                        sx={{
+                                            color: i < r.rating ? "#ffc107" : "#e0e0e0"
+                                        }}
+                                    />
+                                ))}
+                            </Box>
+
+                            {/* Comment */}
+                            <Typography variant="body2">{r.comment}</Typography>
+                        </CardContent>
+                    </Card>
+                ))
+            ) : (
+                <Typography color="text.secondary">No reviews yet.</Typography>
+            )}
         </Box>
     );
 };
