@@ -1,9 +1,6 @@
 package com.example.food_delivery.service.application;
 
-import com.example.food_delivery.dto.domain.LoginUserRequestDto;
-import com.example.food_delivery.dto.domain.LoginUserResponseDto;
-import com.example.food_delivery.dto.domain.RegisterUserRequestDto;
-import com.example.food_delivery.dto.domain.RegisterUserResponseDto;
+import com.example.food_delivery.dto.domain.*;
 import com.example.food_delivery.model.domain.User;
 
 import java.util.List;
@@ -16,4 +13,9 @@ public interface UserApplicationService {
 
     Optional<RegisterUserResponseDto> findByUsername(String username);
     List<RegisterUserResponseDto> findAll();
+    User save(User user);
+
+    Optional<User> update(String username, User user);
+
+    Optional<User> deleteById(String username);
 }

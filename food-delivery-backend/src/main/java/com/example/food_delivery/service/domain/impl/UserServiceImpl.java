@@ -58,6 +58,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
+    public Optional<User> update(String username, User user) {
+        return userRepository.findByUsername(username)
+                .map(existingUser -> {
+                    existingUser.setName(user.getName());
+                    existingUser.setUsername(user.getUsername());
+                    existingUser.setSurname(user.getSurname());
+                    existingUser.setRole(user.getRole());
+                    existingUser.setPassword(user.getPassword());
+                    existingUser.setEmail(user.getEmail());
+                    return userRepository.save(existingUser);
+                });
+    }
+
+    @Override
+    public Optional<User> deleteById(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        user.ifPresent(userRepository::delete);
+        return user;
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository
                 .findByUsername(username)

@@ -42,12 +42,13 @@ public class Restaurant {
     }
     public Restaurant(){}
 
-    public Restaurant(String name, String description, String openHours, String imageUrl, String category) {
+    public Restaurant(String name, String description, String openHours, String imageUrl, String category,Integer deliveryTimeEstimate) {
         this.name = name;
         this.description = description;
         this.openHours = openHours;
         this.imageUrl = imageUrl;
         this.category = category;
+        this.deliveryTimeEstimate=deliveryTimeEstimate;
     }
 
     public Long getId() {

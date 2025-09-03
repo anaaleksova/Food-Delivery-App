@@ -15,12 +15,15 @@ import {
     Chip,
     IconButton,
     MenuItem,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Link } from "react-router";
 import productRepository from "../../../../repository/productRepository.js";
 import restaurantRepository from "../../../../repository/restaurantRepository.js";
 
@@ -30,6 +33,11 @@ const AdminProducts = () => {
     const [restaurantId, setRestaurantId] = useState("");
     const [q, setQ] = useState("");
     const [loading, setLoading] = useState(true);
+
+    // Dialog state
+    const [openDialog, setOpenDialog] = useState(false);
+    const [editingProduct, setEditingProduct] = useState(null);
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         let live = true;
@@ -44,7 +52,9 @@ const AdminProducts = () => {
             })
             .catch((err) => console.error("Load failed", err))
             .finally(() => live && setLoading(false));
-        return () => { live = false; };
+        return () => {
+            live = false;
+        };
     }, []);
 
     const filtered = useMemo(() => {
@@ -66,12 +76,75 @@ const AdminProducts = () => {
         return list;
     }, [products, restaurantId, q]);
 
-    const onAdd = () => alert("TODO: open Add Product dialog");
-    const onEdit = (p) => alert(`TODO: edit product ${p.name}`);
-    const onDelete = (p) => {
+    const onAdd = () => {
+        setEditingProduct({
+            name: "",
+            description: "",
+            category: "",
+            price: "",
+            quantity: "",
+            restaurantId: "",
+            isAvailable: true,
+        });
+        setErrors({});
+        setOpenDialog(true);
+    };
+
+    const onEdit = (p) => {
+        setEditingProduct({ ...p });
+        setErrors({});
+        setOpenDialog(true);
+    };
+
+    const onDelete = async (p) => {
         const ok = window.confirm(`Delete "${p.name}"?`);
         if (!ok) return;
-        alert("TODO: call delete endpoint, then refresh list.");
+        try {
+            await productRepository.remove(p.id);
+            setProducts((prev) => prev.filter((x) => x.id !== p.id));
+        } catch (err) {
+            console.error("Delete failed:", err);
+        }
+    };
+
+    const validate = (product) => {
+        const newErrors = {};
+        if (!product.name?.trim()) newErrors.name = "Name is required";
+        if (!product.price || Number(product.price) <= 0)
+            newErrors.price = "Price must be greater than 0";
+        if (product.quantity === "" || Number(product.quantity) < 0)
+            newErrors.quantity = "Quantity cannot be negative";
+        if (!product.restaurantId)
+            newErrors.restaurantId = "Restaurant is required";
+        return newErrors;
+    };
+
+    const handleSave = async () => {
+        const validationErrors = validate(editingProduct);
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        try {
+            if (editingProduct?.id) {
+                const res = await productRepository.edit(
+                    editingProduct.id,
+                    editingProduct
+                );
+                setProducts((prev) =>
+                    prev.map((x) =>
+                        x.id === editingProduct.id ? res.data : x
+                    )
+                );
+            } else {
+                const res = await productRepository.add(editingProduct);
+                setProducts((prev) => [...prev, res.data]);
+            }
+            setOpenDialog(false);
+        } catch (err) {
+            console.error("Save failed:", err);
+        }
     };
 
     return (
@@ -225,6 +298,103 @@ const AdminProducts = () => {
                     </Table>
                 </TableContainer>
             )}
+
+            {/* Add/Edit Dialog */}
+            <Dialog
+                open={openDialog}
+                onClose={() => setOpenDialog(false)}
+                maxWidth="sm"
+                fullWidth
+            >
+                <DialogTitle>
+                    {editingProduct?.id ? "Edit Product" : "Add Product"}
+                </DialogTitle>
+                <DialogContent sx={{ display: "grid", gap: 2, mt: 1 }}>
+                    <TextField
+                        label="Name"
+                        value={editingProduct?.name || ""}
+                        onChange={(e) =>
+                            setEditingProduct({
+                                ...editingProduct,
+                                name: e.target.value,
+                            })
+                        }
+                        error={!!errors.name}
+                        helperText={errors.name}
+                    />
+                    <TextField
+                        label="Description"
+                        value={editingProduct?.description || ""}
+                        onChange={(e) =>
+                            setEditingProduct({
+                                ...editingProduct,
+                                description: e.target.value,
+                            })
+                        }
+                    />
+                    <TextField
+                        label="Category"
+                        value={editingProduct?.category || ""}
+                        onChange={(e) =>
+                            setEditingProduct({
+                                ...editingProduct,
+                                category: e.target.value,
+                            })
+                        }
+                    />
+                    <TextField
+                        label="Price"
+                        type="number"
+                        value={editingProduct?.price || ""}
+                        onChange={(e) =>
+                            setEditingProduct({
+                                ...editingProduct,
+                                price: e.target.value,
+                            })
+                        }
+                        error={!!errors.price}
+                        helperText={errors.price}
+                    />
+                    <TextField
+                        label="Quantity"
+                        type="number"
+                        value={editingProduct?.quantity || ""}
+                        onChange={(e) =>
+                            setEditingProduct({
+                                ...editingProduct,
+                                quantity: e.target.value,
+                            })
+                        }
+                        error={!!errors.quantity}
+                        helperText={errors.quantity}
+                    />
+                    <TextField
+                        select
+                        label="Restaurant"
+                        value={editingProduct?.restaurantId || ""}
+                        onChange={(e) =>
+                            setEditingProduct({
+                                ...editingProduct,
+                                restaurantId: e.target.value,
+                            })
+                        }
+                        error={!!errors.restaurantId}
+                        helperText={errors.restaurantId}
+                    >
+                        {restaurants.map((r) => (
+                            <MenuItem key={r.id} value={r.id}>
+                                {r.name}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+                    <Button variant="contained" onClick={handleSave}>
+                        Save
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };

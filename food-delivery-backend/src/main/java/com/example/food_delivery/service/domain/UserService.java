@@ -12,4 +12,9 @@ public interface UserService extends UserDetailsService {
     User login(String username, String password);
     Optional<User> findByUsername(String username);
     List<User> findAll();
+    User save(User user);
+
+    Optional<User> update(String username, User user);
+
+    Optional<User> deleteById(String username);
 }

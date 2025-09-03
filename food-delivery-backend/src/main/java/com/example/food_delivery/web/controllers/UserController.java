@@ -1,9 +1,6 @@
 package com.example.food_delivery.web.controllers;
 
-import com.example.food_delivery.dto.domain.LoginUserRequestDto;
-import com.example.food_delivery.dto.domain.LoginUserResponseDto;
-import com.example.food_delivery.dto.domain.RegisterUserRequestDto;
-import com.example.food_delivery.dto.domain.RegisterUserResponseDto;
+import com.example.food_delivery.dto.domain.*;
 import com.example.food_delivery.model.domain.User;
 import com.example.food_delivery.service.application.UserApplicationService;
 import org.springframework.http.ResponseEntity;
@@ -58,6 +55,29 @@ public class UserController {
     public ResponseEntity<List<RegisterUserResponseDto>> findAll()
     {
         return ResponseEntity.ok(userApplicationService.findAll());
+    }
+    @PostMapping("/add")
+    public ResponseEntity<User> save(@RequestBody User createUser) {
+        return ResponseEntity.ok(userApplicationService.save(createUser));
+    }
+
+    @PutMapping("/edit/{username}")
+    public ResponseEntity<User> update(
+            @PathVariable String username,
+            @RequestBody User createUser
+    ) {
+        return userApplicationService
+                .update(username, createUser)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/delete/{username}")
+    public ResponseEntity<User> deleteById(@PathVariable String username) {
+        return userApplicationService
+                .deleteById(username)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
 }

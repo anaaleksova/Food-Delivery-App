@@ -124,7 +124,8 @@ public class JwtSecurityWebConfig {
                                         "/api/products/delete/{id}",
                                         "/api/restaurants/add",
                                         "/api/restaurants/edit/{id}",
-                                        "/api/restaurants/delete/{id}"
+                                        "/api/restaurants/delete/{id}",
+                                        "/api/user/**"
                                 )
                                 .hasRole("ADMIN")
                                 .anyRequest()

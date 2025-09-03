@@ -52,4 +52,19 @@ public class UserApplicationServiceImpl implements UserApplicationService {
         return userService.findAll().stream().map(RegisterUserResponseDto::from).toList();
     }
 
+    @Override
+    public User save(User user) {
+        return userService.save(user);
+    }
+
+    @Override
+    public Optional<User> update(String username, User user) {
+        return userService.update(username,user);
+    }
+
+    @Override
+    public Optional<User> deleteById(String username) {
+        return userService.deleteById(username);
+    }
+
 }

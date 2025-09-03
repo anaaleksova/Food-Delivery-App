@@ -13,6 +13,11 @@ import {
     IconButton,
     Stack,
     Tooltip,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    MenuItem,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
@@ -23,8 +28,7 @@ import StarIcon from "@mui/icons-material/Star";
 import { Link } from "react-router";
 import restaurantRepository from "../../../../repository/restaurantRepository.js";
 
-const FALLBACK =
-    "https://via.placeholder.com/640x360.png?text=Restaurant";
+const FALLBACK = "https://via.placeholder.com/640x360.png?text=Restaurant";
 
 const clamp = (lines = 2) => ({
     display: "-webkit-box",
@@ -72,7 +76,9 @@ const RestaurantRowCard = ({ r, onEdit, onDelete }) => (
                 rowGap: 0.75,
             }}
         >
-            <Typography variant="h6" sx={clamp(1)}>{r.name}</Typography>
+            <Typography variant="h6" sx={clamp(1)}>
+                {r.name}
+            </Typography>
 
             <Typography variant="body2" color="text.secondary" sx={clamp(2)}>
                 {r.description || "No description provided."}
@@ -135,6 +141,11 @@ const AdminRestaurants = () => {
     const [q, setQ] = useState("");
     const [loading, setLoading] = useState(true);
 
+    // Dialog state
+    const [openDialog, setOpenDialog] = useState(false);
+    const [editing, setEditing] = useState(null);
+    const [errors, setErrors] = useState({});
+
     useEffect(() => {
         let live = true;
         restaurantRepository
@@ -142,7 +153,9 @@ const AdminRestaurants = () => {
             .then((res) => live && setRows(res?.data || []))
             .catch((err) => console.error("Load restaurants failed", err))
             .finally(() => live && setLoading(false));
-        return () => { live = false; };
+        return () => {
+            live = false;
+        };
     }, []);
 
     const filtered = useMemo(() => {
@@ -155,12 +168,63 @@ const AdminRestaurants = () => {
         );
     }, [rows, q]);
 
-    const onAdd = () => alert("TODO: open Add Restaurant dialog");
-    const onEdit = (r) => alert(`TODO: edit restaurant ${r.name}`);
-    const onDelete = (r) => {
+    const validate = (restaurant) => {
+        const newErrors = {};
+        if (!restaurant.name?.trim()) newErrors.name = "Name is required";
+        if (!restaurant.deliveryTimeEstimate || restaurant.deliveryTimeEstimate <= 0)
+            newErrors.deliveryTimeEstimate = "Delivery time must be greater than 0";
+        return newErrors;
+    };
+
+    const onAdd = () => {
+        setEditing({
+            name: "",
+            description: "",
+            imageUrl: "",
+            rating: 4.5,
+            deliveryTimeEstimate: 30,
+            isOpen: true,
+        });
+        setErrors({});
+        setOpenDialog(true);
+    };
+
+    const onEdit = (r) => {
+        setEditing({ ...r });
+        setErrors({});
+        setOpenDialog(true);
+    };
+
+    const onDelete = async (r) => {
         const ok = window.confirm(`Delete "${r.name}"?`);
         if (!ok) return;
-        alert("TODO: call delete endpoint, then refresh list.");
+        try {
+            await restaurantRepository.remove(r.id);
+            setRows((prev) => prev.filter((x) => x.id !== r.id));
+        } catch (err) {
+            console.error("Delete failed:", err);
+        }
+    };
+
+    const handleSave = async () => {
+        const validationErrors = validate(editing);
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        try {
+            if (editing?.id) {
+                const res = await restaurantRepository.edit(editing.id, editing);
+                setRows((prev) => prev.map((x) => (x.id === editing.id ? res.data : x)));
+            } else {
+                const res = await restaurantRepository.add(editing);
+                setRows((prev) => [...prev, res.data]);
+            }
+            setOpenDialog(false);
+        } catch (err) {
+            console.error("Save failed:", err);
+        }
     };
 
     return (
@@ -216,7 +280,11 @@ const AdminRestaurants = () => {
                 <Grid container spacing={2}>
                     {filtered.map((r) => (
                         <Grid item xs={12} key={r.id}>
-                            <RestaurantRowCard r={r} onEdit={onEdit} onDelete={onDelete} />
+                            <RestaurantRowCard
+                                r={r}
+                                onEdit={onEdit}
+                                onDelete={onDelete}
+                            />
                         </Grid>
                     ))}
                 </Grid>
@@ -225,6 +293,78 @@ const AdminRestaurants = () => {
                     No restaurants match “{q}”.
                 </Typography>
             )}
+
+            {/* Add/Edit Dialog */}
+            <Dialog
+                open={openDialog}
+                onClose={() => setOpenDialog(false)}
+                maxWidth="sm"
+                fullWidth
+            >
+                <DialogTitle>
+                    {editing?.id ? "Edit Restaurant" : "Add Restaurant"}
+                </DialogTitle>
+                <DialogContent sx={{ display: "grid", gap: 2, mt: 1 }}>
+                    <TextField
+                        label="Name"
+                        value={editing?.name || ""}
+                        onChange={(e) =>
+                            setEditing({ ...editing, name: e.target.value })
+                        }
+                        error={!!errors.name}
+                        helperText={errors.name}
+                    />
+                    <TextField
+                        label="Description"
+                        value={editing?.description || ""}
+                        onChange={(e) =>
+                            setEditing({ ...editing, description: e.target.value })
+                        }
+                        multiline
+                        rows={2}
+                    />
+                    <TextField
+                        label="Image URL"
+                        value={editing?.imageUrl || ""}
+                        onChange={(e) =>
+                            setEditing({ ...editing, imageUrl: e.target.value })
+                        }
+                    />
+                    <TextField
+                        label="Delivery Time (minutes)"
+                        type="number"
+                        value={editing?.deliveryTimeEstimate || ""}
+                        onChange={(e) =>
+                            setEditing({
+                                ...editing,
+                                deliveryTimeEstimate: e.target.value,
+                            })
+                        }
+                        error={!!errors.deliveryTimeEstimate}
+                        helperText={errors.deliveryTimeEstimate}
+                    />
+                    <TextField
+                        select
+                        label="Status"
+                        value={editing?.isOpen ? "open" : "closed"}
+                        onChange={(e) =>
+                            setEditing({
+                                ...editing,
+                                isOpen: e.target.value === "open",
+                            })
+                        }
+                    >
+                        <MenuItem value="open">Open</MenuItem>
+                        <MenuItem value="closed">Closed</MenuItem>
+                    </TextField>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+                    <Button variant="contained" onClick={handleSave}>
+                        Save
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };
