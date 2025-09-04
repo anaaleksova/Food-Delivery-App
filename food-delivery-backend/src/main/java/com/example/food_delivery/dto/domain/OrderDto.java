@@ -19,6 +19,8 @@ public class OrderDto {
 
     private List<DisplayProductDto> products;
 
+    private List<OrderItemDto> items;
+
     private Double subtotal;
     private Double deliveryFee;
     private Double platformFee;
@@ -30,6 +32,14 @@ public class OrderDto {
 
     public LocalDateTime getDeliveredAt() {
         return deliveredAt;
+    }
+
+    public List<OrderItemDto> getItems() {
+        return items;
+    }
+
+    public void setItems(List<OrderItemDto> items) {
+        this.items = items;
     }
 
     public void setDeliveredAt(LocalDateTime deliveredAt) {

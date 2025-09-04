@@ -68,4 +68,9 @@ public class OrderController {
     public ResponseEntity<List<OrderDto>> findConfirmedOrdersForCustomer(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(orderApplicationService.findConfirmedOrdersForCustomer(user.getUsername()));
     }
+
+    @GetMapping("/cart")
+    public ResponseEntity<OrderDto> getCart(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(orderApplicationService.getCart(user.getUsername()));
+    }
 }

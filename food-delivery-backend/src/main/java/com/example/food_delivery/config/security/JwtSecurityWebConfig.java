@@ -97,6 +97,7 @@ public class JwtSecurityWebConfig {
                                         "/api/products/add-to-order/{id}",
                                         "/api/products/remove-from-order/{id}",
                                         "/api/orders/pending",
+                                        "/api/orders/cart/**",
                                         "/api/orders/pending/confirm",
                                         "/api/orders/pending/cancel",
                                         "/api/orders/my-orders",

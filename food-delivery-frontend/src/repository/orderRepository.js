@@ -1,7 +1,7 @@
 import axiosInstance from "../axios/axios.js";
 const base = "/orders";
 export default {
-  getPending: () => axiosInstance.get(`${base}/pending`),
+  getPending: () => axiosInstance.get(`${base}/cart`),
   confirmPending: () => axiosInstance.put(`${base}/pending/confirm`),
   cancelPending: () => axiosInstance.put(`${base}/pending/cancel`),
   getConfirmed: () => axiosInstance.get(`${base}/confirmed`),

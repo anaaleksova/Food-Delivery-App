@@ -89,6 +89,7 @@ public final class BasicMappers {
         d.setRestaurantId(o.getRestaurant().getId());
         d.setRestaurantName(o.getRestaurant().getName());
         d.setProducts( DisplayProductDto.from(o.getProducts()));
+        d.setItems(toItemDtos(o.getItems()));
         d.setDeliveryFee(o.getDeliveryFee());
         d.setPlatformFee(o.getPlatformFee());
         d.setDiscount(o.getDiscount());

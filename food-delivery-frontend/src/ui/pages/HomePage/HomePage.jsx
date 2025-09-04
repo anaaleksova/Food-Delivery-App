@@ -28,9 +28,6 @@ const RestaurantCard = ({ restaurant }) => (
             <Typography variant="h6" gutterBottom>
                 {restaurant.name}
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                {restaurant.description}
-            </Typography>
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <Chip label={`⭐ ${restaurant.rating ?? 4.5}`} size="small" />
