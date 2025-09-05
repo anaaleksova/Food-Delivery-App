@@ -72,7 +72,7 @@ const DeliveryCard = ({ order, onAction, actionLabel, actionColor = 'primary' })
                     {order.Products?.length || order.items?.length || 0} items
                 </Typography>
                 <Typography variant="h6" color="primary">
-                    €{order.total?.toFixed(2) || '0.00'}
+                    {order.total?.toFixed(2) || '0.00'} ден.
                 </Typography>
             </Box>
 

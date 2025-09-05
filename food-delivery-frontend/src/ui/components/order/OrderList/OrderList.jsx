@@ -129,7 +129,7 @@ const OrderList = ({ order, onCheckout, onCancel, refresh }) => {
                     </IconButton>
 
                     <Typography sx={{ minWidth: 90, textAlign: 'right' }}>
-                      {lineTotal(it).toFixed(2)} €
+                      {lineTotal(it).toFixed(2)} ден.
                     </Typography>
 
                     <IconButton
@@ -148,7 +148,7 @@ const OrderList = ({ order, onCheckout, onCancel, refresh }) => {
           <Divider sx={{ my: 1 }} />
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography variant="h6">Total</Typography>
-            <Typography variant="h6">{Number(total || 0).toFixed(2)} €</Typography>
+            <Typography variant="h6">{Number(total || 0).toFixed(2)} ден.</Typography>
           </Box>
 
           <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>

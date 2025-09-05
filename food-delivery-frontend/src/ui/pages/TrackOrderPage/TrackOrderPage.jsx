@@ -165,7 +165,7 @@ const TrackOrderPage = () => {
                     {order.products?.map((item, index) => (
                         <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                             <Typography>{item.name}</Typography>
-                            <Typography>€{item.price?.toFixed(2)}</Typography>
+                            <Typography>ден.{item.price?.toFixed(2)}</Typography>
                         </Box>
                     ))}
 
@@ -173,7 +173,7 @@ const TrackOrderPage = () => {
 
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Typography variant="h6">Total:</Typography>
-                        <Typography variant="h6">€{order.total?.toFixed(2) || '0.00'}</Typography>
+                        <Typography variant="h6">ден.{order.total?.toFixed(2) || '0.00'}</Typography>
                     </Box>
                 </CardContent>
             </Card>

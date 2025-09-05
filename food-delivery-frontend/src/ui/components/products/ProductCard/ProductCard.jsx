@@ -8,7 +8,7 @@ const ProductCard = ({p, onAdd}) => {
       <CardContent>
         <Typography variant="h6">{p.name}</Typography>
         <Typography variant="body2" color="text.secondary">{p.description}</Typography>
-        <Typography variant="subtitle1" sx={{mt:1}}>{p.price?.toFixed?.(2)} €</Typography>
+        <Typography variant="subtitle1" sx={{mt:1}}>{p.price?.toFixed?.(2)} ден.</Typography>
       </CardContent>
       <CardActions>
         <Button size="small" component={Link} to={`/products/${p.id}`}>Details</Button>

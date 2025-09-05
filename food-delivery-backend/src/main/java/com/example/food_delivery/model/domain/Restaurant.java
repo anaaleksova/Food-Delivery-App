@@ -24,16 +24,43 @@ public class Restaurant {
     @Embedded
     private Coordinates coordinates;
 
-    private String openHours; // e.g. JSON or "Mon-Fri 09:00-21:00; Sat-Sun 10:00-20:00"
     private Integer deliveryTimeEstimate; // in minutes
-    private Boolean isOpen = true;
-    private String imageUrl;
     private String category;
+    private Double averageRating;
+    private Integer deliveryTimeMinutes;
+    private String openHours;
+
+    public Double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public Integer getDeliveryTimeMinutes() {
+        return deliveryTimeMinutes;
+    }
+
+    public void setDeliveryTimeMinutes(Integer deliveryTimeMinutes) {
+        this.deliveryTimeMinutes = deliveryTimeMinutes;
+    }
+
+    public Boolean getOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(Boolean open) {
+        isOpen = open;
+    }
+
+    private Boolean isOpen;
+    private String imageUrl;
 
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DeliveryZone> deliveryZones = new ArrayList<>();
 
-    @OneToMany(mappedBy = "restaurant")
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> Products = new ArrayList<>();
 
     public Restaurant(String name, String description) {
@@ -49,6 +76,33 @@ public class Restaurant {
         this.imageUrl = imageUrl;
         this.category = category;
         this.deliveryTimeEstimate=deliveryTimeEstimate;
+    }
+
+    /* ---- Full constructor (use this in your seeder) ---- */
+    public Restaurant(
+            String name,
+            String description,
+            Address address,
+            Coordinates coordinates,
+            String category,
+            Double averageRating,
+            Integer deliveryTimeEstimate,   // canonical
+            String openHours,
+            Boolean isOpen,
+            String imageUrl
+    ) {
+        this.name = name;
+        this.description = description;
+        this.address = address;
+        this.coordinates = coordinates;
+        this.category = category;
+        this.averageRating = averageRating;
+        this.openHours = openHours;
+        this.isOpen = isOpen;
+        this.imageUrl = imageUrl;
+
+
+        setDeliveryTimeEstimate(deliveryTimeEstimate);
     }
 
     public Long getId() {

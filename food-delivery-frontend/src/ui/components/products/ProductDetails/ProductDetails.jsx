@@ -8,7 +8,7 @@ const ProductDetails = ({details, onAdd, onRemove}) => {
       <CardContent>
         <Typography variant="h4">{details.name}</Typography>
         <Typography sx={{my:1}}>{details.description}</Typography>
-        <Typography variant="h6">{details.price?.toFixed?.(2)} €</Typography>
+        <Typography variant="h6">{details.price?.toFixed?.(2)} ден.</Typography>
         {details?.restaurant && (
           <Box sx={{mt:2}}>
             <Typography variant="subtitle2">Restaurant</Typography>

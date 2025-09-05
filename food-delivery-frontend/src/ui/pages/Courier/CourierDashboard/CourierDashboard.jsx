@@ -107,7 +107,7 @@ const CourierDashboard = () => {
                                         <TableCell>
                                             {order.products?.length || 0} items
                                         </TableCell>
-                                        <TableCell>€{order.total?.toFixed(2) || '0.00'}</TableCell>
+                                        <TableCell>{order.total?.toFixed(2) || '0.00'} ден.</TableCell>
                                         <TableCell>
                                             <Button
                                                 variant="contained"
@@ -161,7 +161,7 @@ const CourierDashboard = () => {
                                         <TableCell>
                                             {order.products?.length || 0} items
                                         </TableCell>
-                                        <TableCell>€{order.total?.toFixed(2) || '0.00'}</TableCell>
+                                        <TableCell>{order.total?.toFixed(2) || '0.00'} ден.</TableCell>
                                         <TableCell>
                                             {order.status === 'PICKED_UP' && (
                                                 <Button
@@ -222,7 +222,7 @@ const CourierDashboard = () => {
                                         <TableCell>
                                             {order.products?.length || 0} items
                                         </TableCell>
-                                        <TableCell>€{order.total?.toFixed(2) || "0.00"}</TableCell>
+                                        <TableCell>{order.total?.toFixed(2) || "0.00"} ден.</TableCell>
                                         <TableCell>
                                             {order.deliveredAt
                                                 ? new Date(order.deliveredAt).toLocaleString()
