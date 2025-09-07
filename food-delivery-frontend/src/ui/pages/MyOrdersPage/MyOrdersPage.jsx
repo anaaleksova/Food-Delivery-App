@@ -31,7 +31,10 @@ const MyOrdersPage = () => {
                                         Order #{order.id}
                                     </Typography>
                                     <Typography color="text.secondary">
-                                        Total: ${order.total.toFixed(2)}
+                                        Restaurant: {order.restaurantName}
+                                    </Typography>
+                                    <Typography color="text.secondary">
+                                        Total: {order.total.toFixed(2)}ден.
                                     </Typography>
                                     <Typography color="primary" sx={{ mt: 1 }}>
                                         Status: {order.status}

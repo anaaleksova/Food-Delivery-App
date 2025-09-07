@@ -2,7 +2,6 @@ package com.example.food_delivery.model.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,13 +68,14 @@ public class Restaurant {
     }
     public Restaurant(){}
 
-    public Restaurant(String name, String description, String openHours, String imageUrl, String category,Integer deliveryTimeEstimate) {
+    public Restaurant(String name, String description, String openHours, String imageUrl, String category,Boolean isOpen,Integer deliveryTimeEstimate) {
         this.name = name;
         this.description = description;
         this.openHours = openHours;
         this.imageUrl = imageUrl;
         this.category = category;
         this.deliveryTimeEstimate=deliveryTimeEstimate;
+        this.isOpen=isOpen;
     }
 
     /* ---- Full constructor (use this in your seeder) ---- */

@@ -92,7 +92,9 @@ public final class BasicMappers {
         d.setItems(toItemDtos(o.getItems()));
         d.setDeliveryFee(o.getDeliveryFee());
         d.setPlatformFee(o.getPlatformFee());
+        d.setDeliveryAddress(BasicMappers.toDto(o.getDeliveryAddress()));
         d.setDiscount(o.getDiscount());
+        d.setCourier(o.getCourier());
         d.setTotal(o.getTotal());
         d.setPlacedAt(o.getPlacedAt());
         d.setDeliveredAt(o.getDeliveredAt());

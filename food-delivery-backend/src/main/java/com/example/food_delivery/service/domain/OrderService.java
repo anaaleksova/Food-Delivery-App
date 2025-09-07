@@ -1,7 +1,7 @@
 package com.example.food_delivery.service.domain;
 
+import com.example.food_delivery.model.domain.Address;
 import com.example.food_delivery.model.domain.Order;
-import com.example.food_delivery.model.domain.Product;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,4 +22,6 @@ public interface OrderService {
 
     List<Order> findOrdersForCourier(String username);
     List<Order> findConfirmedOrdersForCustomer(String username);
+    Optional<Order> updateAddress(Long id, Address deliveryAddress);
+    Order save(Order order);
 }

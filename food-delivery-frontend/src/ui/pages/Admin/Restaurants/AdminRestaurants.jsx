@@ -70,6 +70,7 @@ const AdminRestaurants = () => {
         setEditing({
             name: "",
             description: "",
+            openHours: "",
             imageUrl: "",
             rating: 4.5,
             deliveryTimeEstimate: 30,
@@ -119,6 +120,35 @@ const AdminRestaurants = () => {
         }
     };
 
+    // Function to check if restaurant is open based on openHours (supports overnight)
+    const isRestaurantOpen = (r) => {
+        if (!r.openHours) return r.isOpen; // fallback
+
+        try {
+            const [start, end] = r.openHours.split("-").map((s) => s.trim());
+            if (!start || !end) return r.isOpen;
+
+            const now = new Date();
+            const [startH, startM] = start.split(":").map(Number);
+            const [endH, endM] = end.split(":").map(Number);
+
+            const startMinutes = startH * 60 + (startM || 0);
+            const endMinutes = endH * 60 + (endM || 0);
+            const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+            if (startMinutes < endMinutes) {
+                // same-day hours
+                return nowMinutes >= startMinutes && nowMinutes <= endMinutes;
+            } else {
+                // overnight hours (e.g., 22:00-02:00)
+                return nowMinutes >= startMinutes || nowMinutes <= endMinutes;
+            }
+        } catch (e) {
+            console.error("Invalid openHours format:", r.openHours, e);
+            return r.isOpen;
+        }
+    };
+
     return (
         <Box>
             {/* Toolbar: title, search, add */}
@@ -159,10 +189,11 @@ const AdminRestaurants = () => {
                 variant="contained"
                 color="secondary"
                 startIcon={<AddIcon />}
-                sx={{ borderRadius: 2, fontWeight: 700 , marginBottom: 3}}
+                sx={{ borderRadius: 2, fontWeight: 700, marginBottom: 3 }}
             >
                 Add Restaurant
             </Button>
+
             {/* Table */}
             {loading ? (
                 <Typography>Loading…</Typography>
@@ -181,6 +212,7 @@ const AdminRestaurants = () => {
                             <TableRow sx={{ bgcolor: "#F9FAFB" }}>
                                 <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
                                 <TableCell sx={{ fontWeight: 700 }}>Description</TableCell>
+                                <TableCell sx={{ fontWeight: 700 }}>Open Hours</TableCell>
                                 <TableCell sx={{ fontWeight: 700 }}>Delivery Time</TableCell>
                                 <TableCell sx={{ fontWeight: 700 }}>Rating</TableCell>
                                 <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
@@ -198,13 +230,14 @@ const AdminRestaurants = () => {
                                             {r.description}
                                         </Typography>
                                     </TableCell>
+                                    <TableCell>{r.openHours}</TableCell>
                                     <TableCell>{r.deliveryTimeEstimate ?? 30} min</TableCell>
                                     <TableCell>{r.rating ?? 4.5}</TableCell>
                                     <TableCell>
                                         <Chip
                                             size="small"
-                                            color={r.isOpen ? "success" : "default"}
-                                            label={r.isOpen ? "Open" : "Closed"}
+                                            color={isRestaurantOpen(r) ? "success" : "default"}
+                                            label={isRestaurantOpen(r) ? "Open" : "Closed"}
                                         />
                                     </TableCell>
                                     <TableCell>
@@ -219,7 +252,7 @@ const AdminRestaurants = () => {
                             ))}
                             {!filtered.length && (
                                 <TableRow>
-                                    <TableCell colSpan={6} align="center">
+                                    <TableCell colSpan={7} align="center">
                                         <Typography color="text.secondary">
                                             No restaurants match your search.
                                         </Typography>
@@ -259,6 +292,13 @@ const AdminRestaurants = () => {
                         }
                         multiline
                         rows={2}
+                    />
+                    <TextField
+                        label="Open hours"
+                        value={editing?.openHours || ""}
+                        onChange={(e) =>
+                            setEditing({ ...editing, openHours: e.target.value })
+                        }
                     />
                     <TextField
                         label="Image URL"

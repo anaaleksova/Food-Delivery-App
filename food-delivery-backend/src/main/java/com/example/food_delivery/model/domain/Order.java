@@ -45,7 +45,7 @@ public class Order {
     private Address deliveryAddress;
 
     @ManyToOne
-    private Restaurant restaurant; // set from first item
+    private Restaurant restaurant;
 
     private Instant placedAt;
     private LocalDateTime deliveredAt;

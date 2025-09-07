@@ -88,7 +88,8 @@ public class JwtSecurityWebConfig {
                                         "/api/products",
                                         "/api/products/{id}",
                                         "/api/products/details/{id}",
-                                        "/api/reviews/**"
+                                        "/api/reviews/**",
+                                        "/api/orders/address/{id}"
                                 )
                                 .permitAll()
                                 .requestMatchers(

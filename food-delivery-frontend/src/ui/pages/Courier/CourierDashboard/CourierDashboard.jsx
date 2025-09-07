@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from "react";
 import {
     Typography, Table, TableBody, TableCell, TableContainer,
     TableHead, TableRow, Paper, Button, Box, Card, CardContent,
-    Chip, Alert
+    Chip, Alert, Tooltip, Popover, List, ListItem, ListItemText
 } from "@mui/material";
 import axiosInstance from "../../../../axios/axios.js";
 import useAuth from "../../../../hooks/useAuth.js";
@@ -12,20 +12,36 @@ const CourierDashboard = () => {
     const [myOrders, setMyOrders] = useState([]);
     const [myDeliveredOrders, setMyDeliveredOrders] = useState([]);
     const [loading, setLoading] = useState(true);
-    const {user} = useAuth();
+    const { user } = useAuth();
+
+    // Popover state
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [selectedProducts, setSelectedProducts] = useState([]);
+
+    const handleItemsClick = (event, products) => {
+        setAnchorEl(event.currentTarget);
+        setSelectedProducts(products || []);
+    };
+
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+        // setSelectedProducts([]);
+    };
+
+    const open = Boolean(anchorEl);
 
     const fetchOrders = async () => {
         try {
-            const [confirmedRes, myOrdersRes,myDeliveredOrdersRes] = await Promise.all([
-                axiosInstance.get('/orders/confirmed'),
-                axiosInstance.get('/couriers/my-orders'),
-                axiosInstance.get('/couriers/my-delivered-orders')
+            const [confirmedRes, myOrdersRes, myDeliveredOrdersRes] = await Promise.all([
+                axiosInstance.get("/orders/confirmed"),
+                axiosInstance.get("/couriers/my-orders"),
+                axiosInstance.get("/couriers/my-delivered-orders"),
             ]);
             setConfirmedOrders(confirmedRes.data);
             setMyOrders(myOrdersRes.data);
             setMyDeliveredOrders(myDeliveredOrdersRes.data);
         } catch (err) {
-            console.error('Error fetching orders:', err);
+            console.error("Error fetching orders:", err);
         } finally {
             setLoading(false);
         }
@@ -39,9 +55,9 @@ const CourierDashboard = () => {
         try {
             await axiosInstance.post(`/couriers/assign/${orderId}`);
             await fetchOrders();
-            alert('Order assigned successfully!');
+            alert("Order assigned successfully!");
         } catch (err) {
-            alert('Failed to assign order: ' + (err.response?.data?.message || err.message));
+            alert("Failed to assign order: " + (err.response?.data?.message || err.message));
         }
     };
 
@@ -49,23 +65,42 @@ const CourierDashboard = () => {
         try {
             await axiosInstance.post(`/couriers/complete/${orderId}`);
             await fetchOrders();
-            alert('Order completed successfully!');
+            alert("Order completed successfully!");
         } catch (err) {
-            alert('Failed to complete order: ' + (err.response?.data?.message || err.message));
+            alert("Failed to complete order: " + (err.response?.data?.message || err.message));
         }
     };
 
-
     const getStatusColor = (status) => {
         switch (status) {
-            case 'CONFIRMED': return 'primary';
-            case 'PICKED_UP': return 'warning';
-            case 'DELIVERED': return 'success';
-            default: return 'default';
+            case "CONFIRMED":
+                return "primary";
+            case "PICKED_UP":
+                return "warning";
+            case "DELIVERED":
+                return "success";
+            default:
+                return "default";
         }
     };
 
     if (loading) return <Typography>Loading...</Typography>;
+
+    const TruncatedCell = ({ children, title }) => (
+        <Tooltip title={title || ""}>
+            <span
+                style={{
+                    display: "inline-block",
+                    maxWidth: "100%",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                }}
+            >
+                {children}
+            </span>
+        </Tooltip>
+    );
 
     return (
         <Box>
@@ -85,49 +120,73 @@ const CourierDashboard = () => {
                     </Typography>
 
                     <TableContainer component={Paper}>
-                        <Table>
+                        <Table sx={{ tableLayout: "fixed" }}>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Order ID</TableCell>
-                                    <TableCell>Customer</TableCell>
-                                    <TableCell>Status</TableCell>
-                                    <TableCell>Items</TableCell>
-                                    <TableCell>Total</TableCell>
-                                    <TableCell>Action</TableCell>
+                                    <TableCell sx={{ width: "10%" }}>Order ID</TableCell>
+                                    <TableCell sx={{ width: "10%" }}>Customer</TableCell>
+                                    <TableCell sx={{ width: "15%" }}>Status</TableCell>
+                                    <TableCell sx={{ width: "15%" }}>Restaurant</TableCell>
+                                    <TableCell sx={{ width: "10%" }}>Items</TableCell>
+                                    <TableCell sx={{ width: "17%" }}>Address</TableCell>
+                                    <TableCell sx={{ width: "13%" }}>Total</TableCell>
+                                    <TableCell sx={{ width: "15%" }}>Action</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {confirmedOrders.filter(order => order.status === 'CONFIRMED').map((order) => (
-                                    <TableRow key={order.id}>
-                                        <TableCell>#{order.id}</TableCell>
-                                        <TableCell>{order.username}</TableCell>
-                                        <TableCell>
-                                            <Chip label={order.status} color={getStatusColor(order.status)} size="small" />
-                                        </TableCell>
-                                        <TableCell>
-                                            {order.products?.length || 0} items
-                                        </TableCell>
-                                        <TableCell>{order.total?.toFixed(2) || '0.00'} ден.</TableCell>
-                                        <TableCell>
-                                            <Button
-                                                variant="contained"
-                                                size="small"
-                                                onClick={() => handleAssign(order.id)}
-                                            >
-                                                Start Delivery
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
+                                {confirmedOrders
+                                    .filter((order) => order.status === "CONFIRMED")
+                                    .map((order) => (
+                                        <TableRow key={order.id}>
+                                            <TableCell>#{order.id}</TableCell>
+                                            <TableCell>
+                                                <TruncatedCell title={order.userUsername}>
+                                                    {order.userUsername}
+                                                </TruncatedCell>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Chip
+                                                    label={order.status}
+                                                    color={getStatusColor(order.status)}
+                                                    size="small"
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <TruncatedCell title={order.restaurantName}>
+                                                    {order.restaurantName}
+                                                </TruncatedCell>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Button
+                                                    variant="outlined"
+                                                    size="small"
+                                                    onClick={(e) => handleItemsClick(e, order.products)}
+                                                >
+                                                    {order.products?.length || 0} items
+                                                </Button>
+                                            </TableCell>
+                                            <TableCell>
+                                                <TruncatedCell title={order.deliveryAddress?.line1}>
+                                                    {order.deliveryAddress?.line1}
+                                                </TruncatedCell>
+                                            </TableCell>
+                                            <TableCell>
+                                                {order.total?.toFixed(2) || "0.00"} ден.
+                                            </TableCell>
+                                            <TableCell>
+                                                <Button
+                                                    variant="contained"
+                                                    size="small"
+                                                    onClick={() => handleAssign(order.id)}
+                                                >
+                                                    Start Delivery
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
                             </TableBody>
                         </Table>
                     </TableContainer>
-
-                    {confirmedOrders.filter(order => order.status === 'CONFIRMED').length === 0 && (
-                        <Typography color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>
-                            No orders available for pickup.
-                        </Typography>
-                    )}
                 </CardContent>
             </Card>
 
@@ -139,52 +198,76 @@ const CourierDashboard = () => {
                     </Typography>
 
                     <TableContainer component={Paper}>
-                        <Table>
+                        <Table sx={{ tableLayout: "fixed" }}>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Order ID</TableCell>
-                                    <TableCell>Customer</TableCell>
-                                    <TableCell>Status</TableCell>
-                                    <TableCell>Items</TableCell>
-                                    <TableCell>Total</TableCell>
-                                    <TableCell>Action</TableCell>
+                                    <TableCell sx={{ width: "10%" }}>Order ID</TableCell>
+                                    <TableCell sx={{ width: "10%" }}>Customer</TableCell>
+                                    <TableCell sx={{ width: "15%" }}>Status</TableCell>
+                                    <TableCell sx={{ width: "15%" }}>Restaurant</TableCell>
+                                    <TableCell sx={{ width: "10%" }}>Items</TableCell>
+                                    <TableCell sx={{ width: "17%" }}>Address</TableCell>
+                                    <TableCell sx={{ width: "13%" }}>Total</TableCell>
+                                    <TableCell sx={{ width: "15%" }}>Action</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {myOrders.filter(order => order.status !== 'DELIVERED').map((order) => (
-                                    <TableRow key={order.id}>
-                                        <TableCell>#{order.id}</TableCell>
-                                        <TableCell>{order.username}</TableCell>
-                                        <TableCell>
-                                            <Chip label={order.status} color={getStatusColor(order.status)} size="small" />
-                                        </TableCell>
-                                        <TableCell>
-                                            {order.products?.length || 0} items
-                                        </TableCell>
-                                        <TableCell>{order.total?.toFixed(2) || '0.00'} ден.</TableCell>
-                                        <TableCell>
-                                            {order.status === 'PICKED_UP' && (
-                                                <Button
-                                                    variant="contained"
-                                                    color="success"
+                                {myOrders
+                                    .filter((order) => order.status !== "DELIVERED")
+                                    .map((order) => (
+                                        <TableRow key={order.id}>
+                                            <TableCell>#{order.id}</TableCell>
+                                            <TableCell>
+                                                <TruncatedCell title={order.userUsername}>
+                                                    {order.userUsername}
+                                                </TruncatedCell>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Chip
+                                                    label={order.status}
+                                                    color={getStatusColor(order.status)}
                                                     size="small"
-                                                    onClick={() => handleComplete(order.id)}
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <TruncatedCell title={order.restaurantName}>
+                                                    {order.restaurantName}
+                                                </TruncatedCell>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Button
+                                                    variant="outlined"
+                                                    size="small"
+                                                    onClick={(e) => handleItemsClick(e, order.products)}
                                                 >
-                                                    Mark Delivered
+                                                    {order.products?.length || 0} items
                                                 </Button>
-                                            )}
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
+                                            </TableCell>
+                                            <TableCell>
+                                                <TruncatedCell title={order.deliveryAddress?.line1}>
+                                                    {order.deliveryAddress?.line1}
+                                                </TruncatedCell>
+                                            </TableCell>
+                                            <TableCell>
+                                                {order.total?.toFixed(2) || "0.00"} ден.
+                                            </TableCell>
+                                            <TableCell>
+                                                {order.status === "PICKED_UP" && (
+                                                    <Button
+                                                        variant="contained"
+                                                        color="success"
+                                                        size="small"
+                                                        onClick={() => handleComplete(order.id)}
+                                                    >
+                                                        Mark Delivered
+                                                    </Button>
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
                             </TableBody>
                         </Table>
                     </TableContainer>
-
-                    {myOrders.filter(order => order.status !== 'DELIVERED').length === 0 && (
-                        <Typography color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>
-                            No active deliveries.
-                        </Typography>
-                    )}
                 </CardContent>
             </Card>
 
@@ -196,22 +279,28 @@ const CourierDashboard = () => {
                     </Typography>
 
                     <TableContainer component={Paper}>
-                        <Table>
+                        <Table sx={{ tableLayout: "fixed" }}>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Order ID</TableCell>
-                                    <TableCell>Customer</TableCell>
-                                    <TableCell>Status</TableCell>
-                                    <TableCell>Items</TableCell>
-                                    <TableCell>Total</TableCell>
-                                    <TableCell>Delivered At</TableCell>
+                                    <TableCell sx={{ width: "10%" }}>Order ID</TableCell>
+                                    <TableCell sx={{ width: "10%" }}>Customer</TableCell>
+                                    <TableCell sx={{ width: "15%" }}>Status</TableCell>
+                                    <TableCell sx={{ width: "15%" }}>Restaurant</TableCell>
+                                    <TableCell sx={{ width: "10%" }}>Items</TableCell>
+                                    <TableCell sx={{ width: "17%" }}>Address</TableCell>
+                                    <TableCell sx={{ width: "13%" }}>Total</TableCell>
+                                    <TableCell sx={{ width: "15%" }}>Delivered At</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {myDeliveredOrders.map((order) => (
                                     <TableRow key={order.id}>
                                         <TableCell>#{order.id}</TableCell>
-                                        <TableCell>{order.username}</TableCell>
+                                        <TableCell>
+                                            <TruncatedCell title={order.userUsername}>
+                                                {order.userUsername}
+                                            </TruncatedCell>
+                                        </TableCell>
                                         <TableCell>
                                             <Chip
                                                 label={order.status}
@@ -220,9 +309,27 @@ const CourierDashboard = () => {
                                             />
                                         </TableCell>
                                         <TableCell>
-                                            {order.products?.length || 0} items
+                                            <TruncatedCell title={order.restaurantName}>
+                                                {order.restaurantName}
+                                            </TruncatedCell>
                                         </TableCell>
-                                        <TableCell>{order.total?.toFixed(2) || "0.00"} ден.</TableCell>
+                                        <TableCell>
+                                            <Button
+                                                variant="outlined"
+                                                size="small"
+                                                onClick={(e) => handleItemsClick(e, order.products)}
+                                            >
+                                                {order.products?.length || 0} items
+                                            </Button>
+                                        </TableCell>
+                                        <TableCell>
+                                            <TruncatedCell title={order.deliveryAddress?.line1}>
+                                                {order.deliveryAddress?.line1}
+                                            </TruncatedCell>
+                                        </TableCell>
+                                        <TableCell>
+                                            {order.total?.toFixed(2) || "0.00"} ден.
+                                        </TableCell>
                                         <TableCell>
                                             {order.deliveredAt
                                                 ? new Date(order.deliveredAt).toLocaleString()
@@ -233,18 +340,39 @@ const CourierDashboard = () => {
                             </TableBody>
                         </Table>
                     </TableContainer>
-
-                    {myDeliveredOrders.length === 0 && (
-                        <Typography
-                            color="text.secondary"
-                            sx={{ textAlign: "center", py: 3 }}
-                        >
-                            No delivered orders yet.
-                        </Typography>
-                    )}
                 </CardContent>
             </Card>
 
+            {/* Popover for items */}
+            <Popover
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handlePopoverClose}
+                anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left",
+                }}
+                transformOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                }}
+            >
+                <Box sx={{ p: 2, maxWidth: 250 }}>
+                    <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                    </Typography>
+                    {selectedProducts.length > 0 ? (
+                        <List dense>
+                            {selectedProducts.map((p, i) => (
+                                <ListItem key={i} disablePadding>
+                                    <ListItemText primary={p.name} />
+                                </ListItem>
+                            ))}
+                        </List>
+                    ) : (
+                        <Typography color="text.secondary">No products</Typography>
+                    )}
+                </Box>
+            </Popover>
         </Box>
     );
 };

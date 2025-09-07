@@ -1,5 +1,6 @@
 package com.example.food_delivery.service.domain.impl;
 
+import com.example.food_delivery.model.domain.Address;
 import com.example.food_delivery.model.domain.Order;
 import com.example.food_delivery.model.domain.Product;
 import com.example.food_delivery.model.domain.User;
@@ -113,5 +114,28 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> findConfirmedOrdersForCustomer(String username) {
         return orderRepository.findByUsernameAndConfirmed(username);
+    }
+
+    @Override
+    public Optional<Order> updateAddress(Long id, Address deliveryAddress) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        if (!order.getStatus().equals(OrderStatus.PENDING)) {
+            throw new RuntimeException("Cannot change address of a non-pending order");
+        }
+        Address address = new Address();
+        address.setLine1(deliveryAddress.getLine1());
+        address.setLine2(deliveryAddress.getLine2());
+        address.setCity(deliveryAddress.getCity());
+        address.setPostalCode(deliveryAddress.getPostalCode());
+        address.setCountry(deliveryAddress.getCountry());
+        order.setDeliveryAddress(address);
+        return Optional.of(orderRepository.save(order));
+    }
+
+    @Override
+    public Order save(Order order) {
+        return orderRepository.save(order);
     }
 }

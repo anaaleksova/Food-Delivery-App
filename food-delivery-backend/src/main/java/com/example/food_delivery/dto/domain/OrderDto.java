@@ -1,6 +1,6 @@
 package com.example.food_delivery.dto.domain;
 
-import com.example.food_delivery.model.domain.Product;
+import com.example.food_delivery.model.domain.Courier;
 import lombok.Data;
 
 import java.time.Instant;
@@ -16,6 +16,7 @@ public class OrderDto {
     private Long restaurantId;
     private String restaurantName;
     private AddressDto deliveryAddress;
+    private Courier courier;
 
     private List<DisplayProductDto> products;
 
@@ -148,5 +149,13 @@ public class OrderDto {
 
     public void setPlacedAt(Instant placedAt) {
         this.placedAt = placedAt;
+    }
+
+    public Courier getCourier() {
+        return courier;
+    }
+
+    public void setCourier(Courier courier) {
+        this.courier = courier;
     }
 }

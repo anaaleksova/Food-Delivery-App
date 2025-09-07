@@ -47,11 +47,11 @@ public class UserServiceImpl implements UserService {
 
         User savedUser = userRepository.save(user);
 
-        if (dto.getRole()==Role.ROLE_COURIER) {
-            Courier courier = new Courier();
-            courier.setUser(savedUser);
-            courierRepository.save(courier);
-        }
+//        if (dto.getRole()==Role.ROLE_COURIER) {
+//            Courier courier = new Courier();
+//            courier.setUser(savedUser);
+//            courierRepository.save(courier);
+//        }
 
         return savedUser;
     }

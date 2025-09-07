@@ -1,11 +1,10 @@
 package com.example.food_delivery.web.controllers;
 
+import com.example.food_delivery.dto.domain.AddressDto;
 import com.example.food_delivery.dto.domain.DisplayOrderDto;
-import com.example.food_delivery.dto.domain.DisplayProductDto;
 import com.example.food_delivery.dto.domain.OrderDto;
 import com.example.food_delivery.model.domain.User;
 import com.example.food_delivery.service.application.OrderApplicationService;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -72,5 +71,13 @@ public class OrderController {
     @GetMapping("/cart")
     public ResponseEntity<OrderDto> getCart(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(orderApplicationService.getCart(user.getUsername()));
+    }
+
+    @PutMapping("/address/{id}")
+    public ResponseEntity<OrderDto> updateAddress(
+            @PathVariable Long id,
+            @RequestBody AddressDto address) {
+        OrderDto updated = orderApplicationService.setDeliveryAddress(id,address);
+        return ResponseEntity.ok(updated);
     }
 }

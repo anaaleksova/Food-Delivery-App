@@ -160,20 +160,25 @@ const TrackOrderPage = () => {
                     </Box>
 
                     <Divider sx={{ my: 2 }} />
-
-                    <Typography variant="subtitle1" sx={{ mb: 1 }}>Items:</Typography>
+                    <Typography variant="h6" sx={{ mb: 1 }}>Restaurant:</Typography>
+                    <Typography variant="subtitle1" sx={{ mb: 1 }}>{order.restaurantName}</Typography>
+                    <Divider sx={{ my: 2 }} />
+                    <Typography variant="h6" sx={{ mb: 1 }}>Items:</Typography>
                     {order.products?.map((item, index) => (
                         <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                             <Typography>{item.name}</Typography>
-                            <Typography>ден.{item.price?.toFixed(2)}</Typography>
+                            <Typography>{item.price?.toFixed(2)}ден.</Typography>
                         </Box>
                     ))}
-
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                        <Typography>Platform fee</Typography>
+                        <Typography>{order.platformFee}ден.</Typography>
+                    </Box>
                     <Divider sx={{ my: 2 }} />
 
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Typography variant="h6">Total:</Typography>
-                        <Typography variant="h6">ден.{order.total?.toFixed(2) || '0.00'}</Typography>
+                        <Typography variant="h6">{order.total?.toFixed(2) || '0.00'}ден.</Typography>
                     </Box>
                 </CardContent>
             </Card>

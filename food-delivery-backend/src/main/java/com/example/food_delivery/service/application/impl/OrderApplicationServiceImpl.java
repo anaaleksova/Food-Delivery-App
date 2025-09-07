@@ -3,7 +3,6 @@ package com.example.food_delivery.service.application.impl;
 import com.example.food_delivery.dto.domain.AddressDto;
 import com.example.food_delivery.dto.domain.DisplayOrderDto;
 import com.example.food_delivery.dto.domain.OrderDto;
-import com.example.food_delivery.model.domain.Address;
 import com.example.food_delivery.model.domain.Order;
 import com.example.food_delivery.model.domain.Product;
 import com.example.food_delivery.model.mapper.BasicMappers;
@@ -12,7 +11,6 @@ import com.example.food_delivery.service.application.OrderApplicationService;
 import com.example.food_delivery.service.domain.OrderService;
 import com.example.food_delivery.service.domain.OrderTotalsService;
 import com.example.food_delivery.service.domain.ProductService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,16 +96,14 @@ public class OrderApplicationServiceImpl implements OrderApplicationService {
     }
 
     @Override
-    @Transactional
-    public OrderDto setDeliveryAddress(String username, AddressDto address) {
-        Order cart = orderDomain.findOrCreatePending(username);
-        cart.setDeliveryAddress(address == null ? null : new Address(
-                address.getLine1(), address.getLine2(), address.getCity(),
-                address.getPostalCode(), address.getCountry()
-        ));
-        // Re-apply fee rules now that address may affect zones later (stub keeps same rule)
-        totalsDomain.setFeesAndRecalculate(cart, cart.getRestaurant());
+//    @Transactional
+    public OrderDto setDeliveryAddress(Long id, AddressDto address) {
+        Order cart = orderDomain.findById(id).orElseThrow();
+//        // Re-apply fee rules now that address may affect zones later (stub keeps same rule)
+        cart=orderDomain.updateAddress(id,BasicMappers.fromDto(address)).orElseThrow();
+////        totalsDomain.setFeesAndRecalculate(cart, cart.getRestaurant());
         return BasicMappers.toDto(cart);
+
     }
 
     @Override

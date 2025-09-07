@@ -6,5 +6,8 @@ export default {
   cancelPending: () => axiosInstance.put(`${base}/pending/cancel`),
   getConfirmed: () => axiosInstance.get(`${base}/confirmed`),
   trackOrder: (orderId) => axiosInstance.get(`${base}/track/${orderId}`),
-  getMyOrders: () => axiosInstance.get(`${base}/my-orders`)
+  getMyOrders: () => axiosInstance.get(`${base}/my-orders`),
+  updateAddress: (orderId, address) =>
+      axiosInstance.put(`${base}/address/${orderId}`, address
+      ),
 };

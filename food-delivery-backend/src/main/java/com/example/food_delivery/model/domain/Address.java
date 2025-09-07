@@ -1,13 +1,9 @@
 package com.example.food_delivery.model.domain;
 
 import jakarta.persistence.Embeddable;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-//@AllArgsConstructor
 @Embeddable
 public class Address {
     private String line1;
@@ -23,6 +19,8 @@ public class Address {
         this.postalCode = postalCode;
         this.country = country;
     }
+
+    public Address(){}
 
     public String getLine1() {
         return line1;

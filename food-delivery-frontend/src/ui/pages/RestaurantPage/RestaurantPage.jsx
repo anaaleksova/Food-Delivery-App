@@ -9,6 +9,10 @@ import {
     Chip,
     CardMedia,
     Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -197,7 +201,7 @@ const KorpaRowCard = ({ product, onAdd }) => {
                     </Typography>
                 </Box>
 
-                {/* Add button (rounded pill with + icon, Macedonian label) */}
+                {/* Add button */}
                 {user?.roles?.includes("CUSTOMER") ? (
                     <Button
                         variant="outlined"
@@ -228,10 +232,13 @@ const RestaurantPage = () => {
     const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Derived open/closed (daily time string only)
+    // Derived open/closed
     const [isOpenNow, setIsOpenNow] = useState(false);
 
-    // Category refs + active category (for optional highlight while scrolling)
+    // Dialog state for closed-restaurant message
+    const [closedDialogOpen, setClosedDialogOpen] = useState(false);
+
+    // Category refs
     const categoryRefs = useRef({});
     const [activeCat, setActiveCat] = useState("");
 
@@ -271,12 +278,16 @@ const RestaurantPage = () => {
             const nowMin = now.getHours() * 60 + now.getMinutes();
             setIsOpenNow(isOpenAt(nowMin, intervals));
         };
-        compute(); // initial
-        const timer = setInterval(compute, 60 * 1000); // update every minute
+        compute();
+        const timer = setInterval(compute, 60 * 1000);
         return () => clearInterval(timer);
     }, [intervals]);
 
     const handleAdd = async (productId) => {
+        if (!isOpenNow) {
+            setClosedDialogOpen(true);
+            return;
+        }
         try {
             const res = await addToCartRespectingSingleRestaurant(productId);
             if (res?.ok) {
@@ -311,37 +322,9 @@ const RestaurantPage = () => {
     const scrollToCategory = (cat) => {
         const el = categoryRefs.current[cat];
         if (el) {
-            // add scroll margin so title isn't hidden under sticky bars
             el.scrollIntoView({ behavior: "smooth", block: "start" });
         }
     };
-
-    // Optional: highlight the chip for the category currently in view
-    useEffect(() => {
-        if (!categories.length) return;
-        const observer = new IntersectionObserver(
-            (entries) => {
-                const visible = entries
-                    .filter((e) => e.isIntersecting)
-                    .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-                if (visible[0]?.target?.dataset?.cat) {
-                    setActiveCat(visible[0].target.dataset.cat);
-                }
-            },
-            {
-                root: null,
-                rootMargin: "-80px 0px -60% 0px", // trigger a bit before/after the title hits top
-                threshold: 0.01,
-            }
-        );
-
-        categories.forEach((cat) => {
-            const el = categoryRefs.current[cat];
-            if (el) observer.observe(el);
-        });
-
-        return () => observer.disconnect();
-    }, [categories]);
 
     if (loading) return <Typography>Loading...</Typography>;
     if (!restaurant) return <Typography>Restaurant not found.</Typography>;
@@ -405,7 +388,7 @@ const RestaurantPage = () => {
                 </CardContent>
             </Card>
 
-            {/* Category navigation (chips like the screenshot) */}
+            {/* Category navigation */}
             {!!categories.length && (
                 <Box
                     sx={{
@@ -455,13 +438,12 @@ const RestaurantPage = () => {
                     key={cat}
                     ref={(el) => (categoryRefs.current[cat] = el)}
                     data-cat={cat}
-                    sx={{ mb: 4, scrollMarginTop: 88 }} // so titles aren't hidden by the sticky chip row
+                    sx={{ mb: 4, scrollMarginTop: 88 }}
                 >
                     <Typography variant="h5" sx={{ mb: 2 }}>
                         {cat}
                     </Typography>
 
-                    {/* Korpa-like vertical list */}
                     <Box>
                         {grouped[cat].map((product) => (
                             <KorpaRowCard
@@ -522,6 +504,21 @@ const RestaurantPage = () => {
             ) : (
                 <Typography color="text.secondary">No reviews yet.</Typography>
             )}
+
+            {/* Closed restaurant dialog */}
+            <Dialog
+                open={closedDialogOpen}
+                onClose={() => setClosedDialogOpen(false)}
+            >
+                <DialogTitle>Cannot order</DialogTitle>
+                <DialogContent>
+                    The restaurant is currently closed. Please try again during
+                    opening hours.
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setClosedDialogOpen(false)}>OK</Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };
