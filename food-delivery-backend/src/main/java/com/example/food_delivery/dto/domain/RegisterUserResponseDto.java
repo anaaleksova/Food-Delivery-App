@@ -8,6 +8,7 @@ public record RegisterUserResponseDto(
         String name,
         String surname,
         String email,
+        String phone,
         Role role
 ) {
 
@@ -17,6 +18,7 @@ public record RegisterUserResponseDto(
                 user.getName(),
                 user.getSurname(),
                 user.getEmail(),
+                user.getPhone(),
                 user.getRole()
         );
     }

@@ -43,15 +43,10 @@ public class UserServiceImpl implements UserService {
         user.setName(dto.getName());
         user.setSurname(dto.getSurname());
         user.setEmail(dto.getEmail());
+        user.setPhone(dto.getPhone());
         user.setRole(dto.getRole());
 
         User savedUser = userRepository.save(user);
-
-//        if (dto.getRole()==Role.ROLE_COURIER) {
-//            Courier courier = new Courier();
-//            courier.setUser(savedUser);
-//            courierRepository.save(courier);
-//        }
 
         return savedUser;
     }
@@ -93,10 +88,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username)
                 .map(existingUser -> {
                     existingUser.setName(user.getName());
-                    existingUser.setUsername(user.getUsername());
+//                    existingUser.setUsername(user.getUsername());
                     existingUser.setSurname(user.getSurname());
                     existingUser.setRole(user.getRole());
                     existingUser.setEmail(user.getEmail());
+                    existingUser.setPhone(user.getPhone());
                     if (user.getPassword() != null && !user.getPassword().isBlank()) {
                         existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
                     }

@@ -15,13 +15,11 @@ public class Courier{
     @OneToOne(optional = false)
     @JoinColumn(name = "user_username")
     private User user;
-    private String phone;
 
     private Boolean active = true;
 
-    public Courier(User user, String phone, Boolean active) {
+    public Courier(User user, Boolean active) {
         this.user = user;
-        this.phone = phone;
         this.active = active;
     }
 
@@ -46,14 +44,6 @@ public class Courier{
 
     public String getName() {
         return user != null ? user.getName() + " " + user.getSurname() : "";
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 
     public Boolean getActive() {

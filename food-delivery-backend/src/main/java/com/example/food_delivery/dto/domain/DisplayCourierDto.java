@@ -5,13 +5,10 @@ import com.example.food_delivery.model.domain.Courier;
 public class DisplayCourierDto {
     private Long id;
     private String name;
-    private String phone;
     private Boolean active;
 
-    public DisplayCourierDto(String name, String phone, Boolean active) {
-        this.id = id;
+    public DisplayCourierDto(String name, Boolean active) {
         this.name = name;
-        this.phone = phone;
         this.active = active;
     }
 
@@ -30,14 +27,6 @@ public class DisplayCourierDto {
         this.name = name;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
     public Boolean getActive() {
         return active;
     }
@@ -49,7 +38,6 @@ public class DisplayCourierDto {
     public static DisplayCourierDto from(Courier courier) {
         return new DisplayCourierDto(
                 courier.getName(),
-                courier.getPhone(),
                 courier.getActive()
         );
     }

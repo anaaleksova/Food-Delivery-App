@@ -18,6 +18,7 @@ const RegisterPage = () => {
         surname: "",
         email: "",
         password: "",
+        phone: "",
         role: "ROLE_CUSTOMER",
     });
     const navigate = useNavigate();
@@ -40,33 +41,35 @@ const RegisterPage = () => {
                 component="form"
                 onSubmit={submit}
                 sx={{
-                    maxWidth: 400,      // same width as login page
+                    maxWidth: 360,    // slightly narrower
                     width: "95%",
                     mx: "auto",
-                    my: 4,
+                    my: 3,
                     display: "flex",
                     flexDirection: "column",
-                    gap: 2,
+                    gap: 1.5,        // less vertical space
                 }}
             >
                 {/* Brand */}
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                    <Avatar sx={{ bgcolor: "#f97316", width: 32, height: 32 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
+                    <Avatar sx={{ bgcolor: "#f97316", width: 28, height: 28 }}>
                         <LocalDining fontSize="small" />
                     </Avatar>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                         Ana2AnaFoodDelivery
                     </Typography>
                 </Box>
 
-                <Typography variant="h5" className="auth-title">Create account</Typography>
-                <Typography className="auth-subtitle">It takes less than a minute.</Typography>
+                <Typography variant="h6">Create account</Typography>
+                <Typography sx={{ fontSize: "0.85rem", color: "text.secondary" }}>
+                    It takes less than a minute.
+                </Typography>
 
                 {/* Form Fields */}
                 <TextField
                     label="Username"
                     fullWidth
-                    size="medium"
+                    size="small"
                     margin="dense"
                     value={form.username}
                     onChange={(e) => setForm({ ...form, username: e.target.value })}
@@ -75,7 +78,7 @@ const RegisterPage = () => {
                 <TextField
                     label="First name"
                     fullWidth
-                    size="medium"
+                    size="small"
                     margin="dense"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -84,17 +87,26 @@ const RegisterPage = () => {
                 <TextField
                     label="Last name"
                     fullWidth
-                    size="medium"
+                    size="small"
                     margin="dense"
                     value={form.surname}
                     onChange={(e) => setForm({ ...form, surname: e.target.value })}
                     required
                 />
                 <TextField
+                    label="Phone number"
+                    fullWidth
+                    size="small"
+                    margin="dense"
+                    value={form.phone}
+                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    required
+                />
+                <TextField
                     label="Email"
                     type="email"
                     fullWidth
-                    size="medium"
+                    size="small"
                     margin="dense"
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -104,7 +116,7 @@ const RegisterPage = () => {
                     label="Password"
                     type="password"
                     fullWidth
-                    size="medium"
+                    size="small"
                     margin="dense"
                     value={form.password}
                     onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -119,7 +131,7 @@ const RegisterPage = () => {
                     Sign up
                 </Button>
 
-                <Box className="auth-footer">
+                <Box sx={{ fontSize: "0.85rem", textAlign: "center", mt: 1 }}>
                     <span>Already have an account? </span>
                     <Link to="/login">Sign in</Link>
                 </Box>

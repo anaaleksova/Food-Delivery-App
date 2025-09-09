@@ -46,7 +46,6 @@ public class CourierServiceImpl implements CourierService {
     @Override
     public Optional<Courier> update(Long id, Courier courier) {
         return courierRepository.findById(id).map(existing -> {
-            existing.setPhone(courier.getPhone());
             existing.setActive(courier.getActive());
             return courierRepository.save(existing);
         });

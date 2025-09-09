@@ -31,6 +31,7 @@ public class User implements UserDetails {
     private String surname;
 
     private String email;
+    private String phone;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -47,13 +48,14 @@ public class User implements UserDetails {
 //        role = Role.ROLE_CUSTOMER;
 //    }
 
-    public User(String username, String password, String name, String surname, String email, Role role) {
+    public User(String username, String password, String name, String surname, String phone, String email, Role role) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.role = role;
+        this.phone=phone;
     }
 
     @Override
@@ -129,5 +131,13 @@ public class User implements UserDetails {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

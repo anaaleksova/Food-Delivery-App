@@ -22,6 +22,7 @@ const AdminUsers = () => {
         name: '',
         surname: '',
         email: '',
+        phone: '',
         password: '',
         role: 'ROLE_CUSTOMER'
     });
@@ -80,6 +81,7 @@ const AdminUsers = () => {
                 name: '',
                 surname: '',
                 email: '',
+                phone: '',
                 password: '',
                 role: 'ROLE_CUSTOMER'
             });
@@ -120,6 +122,7 @@ const AdminUsers = () => {
                             <TableCell>Username</TableCell>
                             <TableCell>Name</TableCell>
                             <TableCell>Email</TableCell>
+                            <TableCell>Phone</TableCell>
                             <TableCell>Role</TableCell>
                             <TableCell>Actions</TableCell>
                         </TableRow>
@@ -130,6 +133,7 @@ const AdminUsers = () => {
                                 <TableCell>{user.username}</TableCell>
                                 <TableCell>{user.name} {user.surname}</TableCell>
                                 <TableCell>{user.email}</TableCell>
+                                <TableCell>{user.phone}</TableCell>
                                 <TableCell>
                                     <Chip
                                         label={user.role.replace('ROLE_', '')}
@@ -181,6 +185,11 @@ const AdminUsers = () => {
                             onChange={(e) => setEditUser({...editUser, email: e.target.value})}
                         />
                         <TextField
+                            label="Phone number"
+                            value={editUser?.phone || ''}
+                            onChange={(e) => setEditUser({...editUser, phone: e.target.value})}
+                        />
+                        <TextField
                             select
                             label="Role"
                             value={editUser?.role || ''}
@@ -217,6 +226,11 @@ const AdminUsers = () => {
                             label="Surname"
                             value={newUser.surname}
                             onChange={(e) => setNewUser({...newUser, surname: e.target.value})}
+                        />
+                        <TextField
+                            label="Phone number"
+                            value={newUser.phone}
+                            onChange={(e) => setNewUser({...newUser, phone: e.target.value})}
                         />
                         <TextField
                             label="Email"

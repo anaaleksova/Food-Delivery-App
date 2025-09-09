@@ -9,11 +9,12 @@ public record RegisterUserRequestDto(
         String name,
         String surname,
         String email,
+        String phone,
         Role role
 ) {
 
     public User toUser() {
-        return new User(username, password, name, surname, email,role);
+        return new User(username, password, name, surname,phone, email,role);
     }
 
 }
