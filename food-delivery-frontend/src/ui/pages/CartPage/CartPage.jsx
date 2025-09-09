@@ -15,6 +15,45 @@ import {
     Divider,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import Alert from "../../../common/Alert.jsx";
+
+function ConfirmPopup({ open, message, onCancel, onConfirm }) {
+    if (!open) return null;
+    return (
+        <Box
+            sx={{
+                position: "fixed",
+                inset: 0,
+                bgcolor: "rgba(0,0,0,0.4)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                zIndex: 2000,
+                p: 2,
+            }}
+        >
+            <Box
+                sx={{
+                    bgcolor: "white",
+                    borderRadius: 3,
+                    p: 3,
+                    width: "90%",
+                    maxWidth: 420,
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+                    textAlign: "center",
+                }}
+            >
+                <Typography sx={{ mb: 2 }}>{message}</Typography>
+                <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
+                    <Button onClick={onCancel}>Cancel</Button>
+                    <Button variant="contained" color="error" onClick={onConfirm}>
+                        Confirm
+                    </Button>
+                </Box>
+            </Box>
+        </Box>
+    );
+}
 
 const CartPage = () => {
     const { order, loading, refresh } = useOrder();
@@ -29,6 +68,10 @@ const CartPage = () => {
         country: "",
     });
 
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
+    const [confirmOpen, setConfirmOpen] = useState(false);
+
     const onCheckout = () => {
         if (!order?.deliveryAddress) {
             setShowAddressDialog(true);
@@ -37,16 +80,14 @@ const CartPage = () => {
         navigate("/checkout");
     };
 
-    const onCancel = async () => {
-        const ok = window.confirm("Remove all items from the cart?");
-        if (!ok) return;
-        await orderRepository.cancelPending();
-        await refresh();
+    const onCancel = () => {
+        setConfirmOpen(true);
     };
 
     const handleSaveAddress = async () => {
         if (!address.line1 || !address.city || !address.country) {
-            alert("Please fill in Line 1, City, and Country.");
+            setAlertMessage("Please fill in Line 1, City, and Country.");
+            setAlertOpen(true);
             return;
         }
         await orderRepository.updateAddress(order.id, address);
@@ -71,12 +112,7 @@ const CartPage = () => {
             <OrderList order={order} onCheckout={onCheckout} onCancel={onCancel} refresh={refresh} />
 
             {/* Address Dialog */}
-            <Dialog
-                open={showAddressDialog}
-                onClose={() => setShowAddressDialog(false)}
-                maxWidth="sm"
-                fullWidth
-            >
+            <Dialog open={showAddressDialog} onClose={() => setShowAddressDialog(false)} maxWidth="sm" fullWidth>
                 <DialogTitle sx={{ fontWeight: 700 }}>Enter Delivery Address</DialogTitle>
                 <Divider />
                 <DialogContent sx={{ mt: 1 }}>
@@ -127,6 +163,21 @@ const CartPage = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            <ConfirmPopup
+                open={confirmOpen}
+                message="Remove all items from the cart?"
+                onCancel={() => setConfirmOpen(false)}
+                onConfirm={async () => {
+                    await orderRepository.cancelPending();
+                    await refresh();
+                    setConfirmOpen(false);
+                    setAlertMessage("Cart cleared.");
+                    setAlertOpen(true);
+                }}
+            />
+
+            <Alert open={alertOpen} onClose={() => setAlertOpen(false)} message={alertMessage} />
         </Box>
     );
 };

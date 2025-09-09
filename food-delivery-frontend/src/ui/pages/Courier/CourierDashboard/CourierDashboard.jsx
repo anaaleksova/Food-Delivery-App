@@ -1,11 +1,28 @@
 import React, { useEffect, useState } from "react";
 import {
-    Typography, Table, TableBody, TableCell, TableContainer,
-    TableHead, TableRow, Paper, Button, Box, Card, CardContent,
-    Chip, Alert, Tooltip, Popover, List, ListItem, ListItemText
+    Typography,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Button,
+    Box,
+    Card,
+    CardContent,
+    Chip,
+    Tooltip,
+    Popover,
+    List,
+    ListItem,
+    ListItemText,
 } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 import axiosInstance from "../../../../axios/axios.js";
 import useAuth from "../../../../hooks/useAuth.js";
+import Alert from "../../../../common/Alert.jsx"; //
 
 const CourierDashboard = () => {
     const [confirmedOrders, setConfirmedOrders] = useState([]);
@@ -18,6 +35,9 @@ const CourierDashboard = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedProducts, setSelectedProducts] = useState([]);
 
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
+
     const handleItemsClick = (event, products) => {
         setAnchorEl(event.currentTarget);
         setSelectedProducts(products || []);
@@ -25,7 +45,6 @@ const CourierDashboard = () => {
 
     const handlePopoverClose = () => {
         setAnchorEl(null);
-        // setSelectedProducts([]);
     };
 
     const open = Boolean(anchorEl);
@@ -55,9 +74,13 @@ const CourierDashboard = () => {
         try {
             await axiosInstance.post(`/couriers/assign/${orderId}`);
             await fetchOrders();
-            alert("Order assigned successfully!");
+            setAlertMessage("Order assigned successfully!");
+            setAlertOpen(true);
         } catch (err) {
-            alert("Failed to assign order: " + (err.response?.data?.message || err.message));
+            setAlertMessage(
+                "Failed to assign order: " + (err.response?.data?.message || err.message)
+            );
+            setAlertOpen(true);
         }
     };
 
@@ -65,9 +88,13 @@ const CourierDashboard = () => {
         try {
             await axiosInstance.post(`/couriers/complete/${orderId}`);
             await fetchOrders();
-            alert("Order completed successfully!");
+            setAlertMessage("Order completed successfully!");
+            setAlertOpen(true);
         } catch (err) {
-            alert("Failed to complete order: " + (err.response?.data?.message || err.message));
+            setAlertMessage(
+                "Failed to complete order: " + (err.response?.data?.message || err.message)
+            );
+            setAlertOpen(true);
         }
     };
 
@@ -88,17 +115,17 @@ const CourierDashboard = () => {
 
     const TruncatedCell = ({ children, title }) => (
         <Tooltip title={title || ""}>
-            <span
-                style={{
-                    display: "inline-block",
-                    maxWidth: "100%",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                }}
-            >
-                {children}
-            </span>
+      <span
+          style={{
+              display: "inline-block",
+              maxWidth: "100%",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+          }}
+      >
+        {children}
+      </span>
         </Tooltip>
     );
 
@@ -108,9 +135,10 @@ const CourierDashboard = () => {
                 Courier Dashboard
             </Typography>
 
-            <Alert severity="info" sx={{ mb: 3 }}>
+            {/* Info banner (keep MUI look) */}
+            <MuiAlert severity="info" sx={{ mb: 3 }}>
                 Welcome, {user?.username}! You can assign yourself to confirmed orders and track your deliveries.
-            </Alert>
+            </MuiAlert>
 
             {/* Available Orders Section */}
             <Card sx={{ mb: 4 }}>
@@ -190,7 +218,7 @@ const CourierDashboard = () => {
                 </CardContent>
             </Card>
 
-            {/* My Deliveries Section */}
+            {/* My Active Deliveries */}
             <Card>
                 <CardContent>
                     <Typography variant="h5" sx={{ mb: 2 }}>
@@ -271,7 +299,7 @@ const CourierDashboard = () => {
                 </CardContent>
             </Card>
 
-            {/* My Delivered Orders Section */}
+            {/* My Delivered Orders */}
             <Card sx={{ mt: 4 }}>
                 <CardContent>
                     <Typography variant="h5" sx={{ mb: 2 }}>
@@ -343,23 +371,16 @@ const CourierDashboard = () => {
                 </CardContent>
             </Card>
 
-            {/* Popover for items */}
+            {/* Items Popover */}
             <Popover
                 open={open}
                 anchorEl={anchorEl}
                 onClose={handlePopoverClose}
-                anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                }}
-                transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                transformOrigin={{ vertical: "top", horizontal: "left" }}
             >
                 <Box sx={{ p: 2, maxWidth: 250 }}>
-                    <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                    </Typography>
+                    <Typography variant="subtitle1" sx={{ mb: 1 }} />
                     {selectedProducts.length > 0 ? (
                         <List dense>
                             {selectedProducts.map((p, i) => (
@@ -373,6 +394,11 @@ const CourierDashboard = () => {
                     )}
                 </Box>
             </Popover>
+            <Alert
+                open={alertOpen}
+                onClose={() => setAlertOpen(false)}
+                message={alertMessage}
+            />
         </Box>
     );
 };

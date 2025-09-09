@@ -24,6 +24,7 @@ import { addToCartRespectingSingleRestaurant } from "../../../repository/cartAct
 import reviewRepository from "../../../repository/reviewRepository.js";
 import ReviewForm from "../../components/reviews/ReviewForm/ReviewForm.jsx";
 import useAuth from "../../../hooks/useAuth.js";
+import Alert from "../../../common/Alert.jsx";
 
 /** Helpers */
 const mkd = (n) => `${Number(n || 0).toFixed(0)} ден`;
@@ -242,6 +243,9 @@ const RestaurantPage = () => {
     const categoryRefs = useRef({});
     const [activeCat, setActiveCat] = useState("");
 
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
+
     useEffect(() => {
         let active = true;
         Promise.all([
@@ -259,7 +263,7 @@ const RestaurantPage = () => {
                 setLoading(false);
             })
             .catch((err) => {
-                console.error("Error loading restaurant data:", err);
+                // console.error("Error loading restaurant data:", err);
                 setLoading(false);
             });
         return () => {
@@ -291,10 +295,12 @@ const RestaurantPage = () => {
         try {
             const res = await addToCartRespectingSingleRestaurant(productId);
             if (res?.ok) {
-                alert(res.replaced ? "Cart replaced and item added." : "Added to cart.");
+                setAlertMessage(res.replaced ? "Cart replaced and item added." : "Added to cart.");
+                setAlertOpen(true);
             }
-        } catch (err) {
-            alert("Failed to add item to cart.");
+        } catch {
+            setAlertMessage("Failed to add item to cart.");
+            setAlertOpen(true);
         }
     };
 
@@ -303,9 +309,11 @@ const RestaurantPage = () => {
             await reviewRepository.add(id, { rating, comment });
             const rv = await reviewRepository.list(id);
             setReviews(rv.data);
-            alert("Review submitted successfully!");
-        } catch (err) {
-            alert("Failed to submit review.");
+            setAlertMessage("Review submitted successfully!");
+            setAlertOpen(true);
+        } catch {
+            setAlertMessage("Failed to submit review.");
+            setAlertOpen(true);
         }
     };
 
@@ -519,6 +527,7 @@ const RestaurantPage = () => {
                     <Button onClick={() => setClosedDialogOpen(false)}>OK</Button>
                 </DialogActions>
             </Dialog>
+            <Alert open={alertOpen} onClose={() => setAlertOpen(false)} message={alertMessage} />
         </Box>
     );
 };

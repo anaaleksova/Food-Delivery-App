@@ -18,29 +18,6 @@ const LoginPage = () => {
     const location = useLocation();
     const redirectTo = location.state?.from || "/";
 
-    // const submit = async (e) => {
-    //     e.preventDefault();
-    //     try {
-    //         // 👇 keep your original working call/shape
-    //         const res = await userRepository.login(form);
-    //         const token = res?.data?.token;
-    //
-    //         if (!token) {
-    //             throw new Error(res?.data?.message || "No token returned.");
-    //         }
-    //
-    //         login(token);
-    //         navigate(redirectTo, { replace: true });
-    //     } catch (err) {
-    //         const msg =
-    //             err?.response?.data?.message ||
-    //             err?.message ||
-    //             "Login failed.";
-    //         alert(msg);
-    //         console.error("Login error:", err);
-    //     }
-    // };
-
     const submit = async (e) => {
         e.preventDefault();
         try {
