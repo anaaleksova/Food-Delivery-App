@@ -22,7 +22,7 @@ const Footer = () => {
             {/* thin orange accent to echo the AppBar primary color */}
             <Box sx={{ height: 2, bgcolor: "primary.main" }} />
 
-            <Container maxWidth="lg" sx={{ py: { xs: 3, md: 4 } }}>
+            <Container maxWidth="lg" sx={{ py: { xs: 3, md: 4 } }} justifyContent="space-evenly">
                 <Grid container spacing={3} alignItems="flex-start">
                     {/* Brand + short blurb + socials */}
                     <Grid item xs={12} md={6}>
@@ -92,7 +92,7 @@ const Footer = () => {
                 {/* Bottom bar */}
                 <Stack
                     direction={{ xs: "column", sm: "row" }}
-                    justifyContent="space-between"
+                    justifyContent="space-evenly"
                     alignItems={{ xs: "flex-start", sm: "center" }}
                     spacing={1}
                 >

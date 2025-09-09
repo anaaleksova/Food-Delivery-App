@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import useOrder from "../../../hooks/useOrder.js";
 import OrderList from "../../components/order/OrderList/OrderList.jsx";
 import orderRepository from "../../../repository/orderRepository.js";
@@ -9,8 +9,12 @@ import {
     DialogContent,
     DialogActions,
     Button,
-    TextField
+    TextField,
+    Typography,
+    Box,
+    Divider,
 } from "@mui/material";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 const CartPage = () => {
     const { order, loading, refresh } = useOrder();
@@ -22,7 +26,7 @@ const CartPage = () => {
         line2: "",
         city: "",
         postalCode: "",
-        country: ""
+        country: "",
     });
 
     const onCheckout = () => {
@@ -45,7 +49,6 @@ const CartPage = () => {
             alert("Please fill in Line 1, City, and Country.");
             return;
         }
-
         await orderRepository.updateAddress(order.id, address);
         await refresh();
         setShowAddressDialog(false);
@@ -55,21 +58,32 @@ const CartPage = () => {
     if (loading) return <>Loading...</>;
 
     return (
-        <>
-            <OrderList
-                order={order}
-                onCheckout={onCheckout}
-                onCancel={onCancel}
-                refresh={refresh}
-            />
+        <Box sx={{ maxWidth: 1000, mx: "auto", mt: 4, px: 2 }}>
+            {/* Header */}
+            <Box sx={{ display: "flex", alignItems: "center", mb: 3, gap: 1 }}>
+                <ShoppingCartIcon color="primary" />
+                <Typography variant="h5" sx={{ fontWeight: 700 }}>
+                    Your Cart
+                </Typography>
+            </Box>
+
+            {/* Order list */}
+            <OrderList order={order} onCheckout={onCheckout} onCancel={onCancel} refresh={refresh} />
 
             {/* Address Dialog */}
             <Dialog
                 open={showAddressDialog}
                 onClose={() => setShowAddressDialog(false)}
+                maxWidth="sm"
+                fullWidth
             >
-                <DialogTitle>Enter Delivery Address</DialogTitle>
-                <DialogContent>
+                <DialogTitle sx={{ fontWeight: 700 }}>Enter Delivery Address</DialogTitle>
+                <Divider />
+                <DialogContent sx={{ mt: 1 }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        Please provide your delivery details so we can bring your order right to your door.
+                    </Typography>
+
                     <TextField
                         fullWidth
                         margin="normal"
@@ -106,14 +120,14 @@ const CartPage = () => {
                         onChange={(e) => setAddress({ ...address, country: e.target.value })}
                     />
                 </DialogContent>
-                <DialogActions>
+                <DialogActions sx={{ px: 3, pb: 2 }}>
                     <Button onClick={() => setShowAddressDialog(false)}>Cancel</Button>
-                    <Button variant="contained" onClick={handleSaveAddress}>
+                    <Button variant="contained" onClick={handleSaveAddress} sx={{ borderRadius: 2 }}>
                         Save & Continue
                     </Button>
                 </DialogActions>
             </Dialog>
-        </>
+        </Box>
     );
 };
 
