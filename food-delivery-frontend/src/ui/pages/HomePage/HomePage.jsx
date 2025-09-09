@@ -199,14 +199,12 @@ const HomePage = () => {
             <Box
                 sx={{
                     position: "relative",
-                    left: "50%",
-                    right: "50%",
-                    ml: "-50vw",
-                    mr: "-50vw",
-                    width: "100vw",
+                    /* center a viewport-wide box even if we're inside a padded Container */
+                    mx: "calc(50% - 50dvw)",
+                    width: "99.5dvw",                 // excludes scrollbar width
                     height: { xs: 280, md: 420 },
                     mb: 6,
-                    overflow: "hidden",
+                    overflow: "clip",                // avoids tiny overflows
                     backgroundImage: `url(${banner})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",

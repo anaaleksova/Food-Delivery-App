@@ -29,6 +29,18 @@ public class Restaurant {
     private Integer deliveryTimeMinutes;
     private String openHours;
 
+//    public Restaurant(String name, String description, String address, String url, String category, int deliveryTimeMinutes) {
+//
+//    }
+
+    public Restaurant(String name, String description,String Address, String imageUrl, String category, Integer deliveryTimeMinutes) {
+        this.name = name;
+        this.description = description;
+        this.category = category;
+        this.deliveryTimeMinutes = deliveryTimeMinutes;
+        this.imageUrl = imageUrl;
+    }
+
     public Double getAverageRating() {
         return averageRating;
     }

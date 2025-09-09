@@ -7,12 +7,19 @@ import FastfoodIcon from '@mui/icons-material/Fastfood';
 
 const AdminDashboard = () => {
     return (
-        <Box>
+        <Box sx={{
+            display: "flex",                 // enable flexbox
+            flexDirection: "column",         // stack header + grid vertically
+            alignItems: "center",            // horizontal center
+            justifyContent: "center",        // vertical center
+            textAlign: "center",             // center text inside
+
+        }}>
             <Typography variant="h4" sx={{ mb: 3 }}>
                 Admin Dashboard
             </Typography>
 
-            <Grid container spacing={3}>
+            <Grid container spacing={3} justifyContent="center" >
                 <Grid item xs={12} md={4}>
                     <Card>
                         <CardContent sx={{ textAlign: 'center' }}>
