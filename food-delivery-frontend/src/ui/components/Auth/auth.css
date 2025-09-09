@@ -59,13 +59,13 @@ html, body, #root {
     }
     .auth-illustration{
         position: static;
-        min-height: 100vh; /* fill column */
-        width: 100%;
+        width: 50vw;
     }
     .auth-form-wrap{
         position: static;  /* becomes the right column */
         height: 100vh;
         padding: 0;        /* no inner gutters */
+        width: 50vw;
         display: flex;
         align-items: center;
         justify-content: center;

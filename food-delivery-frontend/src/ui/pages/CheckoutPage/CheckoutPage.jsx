@@ -222,7 +222,7 @@ const CheckoutPage = () => {
                                         </Typography>
                                         <Typography variant="body2">
                                             {summary.currency}
-                                            {(it.price ?? 0 * (it.quantity ?? 1)).toFixed?.(2) ?? it.price}
+                                            {(it.unitPriceSnapshot * (it.quantity ?? 1)).toFixed?.(2)}
                                         </Typography>
                                     </Stack>
                                 ))}

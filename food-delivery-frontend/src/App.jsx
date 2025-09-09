@@ -12,7 +12,7 @@ import TrackOrderPage from './ui/pages/TrackOrderPage/TrackOrderPage.jsx'
 import ProtectedRoute from './ui/components/routing/ProtectedRoute/ProtectedRoute.jsx'
 import ProfilePage from "./ui/pages/ProfilePage";
 import MyOrdersPage from './ui/pages/MyOrdersPage/MyOrdersPage.jsx'
-// Courier pages
+import ForgotPasswordPage from './ui/pages/ForgotPasswordPage.jsx'
 import CourierDashboard from './ui/pages/Courier/CourierDashboard/CourierDashboard.jsx'
 
 // Admin pages
@@ -30,6 +30,7 @@ App.routes = createRoutesFromElements(
         <Route path="/restaurants/:id" element={<RestaurantPage/>}/>
         <Route path="/login" element={<LoginPage/>}/>
         <Route path="/register" element={<RegisterPage/>}/>
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
         {/* Customer routes */}
         <Route path="/products/:id" element={<ProductPage/>}/>

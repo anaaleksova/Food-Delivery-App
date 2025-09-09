@@ -14,7 +14,8 @@ const Layout = () => {
         "/register",
         "/admin",
         "/courier",
-        "/user/me"
+        "/user/me",
+        "/forgot-password"
     ];
 
     // check if current path starts with any of the noFooterPaths

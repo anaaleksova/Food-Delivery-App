@@ -107,7 +107,7 @@ const LoginPage = () => {
 
                 <Box className="auth-actions">
                     <FormControlLabel control={<Checkbox size="small" />} label="Remember me" />
-                    <Link to="#" style={{ textDecoration: "none" }}>
+                    <Link to="/forgot-password" style={{ textDecoration: "none" }}>
                         Forgot password?
                     </Link>
                 </Box>

@@ -67,4 +67,9 @@ public class UserApplicationServiceImpl implements UserApplicationService {
         return userService.deleteById(username);
     }
 
+    @Override
+    public User changePassword(String username, String newPassword) {
+        return userService.changePassword(username,newPassword);
+    }
+
 }

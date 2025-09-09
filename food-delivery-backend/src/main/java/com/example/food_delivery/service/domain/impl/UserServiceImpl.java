@@ -108,6 +108,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User changePassword(String username, String newPassword) {
+        User user = userRepository.findByUsername(username).orElseThrow();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        return userRepository.save(user);
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository
                 .findByUsername(username)

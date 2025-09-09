@@ -80,4 +80,13 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PutMapping("/{username}/password")
+    public ResponseEntity<User> changePassword(
+            @PathVariable String username,
+            @RequestBody PasswordDto dto
+    ) {
+
+        return ResponseEntity.ok(userApplicationService.changePassword(username, dto.getPassword()));
+    }
+
 }
