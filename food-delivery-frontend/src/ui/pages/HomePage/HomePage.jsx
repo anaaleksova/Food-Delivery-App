@@ -133,7 +133,7 @@ const RestaurantCard = ({ restaurant }) => {
 
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
                     <Chip
-                        label={`⭐ ${restaurant.rating ?? 4.5}`}
+                        label={`⭐ ${restaurant.averageRating ?? 4.5}`}
                         size="small"
                         variant="outlined"
                     />

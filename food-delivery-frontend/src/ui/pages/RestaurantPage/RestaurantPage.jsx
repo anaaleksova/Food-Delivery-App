@@ -358,7 +358,7 @@ const RestaurantPage = () => {
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                             <StarIcon sx={{ color: "#ffc107" }} />
-                            <Typography variant="h6">{restaurant.rating || 4.5}</Typography>
+                            <Typography variant="h6">{restaurant.averageRating || 4.5}</Typography>
                         </Box>
 
                         <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
@@ -500,7 +500,7 @@ const RestaurantPage = () => {
                                 {Array.from({ length: 5 }).map((_, i) => (
                                     <StarIcon
                                         key={i}
-                                        sx={{ color: i < r.rating ? "#ffc107" : "#e0e0e0" }}
+                                        sx={{ color: i < r.averageRating ? "#ffc107" : "#e0e0e0" }}
                                     />
                                 ))}
                             </Box>

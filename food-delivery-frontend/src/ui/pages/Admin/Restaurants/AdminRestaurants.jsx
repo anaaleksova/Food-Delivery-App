@@ -72,7 +72,7 @@ const AdminRestaurants = () => {
             description: "",
             openHours: "",
             imageUrl: "",
-            rating: 4.5,
+            averageRating: 4.5,
             deliveryTimeEstimate: 30,
             isOpen: true,
         });
@@ -232,7 +232,7 @@ const AdminRestaurants = () => {
                                     </TableCell>
                                     <TableCell>{r.openHours}</TableCell>
                                     <TableCell>{r.deliveryTimeEstimate ?? 30} min</TableCell>
-                                    <TableCell>{r.rating ?? 4.5}</TableCell>
+                                    <TableCell>{r.averageRating ?? 4.5}</TableCell>
                                     <TableCell>
                                         <Chip
                                             size="small"
@@ -298,6 +298,13 @@ const AdminRestaurants = () => {
                         value={editing?.openHours || ""}
                         onChange={(e) =>
                             setEditing({ ...editing, openHours: e.target.value })
+                        }
+                    />
+                    <TextField
+                        label="Average rating"
+                        value={editing?.averageRating || ""}
+                        onChange={(e) =>
+                            setEditing({ ...editing, averageRating: e.target.value })
                         }
                     />
                     <TextField

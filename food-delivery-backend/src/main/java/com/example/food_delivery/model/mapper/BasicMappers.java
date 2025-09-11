@@ -134,21 +134,6 @@ public final class BasicMappers {
         return courier;
     }
 
-    // ===== DeliveryAssignment =====
-//    public static DeliveryAssignmentDto toDto(DeliveryAssignment a) {
-//        if (a == null) return null;
-//        DeliveryAssignmentDto d = new DeliveryAssignmentDto();
-//        d.setId(a.getId());
-//        d.setOrderId(a.getOrder() != null ? a.getOrder().getId() : null);
-//        if (a.getCourier() != null) {
-//            d.setCourierName(a.getCourier().getName());
-//        }
-//        d.setStatus(a.getStatus() != null ? a.getStatus().name() : null);
-//        d.setAssignedAt(a.getAssignedAt());
-//        d.setDeliveredAt(a.getDeliveredAt());
-//        return d;
-//    }
-
     // ===== Review =====
     public static ReviewDto toDto(Review r) {
         if (r == null) return null;

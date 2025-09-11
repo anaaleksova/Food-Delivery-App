@@ -42,6 +42,7 @@ public class RestaurantServiceImpl implements RestaurantService {
                     existingRestaurant.setCategory(restaurant.getCategory());
                     existingRestaurant.setDeliveryTimeEstimate(restaurant.getDeliveryTimeEstimate());
                     existingRestaurant.setImageUrl(restaurant.getImageUrl());
+                    existingRestaurant.setAverageRating(restaurant.getAverageRating());
                     existingRestaurant.setOpen(restaurant.getOpen());
                     existingRestaurant.setOpenHours(restaurant.getOpenHours());
                     return restaurantRepository.save(existingRestaurant);

@@ -8,12 +8,13 @@ public record CreateRestaurantDto(
         String openHours,
         String imageUrl,
         String category,
+        Double averageRating,
         Boolean isOpen,
         Integer deliveryTimeEstimate
 ) {
 
     public Restaurant toRestaurant() {
-        return new Restaurant(name, description,openHours,imageUrl,category,isOpen,deliveryTimeEstimate);
+        return new Restaurant(name, description,imageUrl,openHours,category,isOpen,deliveryTimeEstimate,averageRating);
     }
 
 }

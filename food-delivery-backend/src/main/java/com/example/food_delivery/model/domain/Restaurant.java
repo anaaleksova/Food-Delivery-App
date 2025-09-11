@@ -29,17 +29,17 @@ public class Restaurant {
     private Integer deliveryTimeMinutes;
     private String openHours;
 
-//    public Restaurant(String name, String description, String address, String url, String category, int deliveryTimeMinutes) {
-//
-//    }
-
-    public Restaurant(String name, String description,String Address, String imageUrl, String category, Integer deliveryTimeMinutes) {
+    public Restaurant(String name, String description, String imageUrl,String openHours, String category, Boolean isOpen, Integer deliveryTimeEstimate,Double averageRating) {
         this.name = name;
         this.description = description;
         this.category = category;
-        this.deliveryTimeMinutes = deliveryTimeMinutes;
+        this.deliveryTimeEstimate = deliveryTimeEstimate;
         this.imageUrl = imageUrl;
+        this.averageRating=averageRating;
+        this.isOpen=isOpen;
+        this.openHours=openHours;
     }
+
 
     public Double getAverageRating() {
         return averageRating;

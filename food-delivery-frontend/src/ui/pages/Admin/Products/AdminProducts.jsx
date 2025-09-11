@@ -265,8 +265,8 @@ const AdminProducts = () => {
                                             )?.name
                                         }
                                     </TableCell>
-                                    <TableCell>{p.category}</TableCell>
-                                    <TableCell>{Number(p.price ?? 0).toFixed(2)} ден.</TableCell>
+                                    <TableCell sx={{ width: 200 }}>{p.category}</TableCell>
+                                    <TableCell sx={{ width: 150 }}>{Number(p.price ?? 0).toFixed(2)} ден.</TableCell>
                                     <TableCell>{p.quantity ?? 0}</TableCell>
                                     <TableCell>
                                         <Chip
