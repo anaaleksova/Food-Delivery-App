@@ -10,7 +10,7 @@ import {
     Chip,
     TextField,
 } from "@mui/material";
-import { Link } from "react-router"; // per your setup (not react-router-dom)
+import { Link } from "react-router";
 import restaurantRepository from "../../../repository/restaurantRepository.js";
 import banner from "../../../assets/banner.png";
 
@@ -47,7 +47,7 @@ const isOpenAt = (nowMin, intervals) => {
     return false;
 };
 
-/* ---------- Restaurant card (screenshot-like style) ---------- */
+/* ---------- Restaurant card ---------- */
 const RestaurantCard = ({ restaurant }) => {
     const [isOpenNow, setIsOpenNow] = useState(false);
     const intervals = useMemo(() => {
@@ -85,7 +85,7 @@ const RestaurantCard = ({ restaurant }) => {
             <Box
                 sx={{
                     position: "relative",
-                    aspectRatio: "16 / 9",
+                    aspectRatio: "4 / 3", // taller image -> visually larger card
                     bgcolor: "background.default",
                 }}
             >
@@ -165,8 +165,6 @@ const HomePage = () => {
     const [restaurants, setRestaurants] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
-
-    // NEW: active category
     const [activeCategory, setActiveCategory] = useState("All");
 
     useEffect(() => {
@@ -184,7 +182,6 @@ const HomePage = () => {
         };
     }, []);
 
-    // NEW: derive unique, pretty categories
     const categories = useMemo(() => {
         const set = new Set(
             (restaurants || [])
@@ -195,7 +192,6 @@ const HomePage = () => {
         return ["All", ...list];
     }, [restaurants]);
 
-    // Filter by search + category
     const filtered = restaurants.filter((r) => {
         const matchesSearch = (r.name || "")
             .toLowerCase()
@@ -210,7 +206,7 @@ const HomePage = () => {
 
     return (
         <Box>
-            {/* ---------- FULL-BLEED HERO ---------- */}
+            {/* HERO */}
             <Box
                 sx={{
                     position: "relative",
@@ -263,7 +259,7 @@ const HomePage = () => {
                             variant="body1"
                             sx={{ color: "rgba(255,255,255,.9)", mb: 3 }}
                         >
-                            Order restaurant food, takeaway and more.
+                            Order restaurant food, takeaway and groceries.
                         </Typography>
 
                         <TextField
@@ -289,16 +285,7 @@ const HomePage = () => {
                 </Box>
             </Box>
 
-            <Typography variant="h4"  sx={{
-                fontWeight: 800,
-                lineHeight: 1.15,
-                fontSize: { xs: "1.75rem", md: "2.25rem" },
-                mb: 3,
-            }}>
-                Browse Restaurants
-            </Typography>
-
-            {/* ---------- FILTER CHIPS ---------- */}
+            {/* FILTER CHIPS */}
             <Box
                 sx={{
                     mb: 3,
@@ -346,16 +333,38 @@ const HomePage = () => {
                 })}
             </Box>
 
-            {/* ---------- LIST ---------- */}
+            {/* LIST */}
+            <Typography
+                sx={{
+                    fontWeight: 800,
+                    lineHeight: 1.15,
+                    fontSize: { xs: "1.75rem", md: "2.25rem" },
+                    mb: 3,
+                }}
+            >
+                Browse Restaurants
+            </Typography>
 
-
-            <Grid container spacing={3}>
+            <Box
+                sx={{
+                    display: "grid",
+                    gridTemplateColumns: {
+                        xs: "1fr",
+                        sm: "repeat(2, 1fr)",
+                        md: "repeat(3, 1fr)",
+                        lg: "repeat(4, 1fr)",   // <-- exactly 4 per row on desktop
+                    },
+                    gap: 3,                    // matches Grid spacing={3}
+                }}
+            >
                 {filtered.map((restaurant) => (
-                    <Grid item key={restaurant.id} xs={12} sm={6} md={3}>
+                    <Box key={restaurant.id}>
                         <RestaurantCard restaurant={restaurant} />
-                    </Grid>
+                    </Box>
                 ))}
-            </Grid>
+            </Box>
+
+
 
             {!filtered.length && (
                 <Typography color="text.secondary" sx={{ textAlign: "center", mt: 4 }}>
