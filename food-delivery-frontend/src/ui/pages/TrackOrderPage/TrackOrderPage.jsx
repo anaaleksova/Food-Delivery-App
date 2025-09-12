@@ -100,7 +100,12 @@ const TrackOrderPage = () => {
 
     return (
         <Box>
-            <Typography variant="h4" sx={{ mb: 3 }}>
+            <Typography variant="h4"  sx={{
+                fontWeight: 800,
+                lineHeight: 1.15,
+                fontSize: { xs: "1.75rem", md: "2.25rem" },
+                mb: 3,
+            }}>
                 Track Order #{order.id}
             </Typography>
 

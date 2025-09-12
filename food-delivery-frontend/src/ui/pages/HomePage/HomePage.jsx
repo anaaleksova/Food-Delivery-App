@@ -49,7 +49,6 @@ const isOpenAt = (nowMin, intervals) => {
 
 /* ---------- Restaurant card (screenshot-like style) ---------- */
 const RestaurantCard = ({ restaurant }) => {
-    // Time-based open/closed
     const [isOpenNow, setIsOpenNow] = useState(false);
     const intervals = useMemo(() => {
         const raw = restaurant?.openHours || "09:00-22:00";
@@ -73,19 +72,16 @@ const RestaurantCard = ({ restaurant }) => {
                 height: "100%",
                 display: "flex",
                 flexDirection: "column",
-                borderRadius: 3, // ~24px
+                borderRadius: 3,
                 overflow: "hidden",
-                boxShadow:
-                    "0 2px 10px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)",
+                boxShadow: "0 2px 10px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)",
                 transition: "transform .15s ease, box-shadow .15s ease",
                 "&:hover": {
                     transform: "translateY(-2px)",
-                    boxShadow:
-                        "0 8px 20px rgba(0,0,0,0.12), 0 3px 6px rgba(0,0,0,0.06)",
+                    boxShadow: "0 8px 20px rgba(0,0,0,0.12), 0 3px 6px rgba(0,0,0,0.06)",
                 },
             }}
         >
-            {/* Top full-bleed image (rounded by card), no logo overlay */}
             <Box
                 sx={{
                     position: "relative",
@@ -108,7 +104,6 @@ const RestaurantCard = ({ restaurant }) => {
                         objectFit: "cover",
                     }}
                 />
-                {/* subtle bottom fade to make text readable if you decide to overlay later */}
                 <Box
                     sx={{
                         position: "absolute",
@@ -122,7 +117,6 @@ const RestaurantCard = ({ restaurant }) => {
                 />
             </Box>
 
-            {/* Body with name and small meta row */}
             <CardContent sx={{ flexGrow: 1 }}>
                 <Typography
                     variant="subtitle1"
@@ -172,6 +166,9 @@ const HomePage = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
 
+    // NEW: active category
+    const [activeCategory, setActiveCategory] = useState("All");
+
     useEffect(() => {
         let active = true;
         restaurantRepository
@@ -187,9 +184,27 @@ const HomePage = () => {
         };
     }, []);
 
-    const filtered = restaurants.filter((r) =>
-        (r.name || "").toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // NEW: derive unique, pretty categories
+    const categories = useMemo(() => {
+        const set = new Set(
+            (restaurants || [])
+                .map((r) => (r.category || "").trim())
+                .filter(Boolean)
+        );
+        const list = [...set].sort((a, b) => a.localeCompare(b));
+        return ["All", ...list];
+    }, [restaurants]);
+
+    // Filter by search + category
+    const filtered = restaurants.filter((r) => {
+        const matchesSearch = (r.name || "")
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase());
+        const matchesCategory =
+            activeCategory === "All" ||
+            (r.category || "").toLowerCase() === activeCategory.toLowerCase();
+        return matchesSearch && matchesCategory;
+    });
 
     if (loading) return <Typography>Loading restaurants...</Typography>;
 
@@ -199,12 +214,11 @@ const HomePage = () => {
             <Box
                 sx={{
                     position: "relative",
-                    /* center a viewport-wide box even if we're inside a padded Container */
                     mx: "calc(50% - 50dvw)",
-                    width: "99.5dvw",                 // excludes scrollbar width
+                    width: "99.5dvw",
                     height: { xs: 280, md: 420 },
                     mb: 6,
-                    overflow: "clip",                // avoids tiny overflows
+                    overflow: "clip",
                     backgroundImage: `url(${banner})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
@@ -214,8 +228,7 @@ const HomePage = () => {
                     sx={{
                         position: "absolute",
                         inset: 0,
-                        background:
-                            "linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45))",
+                        background: "linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45))",
                     }}
                 />
                 <Box
@@ -250,7 +263,7 @@ const HomePage = () => {
                             variant="body1"
                             sx={{ color: "rgba(255,255,255,.9)", mb: 3 }}
                         >
-                            Order restaurant food, takeaway and groceries.
+                            Order restaurant food, takeaway and more.
                         </Typography>
 
                         <TextField
@@ -276,10 +289,65 @@ const HomePage = () => {
                 </Box>
             </Box>
 
-            {/* ---------- LIST ---------- */}
-            <Typography variant="h4" sx={{ mb: 3 }}>
+            <Typography variant="h4"  sx={{
+                fontWeight: 800,
+                lineHeight: 1.15,
+                fontSize: { xs: "1.75rem", md: "2.25rem" },
+                mb: 3,
+            }}>
                 Browse Restaurants
             </Typography>
+
+            {/* ---------- FILTER CHIPS ---------- */}
+            <Box
+                sx={{
+                    mb: 3,
+                    display: "flex",
+                    gap: 1,
+                    overflowX: "auto",
+                    pb: 0.5,
+                    scrollSnapType: "x proximity",
+                    "&::-webkit-scrollbar": { height: 6 },
+                    "&::-webkit-scrollbar-thumb": {
+                        bgcolor: "action.hover",
+                        borderRadius: 999,
+                    },
+                }}
+            >
+                {categories.map((cat) => {
+                    const selected = cat === activeCategory;
+                    return (
+                        <Chip
+                            key={cat}
+                            label={cat}
+                            onClick={() => setActiveCategory(cat)}
+                            clickable
+                            sx={{
+                                scrollSnapAlign: "start",
+                                borderRadius: 2,
+                                px: 0.5,
+                                fontWeight: 700,
+                                ...(selected
+                                    ? {
+                                        bgcolor: "primary.main",
+                                        color: "#fff",
+                                    }
+                                    : {
+                                        bgcolor: "background.paper",
+                                        border: "1px solid",
+                                        borderColor: "divider",
+                                    }),
+                                "&:hover": selected
+                                    ? { opacity: 0.95 }
+                                    : { bgcolor: "action.hover" },
+                            }}
+                        />
+                    );
+                })}
+            </Box>
+
+            {/* ---------- LIST ---------- */}
+
 
             <Grid container spacing={3}>
                 {filtered.map((restaurant) => (
@@ -291,7 +359,8 @@ const HomePage = () => {
 
             {!filtered.length && (
                 <Typography color="text.secondary" sx={{ textAlign: "center", mt: 4 }}>
-                    No restaurants match “{searchTerm}”.
+                    No restaurants match “{searchTerm}”
+                    {activeCategory !== "All" ? ` in ${activeCategory}` : ""}.
                 </Typography>
             )}
         </Box>

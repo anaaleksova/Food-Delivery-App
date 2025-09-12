@@ -23,6 +23,16 @@ public class Courier{
         this.active = active;
     }
 
+    public Courier(User user, String phone, boolean active) {
+        this.user = user;
+        this.active = active;
+
+        if (user != null) {
+            user.setPhone(phone); // delegate phone to User
+        }
+    }
+
+
     public Courier() {
     }
 

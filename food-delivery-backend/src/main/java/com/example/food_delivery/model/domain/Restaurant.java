@@ -40,6 +40,18 @@ public class Restaurant {
         this.openHours=openHours;
     }
 
+    public Restaurant(String name, String description, String openHours,
+                      String imageUrl, String category, Integer deliveryTimeEstimate) {
+        this.name = name;
+        this.description = description;
+        this.openHours = openHours;
+        this.imageUrl = imageUrl;
+        this.category = category;
+        this.deliveryTimeEstimate = deliveryTimeEstimate;
+        this.isOpen = true;         // sensible default
+        this.averageRating = 0.0;   // sensible default
+    }
+
 
     public Double getAverageRating() {
         return averageRating;
