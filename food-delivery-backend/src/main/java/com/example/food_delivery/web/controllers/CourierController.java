@@ -1,7 +1,9 @@
 package com.example.food_delivery.web.controllers;
 
-import com.example.food_delivery.dto.domain.*;
-import com.example.food_delivery.model.domain.Order;
+import com.example.food_delivery.dto.domain.CourierDto;
+import com.example.food_delivery.dto.domain.DisplayCourierDto;
+import com.example.food_delivery.dto.domain.DisplayOrderDto;
+import com.example.food_delivery.dto.domain.OrderDto;
 import com.example.food_delivery.model.domain.User;
 import com.example.food_delivery.model.mapper.BasicMappers;
 import com.example.food_delivery.service.application.CourierApplicationService;

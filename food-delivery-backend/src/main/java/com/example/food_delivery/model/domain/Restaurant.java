@@ -1,12 +1,13 @@
 package com.example.food_delivery.model.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
-
+import lombok.Getter;
+import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 public class Restaurant {
 
@@ -28,6 +29,9 @@ public class Restaurant {
     private Double averageRating;
     private Integer deliveryTimeMinutes;
     private String openHours;
+
+    private Boolean isOpen;
+    private String imageUrl;
 
     public Restaurant(String name, String description, String imageUrl,String openHours, String category, Boolean isOpen, Integer deliveryTimeEstimate,Double averageRating) {
         this.name = name;
@@ -51,34 +55,6 @@ public class Restaurant {
         this.isOpen = true;         // sensible default
         this.averageRating = 0.0;   // sensible default
     }
-
-
-    public Double getAverageRating() {
-        return averageRating;
-    }
-
-    public void setAverageRating(Double averageRating) {
-        this.averageRating = averageRating;
-    }
-
-    public Integer getDeliveryTimeMinutes() {
-        return deliveryTimeMinutes;
-    }
-
-    public void setDeliveryTimeMinutes(Integer deliveryTimeMinutes) {
-        this.deliveryTimeMinutes = deliveryTimeMinutes;
-    }
-
-    public Boolean getOpen() {
-        return isOpen;
-    }
-
-    public void setOpen(Boolean open) {
-        isOpen = open;
-    }
-
-    private Boolean isOpen;
-    private String imageUrl;
 
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DeliveryZone> deliveryZones = new ArrayList<>();
@@ -125,103 +101,6 @@ public class Restaurant {
         this.isOpen = isOpen;
         this.imageUrl = imageUrl;
 
-
         setDeliveryTimeEstimate(deliveryTimeEstimate);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public Coordinates getCoordinates() {
-        return coordinates;
-    }
-
-    public void setCoordinates(Coordinates coordinates) {
-        this.coordinates = coordinates;
-    }
-
-    public String getOpenHours() {
-        return openHours;
-    }
-
-    public void setOpenHours(String openHours) {
-        this.openHours = openHours;
-    }
-
-    public Integer getDeliveryTimeEstimate() {
-        return deliveryTimeEstimate;
-    }
-
-    public void setDeliveryTimeEstimate(Integer deliveryTimeEstimate) {
-        this.deliveryTimeEstimate = deliveryTimeEstimate;
-    }
-
-    public Boolean getIsOpen() {
-        return isOpen;
-    }
-
-    public void setIsOpen(Boolean open) {
-        isOpen = open;
-    }
-
-    public List<DeliveryZone> getDeliveryZones() {
-        return deliveryZones;
-    }
-
-    public void setDeliveryZones(List<DeliveryZone> deliveryZones) {
-        this.deliveryZones = deliveryZones;
-    }
-
-    public List<Product> getProducts() {
-        return Products;
-    }
-
-    public void setProducts(List<Product> products) {
-        Products = products;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 }

@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-//SMENETO
+
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -78,26 +78,22 @@ public class ProductServiceImpl implements ProductService {
         }
 
         // Single-restaurant policy
-        if (order.getRestaurant() != null) {
-            Long currentRestaurantId = order.getRestaurant().getId();
+//        if (order.getRestaurant() != null) {
+//            Long currentRestaurantId = order.getRestaurant().getId();
             //if (!currentRestaurantId.equals(Product.getRestaurant().getId())) {
             //    throw new IllegalStateException("Cart can contain Products from only one restaurant.");
             //}
-        }
+//        }
 
-        // Set order restaurant from first item
         if (order.getRestaurant() == null) {
             order.setRestaurant(product.getRestaurant());
         }
 
-        // Reserve stock immediately
         product.decreaseQuantity();
         productRepository.save(product);
 
-        // Legacy: also maintain flat list for compatibility
         order.getProducts().add(product);
 
-        // New: add or increment OrderItem
         OrderItem item = new OrderItem();
         item.setOrder(order);
         item.setProduct(product);
@@ -106,9 +102,7 @@ public class ProductServiceImpl implements ProductService {
         order.getItems().add(item);
         orderItemRepository.save(item);
 
-        // Recalculate totals with fees
         order.recalcTotals();
-        // naive fee application using restaurant's first zone or 0
         orderTotalsService.setFeesAndRecalculate(order, order.getRestaurant());
 
         return orderRepository.save(order);
@@ -117,8 +111,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public Order removeFromOrder(Product Product, Order order) {
-        // Remove one unit
-        // Find an OrderItem for this Product
         OrderItem target = order.getItems().stream()
                 .filter(it -> it.getProduct().getId().equals(Product.getId()))
                 .findFirst().orElse(null);
@@ -127,14 +119,11 @@ public class ProductServiceImpl implements ProductService {
             orderItemRepository.delete(target);
         }
 
-        // Legacy removal
         order.getProducts().remove(Product);
 
-        // Restock
         Product.increaseQuantity();
         productRepository.save(Product);
 
-        // Recalculate
         order.recalcTotals();
         orderTotalsService.setFeesAndRecalculate(order, order.getRestaurant());
 

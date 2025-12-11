@@ -1,10 +1,13 @@
 package com.example.food_delivery.model.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-//@NoArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 public class Courier{
 
@@ -32,35 +35,7 @@ public class Courier{
         }
     }
 
-
-    public Courier() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public String getName() {
         return user != null ? user.getName() + " " + user.getSurname() : "";
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
     }
 }

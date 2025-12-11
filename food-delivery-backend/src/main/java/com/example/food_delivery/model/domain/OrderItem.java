@@ -1,10 +1,12 @@
 package com.example.food_delivery.model.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
 public class OrderItem {
@@ -27,45 +29,5 @@ public class OrderItem {
         double price = unitPriceSnapshot != null ? unitPriceSnapshot : (Product != null ? Product.getPrice() : 0.0);
         int qty = quantity != null ? quantity : 0;
         return price * qty;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public com.example.food_delivery.model.domain.Product getProduct() {
-        return Product;
-    }
-
-    public void setProduct(com.example.food_delivery.model.domain.Product product) {
-        Product = product;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public Double getUnitPriceSnapshot() {
-        return unitPriceSnapshot;
-    }
-
-    public void setUnitPriceSnapshot(Double unitPriceSnapshot) {
-        this.unitPriceSnapshot = unitPriceSnapshot;
     }
 }

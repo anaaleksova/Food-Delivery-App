@@ -3,7 +3,6 @@ package com.example.food_delivery.web.controllers;
 import com.example.food_delivery.dto.domain.ReviewDto;
 import com.example.food_delivery.model.domain.User;
 import com.example.food_delivery.service.application.ReviewApplicationService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

@@ -86,7 +86,7 @@ public class UserController {
             @RequestBody PasswordDto dto
     ) {
 
-        return ResponseEntity.ok(userApplicationService.changePassword(username, dto.getPassword()));
+        return ResponseEntity.ok(userApplicationService.changePassword(username, dto.password()));
     }
 
 }
