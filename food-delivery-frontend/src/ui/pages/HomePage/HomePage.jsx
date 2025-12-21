@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
     Typography,
-    Grid,
     Card,
     CardContent,
     CardActions,
@@ -13,6 +12,8 @@ import {
 import { Link } from "react-router";
 import restaurantRepository from "../../../repository/restaurantRepository.js";
 import banner from "../../../assets/banner.png";
+import TimeBasedRecommendations from "../../components/recommendations/TimeBasedRecommendations.jsx";
+import useAuth from "../../../hooks/useAuth.js";
 
 /* ---------- opening-hours helpers (daily string only) ---------- */
 const timeToMinutes = (hhmm) => {
@@ -166,6 +167,7 @@ const HomePage = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [activeCategory, setActiveCategory] = useState("All");
+    const { user } = useAuth();
 
     useEffect(() => {
         let active = true;
@@ -284,7 +286,10 @@ const HomePage = () => {
                     </Box>
                 </Box>
             </Box>
-
+            {/* TIME-BASED RECOMMENDATIONS - Only show for logged-in customers */}
+            {user && user.roles?.includes("CUSTOMER") && (
+                <TimeBasedRecommendations />
+            )}
             {/* FILTER CHIPS */}
             <Box
                 sx={{
