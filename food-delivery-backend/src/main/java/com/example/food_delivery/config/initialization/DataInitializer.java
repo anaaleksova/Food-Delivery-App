@@ -1,15 +1,18 @@
 package com.example.food_delivery.config.initialization;
 
 import com.example.food_delivery.model.domain.*;
+import com.example.food_delivery.model.enums.OrderStatus;
 import com.example.food_delivery.model.enums.Role;
-import com.example.food_delivery.repository.CourierRepository;
-import com.example.food_delivery.repository.ProductRepository;
-import com.example.food_delivery.repository.RestaurantRepository;
-import com.example.food_delivery.repository.UserRepository;
+import com.example.food_delivery.repository.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 @Profile("!test")
 @Component
@@ -20,18 +23,20 @@ public class DataInitializer {
     private final RestaurantRepository restaurantRepository;
     private final ProductRepository productRepository;
     private final CourierRepository courierRepository;
+    private final OrderRepository orderRepository;
 
     public DataInitializer(
             PasswordEncoder passwordEncoder,
             UserRepository userRepository,
             RestaurantRepository restaurantRepository,
             ProductRepository productRepository,
-            CourierRepository courierRepository) {
+            CourierRepository courierRepository, OrderRepository orderRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.restaurantRepository = restaurantRepository;
         this.productRepository = productRepository;
         this.courierRepository = courierRepository;
+        this.orderRepository = orderRepository;
     }
 
     @PostConstruct
@@ -42,7 +47,99 @@ public class DataInitializer {
                 passwordEncoder.encode("customer"),
                 "Customer",
                 "User",
+                "071452365",
                 "customer@email.com",
+                Role.ROLE_CUSTOMER
+        ));
+
+
+        User customer2 = userRepository.save(new User(
+                "ana.petrovic",
+                passwordEncoder.encode("password123"),
+                "Ana",
+                "Petrovic",
+                "071234567",
+                "ana.petrovic@email.com",
+                Role.ROLE_CUSTOMER
+        ));
+
+        User customer3 = userRepository.save(new User(
+                "marko.jovanovic",
+                passwordEncoder.encode("password123"),
+                "Marko",
+                "Jovanovic",
+                "072345678",
+                "marko.jovanovic@email.com",
+                Role.ROLE_CUSTOMER
+        ));
+
+        User customer4 = userRepository.save(new User(
+                "elena.dimitrova",
+                passwordEncoder.encode("password123"),
+                "Elena",
+                "Dimitrova",
+                "073456789",
+                "elena.dimitrova@email.com",
+                Role.ROLE_CUSTOMER
+        ));
+
+        User customer5 = userRepository.save(new User(
+                "stefan.nikolic",
+                passwordEncoder.encode("password123"),
+                "Stefan",
+                "Nikolic",
+                "074567890",
+                "stefan.nikolic@email.com",
+                Role.ROLE_CUSTOMER
+        ));
+
+        User customer6 = userRepository.save(new User(
+                "maja.stojanovic",
+                passwordEncoder.encode("password123"),
+                "Maja",
+                "Stojanovic",
+                "075678901",
+                "maja.stojanovic@email.com",
+                Role.ROLE_CUSTOMER
+        ));
+
+        User customer7 = userRepository.save(new User(
+                "ivan.kovacevic",
+                passwordEncoder.encode("password123"),
+                "Ivan",
+                "Kovacevic",
+                "076789012",
+                "ivan.kovacevic@email.com",
+                Role.ROLE_CUSTOMER
+        ));
+
+        User customer8 = userRepository.save(new User(
+                "sara.todorova",
+                passwordEncoder.encode("password123"),
+                "Sara",
+                "Todorova",
+                "077890123",
+                "sara.todorova@email.com",
+                Role.ROLE_CUSTOMER
+        ));
+
+        User customer9 = userRepository.save(new User(
+                "nikola.popovic",
+                passwordEncoder.encode("password123"),
+                "Nikola",
+                "Popovic",
+                "078901234",
+                "nikola.popovic@email.com",
+                Role.ROLE_CUSTOMER
+        ));
+
+        User customer10 = userRepository.save(new User(
+                "katerina.markovic",
+                passwordEncoder.encode("password123"),
+                "Katerina",
+                "Markovic",
+                "079012345",
+                "katerina.markovic@email.com",
                 Role.ROLE_CUSTOMER
         ));
 
@@ -51,6 +148,7 @@ public class DataInitializer {
                 passwordEncoder.encode("courier"),
                 "Mike",
                 "Courier",
+                "072589632",
                 "courier@email.com",
                 Role.ROLE_COURIER
         ));
@@ -60,18 +158,92 @@ public class DataInitializer {
                 passwordEncoder.encode("admin"),
                 "Admin",
                 "User",
+                "075896253",
                 "admin@email.com",
                 Role.ROLE_ADMIN
         ));
 
         Courier courier = courierRepository.save(new Courier(courierUser, "078596256", true));
 
+
+        User courierUser2 = userRepository.save(new User(
+                "petar.michev",
+                passwordEncoder.encode("password123"),
+                "Petar",
+                "Michev",
+                "070123456",
+                "petar.michev@email.com",
+                Role.ROLE_COURIER
+        ));
+
+        Courier courier2 = courierRepository.save(new Courier(courierUser2, "070123456", true));
+
+        User courierUser3 = userRepository.save(new User(
+                "dimitar.stojanov",
+                passwordEncoder.encode("password123"),
+                "Dimitar",
+                "Stojanov",
+                "070234567",
+                "dimitar.stojanov@email.com",
+                Role.ROLE_COURIER
+        ));
+
+        Courier courier3 = courierRepository.save(new Courier(courierUser3, "070234567", true));
+
+        User courierUser4 = userRepository.save(new User(
+                "aleksandar.kostov",
+                passwordEncoder.encode("password123"),
+                "Aleksandar",
+                "Kostov",
+                "070345678",
+                "aleksandar.kostov@email.com",
+                Role.ROLE_COURIER
+        ));
+
+        Courier courier4 = courierRepository.save(new Courier(courierUser4, "070345678", true));
+
+        User courierUser5 = userRepository.save(new User(
+                "vladimir.petrov",
+                passwordEncoder.encode("password123"),
+                "Vladimir",
+                "Petrov",
+                "070456789",
+                "vladimir.petrov@email.com",
+                Role.ROLE_COURIER
+        ));
+
+        Courier courier5 = courierRepository.save(new Courier(courierUser5, "070456789", true));
+
+        User courierUser6 = userRepository.save(new User(
+                "bojan.trajkovski",
+                passwordEncoder.encode("password123"),
+                "Bojan",
+                "Trajkovski",
+                "070567890",
+                "bojan.trajkovski@email.com",
+                Role.ROLE_COURIER
+        ));
+
+        Courier courier6 = courierRepository.save(new Courier(courierUser6, "070567890", true));
+
+        User courierUser7 = userRepository.save(new User(
+                "goran.nikolov",
+                passwordEncoder.encode("password123"),
+                "Goran",
+                "Nikolov",
+                "070678901",
+                "goran.nikolov@email.com",
+                Role.ROLE_COURIER
+        ));
+
+        Courier courier7 = courierRepository.save(new Courier(courierUser7, "070678901", true));
+
         // Example Address/Coordinates you may already have; pass nulls if you don’t use them yet
         Address addr = null;            // new Address("Ul. ...", "Skopje", "MK", "1000");
         Coordinates coords = null;      // new Coordinates(41.9981, 21.4254);
-
-// === Amigos Centar ===
-        Restaurant r_Amigos_Centar = restaurantRepository.save(new Restaurant("Amigos Centar", "Доставуваме до Вашата врата", "", "https://korpa.ba/restaurant_uploads/dpkyYY48d8Kn70RlCBxJkc0HoK6mGjS6.jpg", "Mexican", 25));
+//
+//// === Amigos Centar ===
+        Restaurant r_Amigos_Centar = restaurantRepository.save(new Restaurant("Amigos Centar", "Доставуваме до Вашата врата", "9:30-23:00", "https://korpa.ba/restaurant_uploads/dpkyYY48d8Kn70RlCBxJkc0HoK6mGjS6.jpg", "Mexican", 25));
         // -- Section: Стартери 🧀 --
         productRepository.save(new Product("Nachos", "Мексикански чипс прелиен со топен кашкавал и пикантен начос кашкавал, сервиран со салса и крем сос", 450.00, 100, r_Amigos_Centar, "Стартери 🧀", "https://www.korpa.ba/product_uploads/BsQOsbCBZe6eKxKzvvXBz0b0aGd0uTJT.jpg"));
         productRepository.save(new Product("Guacamole", "Свежа кремаста салата од авокадо зачинета со свежи домати, кромид, лимета и коријандер, сервирана со Мексикански чипс", 450.00, 100, r_Amigos_Centar, "Стартери 🧀", "https://www.korpa.ba/product_uploads/3LCIpZNOyaBCDyw4bowAZ0Te9cQTgAvX.jpg"));
@@ -124,7 +296,7 @@ public class DataInitializer {
         productRepository.save(new Product("Peanutbutter Cheesecake", "Чизкејк со маскарпоне, кикирики, путер од кикирики, бисквити и чоколадо", 280.00, 100, r_Amigos_Centar, "Desserts 🍮", "https://www.korpa.ba/product_uploads/QzlTYu22vbK5dYclbclrA7H1zK1IvC6W.jpg"));
 
         // === Amigos Ljubljanska ===
-        Restaurant r_Amigos_Ljubljanska = restaurantRepository.save(new Restaurant("Amigos Ljubljanska", "Доставуваме до Вашата врата", "", "https://korpa.ba/restaurant_uploads/58uf5cfYp70Ai50SkHyIknzFtu2LKg4E.jpg", "Mexican", 25));
+        Restaurant r_Amigos_Ljubljanska = restaurantRepository.save(new Restaurant("Amigos Ljubljanska", "Доставуваме до Вашата врата", "9:30-23:00", "https://korpa.ba/restaurant_uploads/58uf5cfYp70Ai50SkHyIknzFtu2LKg4E.jpg", "Mexican", 25));
         // -- Section: BURGER DAY! 🍔🍟 --
         productRepository.save(new Product("Burger \"Masin\"", "Уметничко дело пресликано во гурмански оброк со изобилство на вкусови. 100% јунешки бургер печен на оган, во бриош лепче, помфрит од сладок компир, пармезан, сув домат и пикантен чипотле сос. (Се служи и вегетаријански)", 630.00, 100, r_Amigos_Ljubljanska, "BURGER DAY! 🍔🍟", "https://www.korpa.ba/product_uploads/FsOHENeKYPTA5pg8J2xoUAjnTq7KaCpL.jpg"));
         productRepository.save(new Product("Burger Amigos", "100% јунешки бургер во бриош лепче, начос сос, гвакамоле, крцкава сланина, домат, кромид, ајсберг и чипотле", 630.00, 100, r_Amigos_Ljubljanska, "BURGER DAY! 🍔🍟", "https://www.korpa.ba/product_uploads/fQwfsWw392WbZBGssajLWQHdWyj4QckS.jpg"));
@@ -200,7 +372,7 @@ public class DataInitializer {
         productRepository.save(new Product("Pestinos", "Пржени топчиња од путер-тесто, сервирани со карамелизирана праска, јаворов сируп и цимет", 260.00, 100, r_Amigos_Ljubljanska, "Desserts 🍮", "https://www.korpa.ba/product_uploads/96XnI8lPqijOxkEyrTI5WjKamOO7K73w.jpg"));
 
         // === Amigos Zeleznicka ===
-        Restaurant r_Amigos_Zeleznicka = restaurantRepository.save(new Restaurant("Amigos Zeleznicka", "Доставуваме до Вашата врата", "", "https://korpa.ba/restaurant_uploads/bWHnrQtlO3bHFacmuEe1NjG7zTvs5ar3.jpg", "Mexican", 25));
+        Restaurant r_Amigos_Zeleznicka = restaurantRepository.save(new Restaurant("Amigos Zeleznicka", "Доставуваме до Вашата врата", "10:00-23:00", "https://korpa.ba/restaurant_uploads/bWHnrQtlO3bHFacmuEe1NjG7zTvs5ar3.jpg", "Mexican", 25));
         // -- Section: BURGER DAY! 🍔🍟 --
         productRepository.save(new Product("Класик чизбургер", "Блек ангус јунешка плескавица и чедар, врз лепче, сервирани со домати, корнишони, кромид, кечап и сенф, ајсберг, сладок компир, чипотле сос", 690.00, 100, r_Amigos_Zeleznicka, "BURGER DAY! 🍔🍟", "https://www.korpa.ba/product_uploads/5pXjnKgsKy9BC7xhZGu7iiBOf5pguIOa.jpg"));
         productRepository.save(new Product("Фета бургер", "Блек ангус јунешка плескавица, кремасто зачинето фета сирење, свежи домати и краставица, сервирани со, сладок компир, чипотле сос.", 690.00, 100, r_Amigos_Zeleznicka, "BURGER DAY! 🍔🍟", "https://www.korpa.ba/product_uploads/Rs4qH9rFBXyZM2bKmIVygc2zTbP6F4xz.jpg"));
@@ -276,7 +448,7 @@ public class DataInitializer {
         productRepository.save(new Product("Лава колач со фстак", "", 290.00, 100, r_Amigos_Zeleznicka, "Десерти 🥞", "https://www.korpa.ba/product_uploads/DZX88f1ymuJX3DCnTFH21W95xqXko926.jpg"));
 
         // === Beer Garden Debar Maalo ===
-        Restaurant r_Beer_Garden_Debar_Maalo = restaurantRepository.save(new Restaurant("Beer Garden Debar Maalo", "Доставуваме до Вашата врата", "", "https://korpa.ba/restaurant_uploads/CzXlVP5pPXhTSEOBDaPormqc54Qave6j.jpg", "Bar & Grill", 25));
+        Restaurant r_Beer_Garden_Debar_Maalo = restaurantRepository.save(new Restaurant("Beer Garden Debar Maalo", "Доставуваме до Вашата врата", "10:00-01:00", "https://korpa.ba/restaurant_uploads/CzXlVP5pPXhTSEOBDaPormqc54Qave6j.jpg", "Bar & Grill", 25));
         // -- Section: Акциска понуда - храна 🍗🥨 --
         productRepository.save(new Product("Цезар салата 310 гр.", "Марула, шери, пилешки стек, кубети, мајонез, коњак, павлака, сенф, пармезан, портокал", 310.00, 100, r_Beer_Garden_Debar_Maalo, "Акциска понуда - храна 🍗🥨", "https://www.korpa.ba/product_uploads/izgSVqGJQGIpwwRNKxTV544yilDcTGRn.jpg"));
         productRepository.save(new Product("Похована даска 700 гр.", "Зденки, едамер, крокети, моцарела, маслинки, кромид, пилешки прсти", 1260.00, 100, r_Beer_Garden_Debar_Maalo, "Акциска понуда - храна 🍗🥨", "https://www.korpa.ba/product_uploads/GQJ3Zywf8F29qHHgaQ4b8TYQBNbwDx1V.jpg"));
@@ -392,7 +564,7 @@ public class DataInitializer {
         productRepository.save(new Product("Weichenstephaner Kellerbier 1516 0.5", "", 370.00, 100, r_Beer_Garden_Debar_Maalo, "Пиво 🍺", "https://www.korpa.ba/product_uploads/urE3yB6DXhvOn9FD2Fk9vheoBoPFsEsk.jpg"));
 
         // === Enriko ===
-        Restaurant r_Enriko = restaurantRepository.save(new Restaurant("Enriko", "Доставуваме до Вашата врата", "", "https://korpa.ba/restaurant_uploads/wxj8DkfJAMPwyEC8YvIxDjA3n6csuZ7E.JPG", "Italian / Pizza", 25));
+        Restaurant r_Enriko = restaurantRepository.save(new Restaurant("Enriko", "Доставуваме до Вашата врата", "08:00-00:00", "https://korpa.ba/restaurant_uploads/wxj8DkfJAMPwyEC8YvIxDjA3n6csuZ7E.JPG", "Italian / Пица", 25));
         // -- Section: Сендвичи 🥪🌮 --
         productRepository.save(new Product("Енрико сендвич", "Лепиња со сусам, сос од домати, кашкавал, свинска шунка, печурки, мајонез, павлака, оригано (Алергени - глутен, јајца, суcам, млеко)", 240.00, 100, r_Enriko, "Сендвичи 🥪🌮", "https://www.korpa.ba/product_uploads/MlERfkHw0uaTvOnFXAGK6zTs8gJCV9td.jpg"));
         productRepository.save(new Product("Домашен сендвич", "Лепиња со сусам, кашкавал, печеница, печурки, мајонез, домати, корнишони, оригано (Алергени - Глутен, сусам, млеко, јајца)", 240.00, 100, r_Enriko, "Сендвичи 🥪🌮", "https://www.korpa.ba/product_uploads/VdAsoNAB7CfgekBoQffWPeZxmcL0mkQF.jpg"));
@@ -513,7 +685,7 @@ public class DataInitializer {
         productRepository.save(new Product("Палачинки", "2 палачинки со додаток по избор", 240.00, 100, r_Enriko, "Палачинки 🥞", "https://www.korpa.ba/product_uploads/jSPYQY85pq3ioVeg3U9Ucrspijvy4ici.jpg"));
 
         // === Forza Restaurant ===
-        Restaurant r_Forza_Restaurant = restaurantRepository.save(new Restaurant("Forza Restaurant", "Доставуваме до Вашата врата", "", "https://korpa.ba/restaurant_uploads/0JDyoHzEriqnVJXDzPUpuqALJWkXzzRL.jpg", "", 25));
+        Restaurant r_Forza_Restaurant = restaurantRepository.save(new Restaurant("Forza Restaurant", "Доставуваме до Вашата врата", "08:00-00:00", "https://korpa.ba/restaurant_uploads/0JDyoHzEriqnVJXDzPUpuqALJWkXzzRL.jpg", "", 25));
         // -- Section: Предјадења🍴 --
         productRepository.save(new Product("Брускети со доматен џем & Фета сирење", "Брускети, џем од домати, фета сирење", 220.00, 100, r_Forza_Restaurant, "Предјадења🍴", "https://www.korpa.ba/product_uploads/bhvmYwSVe4fn4gqLwxBZoXvw236SgOGA.jpg"));
         productRepository.save(new Product("Брускети Форца", "Брускети со тапанада од маслинки и сушен домат, мус од козјо сирење и мармалад од црвени пиперки", 210.00, 100, r_Forza_Restaurant, "Предјадења🍴", "https://www.korpa.ba/product_uploads/MMRn1KdtoUSLR6L1605Ij3jgUDY0f8cV.jpg"));
@@ -613,14 +785,14 @@ public class DataInitializer {
         productRepository.save(new Product("Forza Burger", "Бриош лепиња, 200гр јунешки бургер, димен кашкавал, рукола, криспи кромид, мармалад од црвени свежи пиперки, аиоли сос, прилог листови крцкав компир", 470.00, 100, r_Forza_Restaurant, "Burgers 🍔", "https://www.korpa.ba/product_uploads/8RjHmEFiZyiXyzKd4TcWGsOSX8A8H6kv.jpg"));
         productRepository.save(new Product("Smashed Burger", "Бриош лепиња, 2 јунешки бургери, двоен чедар кашкавал, грилуван кромид, корнишони, бургер сос, прилог листови крцкав компир", 400.00, 100, r_Forza_Restaurant, "Burgers 🍔", "https://www.korpa.ba/product_uploads/zKz23Bh761kYW4ova2ItvENbvNJmxXPb.jpg"));
         productRepository.save(new Product("Crispy Chicken Burger", "Бриош лепиња, пилешки паниран стек, рендан пармезан, рукола, пченка, домати, песто мајо сос, прилог листови крцкав компир", 410.00, 100, r_Forza_Restaurant, "Burgers 🍔", "https://www.korpa.ba/product_uploads/1uHT2Xl9rgzioec7Hi4ZV2XmDr5WxGXU.jpg"));
-        // -- Section: Pizza 🍕 --
-        productRepository.save(new Product("Margarita pizza", "Пелат сос, кашкавал, оригано", 340.00, 100, r_Forza_Restaurant, "Pizza 🍕", "https://www.korpa.ba/product_uploads/4WJ6p0HGtOhuo8Ckysd67yT0D3WapvmN.jpg"));
-        productRepository.save(new Product("Margarita Mozarella pizza", "Пелат сос, свежа моцарела, свеж босилек, маслинов зејтин", 390.00, 100, r_Forza_Restaurant, "Pizza 🍕", "https://www.korpa.ba/product_uploads/0KanxtY6NRTTQDtyrGcHiGcbZBBpXzvD.jpg"));
-        productRepository.save(new Product("Capricciosa pizza", "Кашкавал, пелат сос, шунка, печурки, оригано", 390.00, 100, r_Forza_Restaurant, "Pizza 🍕", "https://www.korpa.ba/product_uploads/q6grEmD8omA7WU0T9aKx7XyVs1UgX4u5.jpg"));
-        productRepository.save(new Product("Bacon Cheddar pizza", "Кашкавал, чедар кашкавал, пелат сос, сланина, маслинки", 410.00, 100, r_Forza_Restaurant, "Pizza 🍕", "https://www.korpa.ba/product_uploads/vQmGK276eNdiZRraJuxvw3Dk6mIXMGBI.jpg"));
-        productRepository.save(new Product("Vegetariana pizza", "Пелат, овчо сирење, домати, пиперка, кромид, маслинки, рукола", 380.00, 100, r_Forza_Restaurant, "Pizza 🍕", "https://www.korpa.ba/product_uploads/OpCLN9kt5QokHLKql6zi8LQLL0aaVMOF.jpg"));
-        productRepository.save(new Product("Tartufata pizza", "Неутрална павлака, тартуфата крема, кашкавал, шунка, печурки", 400.00, 100, r_Forza_Restaurant, "Pizza 🍕", "https://www.korpa.ba/product_uploads/R4BNzEb5CE8ZRVqb8PsGW918PlEMJc87.jpg"));
-        productRepository.save(new Product("Gluten free Capricciosa pizza", "Безглутенско тесто, кашкавал, пелат сос, шунка, печурки, оригано", 420.00, 100, r_Forza_Restaurant, "Pizza 🍕", "https://www.korpa.ba/product_uploads/UxbhzFK8eiWm1wvu0ScmSzmxPOlr52dd.jpg"));
+        // -- Section: Пица 🍕 --
+        productRepository.save(new Product("Margarita Пица", "Пелат сос, кашкавал, оригано", 340.00, 100, r_Forza_Restaurant, "Пица 🍕", "https://www.korpa.ba/product_uploads/4WJ6p0HGtOhuo8Ckysd67yT0D3WapvmN.jpg"));
+        productRepository.save(new Product("Margarita Mozarella Пица", "Пелат сос, свежа моцарела, свеж босилек, маслинов зејтин", 390.00, 100, r_Forza_Restaurant, "Пица 🍕", "https://www.korpa.ba/product_uploads/0KanxtY6NRTTQDtyrGcHiGcbZBBpXzvD.jpg"));
+        productRepository.save(new Product("Capricciosa Пица", "Кашкавал, пелат сос, шунка, печурки, оригано", 390.00, 100, r_Forza_Restaurant, "Пица 🍕", "https://www.korpa.ba/product_uploads/q6grEmD8omA7WU0T9aKx7XyVs1UgX4u5.jpg"));
+        productRepository.save(new Product("Bacon Cheddar Пица", "Кашкавал, чедар кашкавал, пелат сос, сланина, маслинки", 410.00, 100, r_Forza_Restaurant, "Пица 🍕", "https://www.korpa.ba/product_uploads/vQmGK276eNdiZRraJuxvw3Dk6mIXMGBI.jpg"));
+        productRepository.save(new Product("Vegetariana Пица", "Пелат, овчо сирење, домати, пиперка, кромид, маслинки, рукола", 380.00, 100, r_Forza_Restaurant, "Пица 🍕", "https://www.korpa.ba/product_uploads/OpCLN9kt5QokHLKql6zi8LQLL0aaVMOF.jpg"));
+        productRepository.save(new Product("Tartufata Пица", "Неутрална павлака, тартуфата крема, кашкавал, шунка, печурки", 400.00, 100, r_Forza_Restaurant, "Пица 🍕", "https://www.korpa.ba/product_uploads/R4BNzEb5CE8ZRVqb8PsGW918PlEMJc87.jpg"));
+        productRepository.save(new Product("Gluten free Capricciosa Пица", "Безглутенско тесто, кашкавал, пелат сос, шунка, печурки, оригано", 420.00, 100, r_Forza_Restaurant, "Пица 🍕", "https://www.korpa.ba/product_uploads/UxbhzFK8eiWm1wvu0ScmSzmxPOlr52dd.jpg"));
         // -- Section: Детско мени 🦁 --
         productRepository.save(new Product("Детски Бургер", "Бриош мини лепче, 80гр јунешки бургер, домати, марула, сос, помфрит", 260.00, 100, r_Forza_Restaurant, "Детско мени 🦁", "https://www.korpa.ba/product_uploads/gyEhARr6j6w8qviZo4RLD7C9D888iFAL.jpg"));
         // -- Section: Десерти 🍰 --
@@ -640,7 +812,7 @@ public class DataInitializer {
         productRepository.save(new Product("Кит Кет палачинка", "Киткат крем, лешници", 220.00, 100, r_Forza_Restaurant, "Палачинки 🥞", "https://www.korpa.ba/product_uploads/W4khF0f6br0ZSV7pzrYhlmEhWfoq45mY.jpg"));
 
         // === Plaza De Toros ===
-        Restaurant r_Plaza_De_Toros = restaurantRepository.save(new Restaurant("Plaza De Toros", "Доставуваме до Вашата врата", "", "https://korpa.ba/restaurant_uploads/otcdJ6KgJKL2elYH6UiR8IlNt4I7N2Xt.jpg", "", 25));
+        Restaurant r_Plaza_De_Toros = restaurantRepository.save(new Restaurant("Plaza De Toros", "Доставуваме до Вашата врата", "08:00-00:00", "https://korpa.ba/restaurant_uploads/otcdJ6KgJKL2elYH6UiR8IlNt4I7N2Xt.jpg", "", 25));
         // -- Section: Појадок 🍳 --
         productRepository.save(new Product("Англиски појадок", "Сланина на грил, две јајца на око, домашни колбасички, топло лепче, путер, мармалад, со еспресо или чај и чаша од портокал", 310.00, 100, r_Plaza_De_Toros, "Појадок 🍳", "https://www.korpa.ba/product_uploads/09ixICXD5P3Qy2NfWQo5psgH5KjfxTbJ.jpg"));
         productRepository.save(new Product("Мекици", "Две мекици, сирење, мармалад", 200.00, 100, r_Plaza_De_Toros, "Појадок 🍳", "https://www.korpa.ba/product_uploads/JTZ9TrTGECbSvKg1twXycsvW2pChmaSJ.jpg"));
@@ -670,13 +842,13 @@ public class DataInitializer {
         productRepository.save(new Product("Сендвич чикен", "Пилешки стек, рендано сирење, домат, марула, помфрит", 300.00, 100, r_Plaza_De_Toros, "Топли печени сендвичи 🥪", "https://www.korpa.ba/product_uploads/Riyz7vCWudTXYU6xvmLr5EkzfDudJDW8.jpg"));
         productRepository.save(new Product("Лепче плескавица", "Плескавица, марула, домат, кисели крставички, кромид, пикантен сос, помфрит", 320.00, 100, r_Plaza_De_Toros, "Топли печени сендвичи 🥪", "https://www.korpa.ba/product_uploads/VQZ3OLJnWwUXX9qxnJZl5lKHwsI7Sw44.jpg"));
         productRepository.save(new Product("Клуб сендвич", "Гриловано пилешко месо, домат, сланина, кашкавал, домат, кисели крставички, пикантен сос, помфрит", 320.00, 100, r_Plaza_De_Toros, "Топли печени сендвичи 🥪", "https://www.korpa.ba/product_uploads/92X5jIkLT6PfON6kGLmgC5kcIm2fnjzL.jpg"));
-        // -- Section: Pizza 🍕 --
-        productRepository.save(new Product("Торо пица", "Доматен сос, кашкавал, кулен, сланина, печурки, маслинки, капари, феферони, кромид", 400.00, 100, r_Plaza_De_Toros, "Pizza 🍕", "https://www.korpa.ba/product_uploads/9r46mg7QTDoLvqTafEHIQKOGWCQu2YTi.jpg"));
-        productRepository.save(new Product("Prosciutto (свинска пршута) пица", "Доматен сос, кашкавал, свинска пршута, печурки", 420.00, 100, r_Plaza_De_Toros, "Pizza 🍕", "https://www.korpa.ba/product_uploads/UB8qWteoETBzRJFtqtAoHWfW0aKy1aK9.jpg"));
-        productRepository.save(new Product("Prosciutto (говедска пршута) пица", "Доматен сос, кашкавал, говедска пршута, печурки", 420.00, 100, r_Plaza_De_Toros, "Pizza 🍕", "https://www.korpa.ba/product_uploads/G3kFvMySH3rrg9c9RnRP8bzYCKyk9tyC.jpg"));
-        productRepository.save(new Product("Пилешка пица", "Доматен сос, кашкавал, пилешко месо, печурки", 390.00, 100, r_Plaza_De_Toros, "Pizza 🍕", "https://www.korpa.ba/product_uploads/V85l4KFnwI5FcCzANvHiy3UHA3q7WMSh.jpg"));
-        productRepository.save(new Product("Диавола пица", "Доматен сос, кашкавал, кулен, рукола, сусам", 360.00, 100, r_Plaza_De_Toros, "Pizza 🍕", "https://www.korpa.ba/product_uploads/XbGWSVWfA9GWp1UB9OpNUTT14MpQqycd.jpg"));
-        productRepository.save(new Product("Капричиоза пица", "Доматен сос, кашкавал, шунка, печурки", 350.00, 100, r_Plaza_De_Toros, "Pizza 🍕", "https://www.korpa.ba/product_uploads/Vw9sRnx4y4syq5Ot9RUikQus81UKNwiR.jpg"));
+        // -- Section: Пица 🍕 --
+        productRepository.save(new Product("Торо пица", "Доматен сос, кашкавал, кулен, сланина, печурки, маслинки, капари, феферони, кромид", 400.00, 100, r_Plaza_De_Toros, "Пица 🍕", "https://www.korpa.ba/product_uploads/9r46mg7QTDoLvqTafEHIQKOGWCQu2YTi.jpg"));
+        productRepository.save(new Product("Prosciutto (свинска пршута) пица", "Доматен сос, кашкавал, свинска пршута, печурки", 420.00, 100, r_Plaza_De_Toros, "Пица 🍕", "https://www.korpa.ba/product_uploads/UB8qWteoETBzRJFtqtAoHWfW0aKy1aK9.jpg"));
+        productRepository.save(new Product("Prosciutto (говедска пршута) пица", "Доматен сос, кашкавал, говедска пршута, печурки", 420.00, 100, r_Plaza_De_Toros, "Пица 🍕", "https://www.korpa.ba/product_uploads/G3kFvMySH3rrg9c9RnRP8bzYCKyk9tyC.jpg"));
+        productRepository.save(new Product("Пилешка пица", "Доматен сос, кашкавал, пилешко месо, печурки", 390.00, 100, r_Plaza_De_Toros, "Пица 🍕", "https://www.korpa.ba/product_uploads/V85l4KFnwI5FcCzANvHiy3UHA3q7WMSh.jpg"));
+        productRepository.save(new Product("Диавола пица", "Доматен сос, кашкавал, кулен, рукола, сусам", 360.00, 100, r_Plaza_De_Toros, "Пица 🍕", "https://www.korpa.ba/product_uploads/XbGWSVWfA9GWp1UB9OpNUTT14MpQqycd.jpg"));
+        productRepository.save(new Product("Капричиоза пица", "Доматен сос, кашкавал, шунка, печурки", 350.00, 100, r_Plaza_De_Toros, "Пица 🍕", "https://www.korpa.ba/product_uploads/Vw9sRnx4y4syq5Ot9RUikQus81UKNwiR.jpg"));
 
         // -- Section: Пастрмајлија 👨🏽‍🍳 --
         productRepository.save(new Product("Пилешка Пастрмајлија", "", 330.00, 100, r_Plaza_De_Toros, "Пастрмајлија 👨🏽‍🍳", "https://www.korpa.ba/product_uploads/9xYPh264Y6O3EFYQ15fdEZ0SDhadjAtf.jpg"));
@@ -728,7 +900,7 @@ public class DataInitializer {
         productRepository.save(new Product("Вафла Каjмак", "Кајмак, деликатесна шунка, домат, краставица, кромид", 290.00, 100, r_Plaza_De_Toros, "Домашни Белгиски Вафли - солени 🧇", "https://www.korpa.ba/product_uploads/IZdpkt2c26nwZQC3ZMwL2ihIVFH2uSap.jpg"));
 
         // === Revija Bar & Food ===
-        Restaurant r_Revija_Bar___Food = restaurantRepository.save(new Restaurant("Revija Bar & Food", "Доставуваме до Вашата врата", "", "https://korpa.ba/restaurant_uploads/rEye1wynuqMD6DcYXmkhSQbJ40nMGshJ.jpg", "", 25));
+        Restaurant r_Revija_Bar___Food = restaurantRepository.save(new Restaurant("Revija Bar & Food", "Доставуваме до Вашата врата", "08:00-00:00", "https://korpa.ba/restaurant_uploads/rEye1wynuqMD6DcYXmkhSQbJ40nMGshJ.jpg", "", 25));
         // -- Section: BURGER DAY! 🍔 --
         productRepository.save(new Product("Биг Кинг бургер", "Чисто телешко месо, домат, кисели краставички, чедар, црвен кромид, зеленчук, дресинг, компир", 670.00, 100, r_Revija_Bar___Food, "BURGER DAY! 🍔", "https://www.korpa.ba/product_uploads/DpgbLh4Qq3VbF5H6Zma99WpTG8t8IOOo.jpg"));
         productRepository.save(new Product("Криспи Кинг бургер", "Крцкав пилешки стек, чедар, домат, црвен кромид, зеленчук, компир", 490.00, 100, r_Revija_Bar___Food, "BURGER DAY! 🍔", "https://www.korpa.ba/product_uploads/1git8sDuv2eH8D83fsueVZ4OVQ06Kj6I.jpg"));
@@ -847,7 +1019,7 @@ public class DataInitializer {
         productRepository.save(new Product("Пастрмајлија свинска", "Свинско месо, феферони", 390.00, 100, r_Revija_Bar___Food, "Пастрмајлија 👨🏼‍🍳", "https://www.korpa.ba/product_uploads/38VHVs2Qxd7ioXVsHnO6a0qeCBiZkYAG.jpg"));
 
         // === Royal Burger Debar Maalo ===
-        Restaurant r_Royal_Burger_Debar_Maalo = restaurantRepository.save(new Restaurant("Royal Burger Debar Maalo", "Доставуваме до Вашата врата", "", "https://korpa.ba/restaurant_uploads/Gay0IEPWugE4a5KHek6gMw28AUEY2SLC.jpg", "Burgers", 25));
+        Restaurant r_Royal_Burger_Debar_Maalo = restaurantRepository.save(new Restaurant("Royal Burger Debar Maalo", "Доставуваме до Вашата врата", "10:00-00:00", "https://korpa.ba/restaurant_uploads/Gay0IEPWugE4a5KHek6gMw28AUEY2SLC.jpg", "Burgers", 25));
         // -- Section: ROYAL COMBO 👑 --
         productRepository.save(new Product("Combo 1", "3 x Chicken Tenders (пилешки прсти), 1 x French Fries, 1 x Ranch sauce", 165.00, 100, r_Royal_Burger_Debar_Maalo, "ROYAL COMBO 👑", "https://www.korpa.ba/product_uploads/3lD3PSZm7cM3CiRpZj7txrQDljcOTr3R.jpg"));
         productRepository.save(new Product("Combo 2", "5 x Chicken Tenders (пилешки прсти), 1 x French Fries, 1 x Ranch sauce", 200.00, 100, r_Royal_Burger_Debar_Maalo, "ROYAL COMBO 👑", "https://www.korpa.ba/product_uploads/IoIQ0hArzKeZdAGMPGcA4TsMit48025B.jpg"));
@@ -922,7 +1094,7 @@ public class DataInitializer {
         productRepository.save(new Product("Amstel 0.33", "", 90.00, 100, r_Royal_Burger_Debar_Maalo, "Beer 🍺", "https://www.korpa.ba/product_uploads/s68J5ZnofrVfkqrH44GoqXZMKlTfjZgs.png"));
 
         // === Skara Bar ===
-        Restaurant r_Skara_Bar = restaurantRepository.save(new Restaurant("Skara Bar", "Доставуваме до Вашата врата", "", "https://korpa.ba/restaurant_uploads/Juan0br6rzzPYpQT0znOgM0XnsAflenI.jpg", "Grill / Balkan", 25));
+        Restaurant r_Skara_Bar = restaurantRepository.save(new Restaurant("Skara Bar", "Доставуваме до Вашата врата", "10:00-00:00", "https://korpa.ba/restaurant_uploads/Juan0br6rzzPYpQT0znOgM0XnsAflenI.jpg", "Grill / Balkan", 25));
         // -- Section: Чорби🍵 --
         productRepository.save(new Product("Телешка чорба", "", 180.00, 100, r_Skara_Bar, "Чорби🍵", "https://www.korpa.ba/product_uploads/PDywTaDyztGGxZMbCIDsSLFDrupStJgn.jpg"));
         productRepository.save(new Product("Чорба од лосос", "", 200.00, 100, r_Skara_Bar, "Чорби🍵", "https://www.korpa.ba/product_uploads/FNepT6pbnuxGGAqjEIwQNOeg6vO2cnD4.jpg"));
@@ -982,13 +1154,13 @@ public class DataInitializer {
         productRepository.save(new Product("Баклава", "", 190.00, 100, r_Skara_Bar, "Десерти🧁", "https://www.korpa.ba/product_uploads/HMwIKbn04CiDjyTwu9STH6eGwq6wZSuJ.jpg"));
 
         // === Spizzicotto - EU ===
-        Restaurant r_Spizzicotto___EU = restaurantRepository.save(new Restaurant("Spizzicotto - EU", "Доставуваме до Вашата врата", "", "https://korpa.mk/restaurant_uploads/LpswBaW75yVEQjwnggxxCXav6I8LJHj4.jpg", "Italian / Pizza", 25));
-        // -- Section: Pizza 🍕 --
-        productRepository.save(new Product("Парче пица - Маргарита", "", 100.00, 100, r_Spizzicotto___EU, "Pizza 🍕", "https://www.korpa.ba/product_uploads/kMEgruWu4DV0868d5x9tTS6tBgwigGkY.jpg"));
-        productRepository.save(new Product("Парче пица - Капричиоза", "", 100.00, 100, r_Spizzicotto___EU, "Pizza 🍕", "https://www.korpa.ba/product_uploads/mmbIuY3U30CxjINyzhwiLFBDEEFGVbFz.jpg"));
-        productRepository.save(new Product("Парче пица - Кулен", "", 100.00, 100, r_Spizzicotto___EU, "Pizza 🍕", "https://www.korpa.ba/product_uploads/jRsD5mr5b5SNxuDZSE5gYxCUPiPCNJtj.jpg"));
-        productRepository.save(new Product("Калцоне", "Тесто, моцарела, доматен сос, пилешка шунка", 60.00, 100, r_Spizzicotto___EU, "Pizza 🍕", "https://www.korpa.ba/product_uploads/5ey4brYP5LxqLyqHKo1oJcHPuSgOi1TU.jpg"));
-        productRepository.save(new Product("Везуиво", "Тесто, моцарела, јајце, доматен сос", 80.00, 100, r_Spizzicotto___EU, "Pizza 🍕", "https://www.korpa.ba/product_uploads/LwccaretNPmnXib1owO3YDmYUzxBx9oT.jpg"));
+        Restaurant r_Spizzicotto___EU = restaurantRepository.save(new Restaurant("Spizzicotto - EU", "Доставуваме до Вашата врата", "07:00-20:30", "https://korpa.mk/restaurant_uploads/LpswBaW75yVEQjwnggxxCXav6I8LJHj4.jpg", "Italian / Пица", 25));
+        // -- Section: Пица 🍕 --
+        productRepository.save(new Product("Парче пица - Маргарита", "", 100.00, 100, r_Spizzicotto___EU, "Пица 🍕", "https://www.korpa.ba/product_uploads/kMEgruWu4DV0868d5x9tTS6tBgwigGkY.jpg"));
+        productRepository.save(new Product("Парче пица - Капричиоза", "", 100.00, 100, r_Spizzicotto___EU, "Пица 🍕", "https://www.korpa.ba/product_uploads/mmbIuY3U30CxjINyzhwiLFBDEEFGVbFz.jpg"));
+        productRepository.save(new Product("Парче пица - Кулен", "", 100.00, 100, r_Spizzicotto___EU, "Пица 🍕", "https://www.korpa.ba/product_uploads/jRsD5mr5b5SNxuDZSE5gYxCUPiPCNJtj.jpg"));
+        productRepository.save(new Product("Калцоне", "Тесто, моцарела, доматен сос, пилешка шунка", 60.00, 100, r_Spizzicotto___EU, "Пица 🍕", "https://www.korpa.ba/product_uploads/5ey4brYP5LxqLyqHKo1oJcHPuSgOi1TU.jpg"));
+        productRepository.save(new Product("Везуиво", "Тесто, моцарела, јајце, доматен сос", 80.00, 100, r_Spizzicotto___EU, "Пица 🍕", "https://www.korpa.ba/product_uploads/LwccaretNPmnXib1owO3YDmYUzxBx9oT.jpg"));
         // -- Section: Сендвичи 🥪 --
         productRepository.save(new Product("Фантазија", "Лепче, моцарела, пилешка шунка, домат, краставица, марула", 100.00, 100, r_Spizzicotto___EU, "Сендвичи 🥪", "https://www.korpa.ba/product_uploads/BBaSHCq5bGfzPYERCSAa5q9jlwNaQfwU.jpg"));
         productRepository.save(new Product("Олива", "Лепче, марула, зелка, морков, домат, краставица, сирење, моцарела", 120.00, 100, r_Spizzicotto___EU, "Сендвичи 🥪", "https://www.korpa.ba/product_uploads/2NOWWAdaWLHkiSBKRAcR8ifZUGOhyF6R.jpg"));
@@ -1038,7 +1210,7 @@ public class DataInitializer {
         productRepository.save(new Product("Heineken 0.5", "", 120.00, 100, r_Spizzicotto___EU, "Пијалоци 🥤", "https://www.korpa.ba/product_uploads/KfnHomhbxSFYZX7QcWvtb4VhNCeWFQae.jpg"));
 
         // === SushiCo Zen ===
-        Restaurant r_SushiCo_Zen = restaurantRepository.save(new Restaurant("SushiCo Zen", "Доставуваме до Вашата врата", "", "https://korpa.ba/restaurant_uploads/1da4LvVTiP5VPzBbf8jLjhifUXA8GvCA.jpg", "Japanese / Sushi", 25));
+        Restaurant r_SushiCo_Zen = restaurantRepository.save(new Restaurant("SushiCo Zen", "Доставуваме до Вашата врата", "10:00-01:00", "https://korpa.ba/restaurant_uploads/1da4LvVTiP5VPzBbf8jLjhifUXA8GvCA.jpg", "Japanese / Sushi", 25));
         // -- Section: Предјадење  🍴 --
         productRepository.save(new Product("Органски соја зрна", "", 370.00, 100, r_SushiCo_Zen, "Предјадење  🍴", "https://www.korpa.ba/product_uploads/q4W8uxTGdrntq6VePMNwqHcKarWvfQsl.jpg"));
         productRepository.save(new Product("Зачинети органски соја зрна", "*луто", 370.00, 100, r_SushiCo_Zen, "Предјадење  🍴", "https://www.korpa.ba/product_uploads/gF7I55Tf41MCOmj6NFcIU0OsETEdRLVL.jpg"));
@@ -1267,7 +1439,7 @@ public class DataInitializer {
         productRepository.save(new Product("Heineken 0.33", "", 210.00, 100, r_SushiCo_Zen, "Саке и пиво 🍺", "https://www.korpa.ba/product_uploads/Nt8qXPQwynvueTA98rpR69MHr9wq5N9f.png"));
 
         // === Teteks - Karposh ===
-        Restaurant r_Teteks___Karposh = restaurantRepository.save(new Restaurant("Teteks - Karposh", "Доставуваме до Вашата врата", "", "https://korpa.ba/restaurant_uploads/jKWBG3Iy6dDdcFjdoFZ0zDWH9UdLUSEO.jpg", "Grill / Balkan", 25));
+        Restaurant r_Teteks___Karposh = restaurantRepository.save(new Restaurant("Teteks - Karposh", "Доставуваме до Вашата врата", "09:00-00:00", "https://korpa.ba/restaurant_uploads/jKWBG3Iy6dDdcFjdoFZ0zDWH9UdLUSEO.jpg", "Grill / Balkan", 25));
         // -- Section: Бургери 🍔 --
         productRepository.save(new Product("Хамбургер", "", 230.00, 100, r_Teteks___Karposh, "Бургери 🍔", "https://www.korpa.ba/product_uploads/DboQNnAKjmqLGfubVfCd5U4LXCVJw9lx.jpg"));
         productRepository.save(new Product("Чизбургер", "", 260.00, 100, r_Teteks___Karposh, "Бургери 🍔", "https://www.korpa.ba/product_uploads/Pp6HP1pIQbCJc6prcTeW5L3RZ8wtxrqS.jpg"));
@@ -1307,5 +1479,60 @@ public class DataInitializer {
         productRepository.save(new Product("Coca Cola 0.45", "", 80.00, 100, r_Teteks___Karposh, "Пијалоци 🥤", "https://www.korpa.ba/product_uploads/Qnh0mZ2TQg3KiWJQS5SSqvYtgY0kdMYv.png"));
         productRepository.save(new Product("Coca Cola Zero 0.45", "", 80.00, 100, r_Teteks___Karposh, "Пијалоци 🥤", "https://www.korpa.ba/product_uploads/TVkcFrXwnodLATWEbDFAyP4QU9lEUuoR.png"));
 
+        loadSyntheticOrders();
     }
+
+    private void loadSyntheticOrders() {
+        List<User> users = userRepository.findAll();
+        List<Courier> couriers = courierRepository.findAll();
+        List<Restaurant> restaurants = restaurantRepository.findAll();
+
+        if (users.isEmpty() || couriers.isEmpty() || restaurants.isEmpty()) {
+            return;
+        }
+
+        Random random = new Random();
+
+        for (int i = 0; i < 20; i++) {
+            User user = users.get(random.nextInt(users.size()));
+            Restaurant restaurant = restaurants.get(random.nextInt(restaurants.size()));
+            Courier courier = couriers.get(random.nextInt(couriers.size()));
+
+            List<Product> restaurantProducts = productRepository.findByRestaurant(restaurant);
+            if (restaurantProducts.isEmpty()) {
+                continue;
+            }
+
+            Order order = new Order();
+            order.setUser(user);
+            order.setRestaurant(restaurant);
+            order.setCourier(courier);
+            order.setStatus(OrderStatus.values()[random.nextInt(OrderStatus.values().length)]);
+            order.setPlacedAt(Instant.now().minusSeconds(random.nextInt(86400 * 7)));
+
+            List<OrderItem> items = new ArrayList<>();
+            int numItems = random.nextInt(3) + 1;
+
+            for (int j = 0; j < numItems; j++) {
+                Product product = restaurantProducts.get(random.nextInt(restaurantProducts.size()));
+
+                OrderItem item = new OrderItem();
+                item.setOrder(order);
+                item.setProduct(product);
+                item.setQuantity(random.nextInt(3) + 1);
+                item.setUnitPriceSnapshot(product.getPrice());
+
+                items.add(item);
+            }
+
+            order.setItems(items);
+            order.setDeliveryFee(50.0);
+            order.setPlatformFee(20.0);
+            order.setDiscount(0.0);
+            order.recalcTotals();
+
+            orderRepository.save(order);
+        }
+    }
+
 }

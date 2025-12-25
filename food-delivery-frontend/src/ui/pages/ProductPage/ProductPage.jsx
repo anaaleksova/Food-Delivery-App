@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+//import React from 'react';
 import {useParams} from "react-router";
 import useProductDetails from "../../../hooks/useProductDetails.js";
 import productRepository from "../../../repository/productRepository.js";

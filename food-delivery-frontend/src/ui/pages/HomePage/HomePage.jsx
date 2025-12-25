@@ -14,6 +14,8 @@ import restaurantRepository from "../../../repository/restaurantRepository.js";
 import banner from "../../../assets/banner.png";
 import TimeBasedRecommendations from "../../components/recommendations/TimeBasedRecommendations.jsx";
 import useAuth from "../../../hooks/useAuth.js";
+import PopularRecommendations from "../../components/recommendations/PopularRecommendations.jsx";
+
 
 /* ---------- opening-hours helpers (daily string only) ---------- */
 const timeToMinutes = (hhmm) => {
@@ -288,7 +290,10 @@ const HomePage = () => {
             </Box>
             {/* TIME-BASED RECOMMENDATIONS - Only show for logged-in customers */}
             {user && user.roles?.includes("CUSTOMER") && (
-                <TimeBasedRecommendations />
+                <>
+                    <TimeBasedRecommendations />
+                    <PopularRecommendations />
+                </>
             )}
             {/* FILTER CHIPS */}
             <Box

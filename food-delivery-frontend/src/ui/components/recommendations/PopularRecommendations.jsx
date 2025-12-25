@@ -12,18 +12,18 @@ import {
     IconButton,
     Tooltip,
 } from "@mui/material";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import WhatshotIcon from "@mui/icons-material/Whatshot";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { Link } from "react-router";
-import useTimeBasedRecommendations from "../../../hooks/useTimeBasedRecommendations.js";
+import usePopularRecommendations from "../../../hooks/usePopularRecommendations.js";
 import { addToCartRespectingSingleRestaurant } from "../../../repository/cartActions.js";
 import Alert from "../../../common/Alert.jsx";
 
-const TimeBasedRecommendations = () => {
-    const { recommendations, loading, error } = useTimeBasedRecommendations();
+const PopularRecommendations = () => {
+    const { recommendations, loading, error } = usePopularRecommendations();
     const [alertOpen, setAlertOpen] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const scrollContainerRef = useRef(null);
@@ -34,24 +34,13 @@ const TimeBasedRecommendations = () => {
         try {
             const res = await addToCartRespectingSingleRestaurant(productId);
             if (res?.ok) {
-                setAlertMessage(
-                    res.replaced
-                        ? "Cart replaced and item added."
-                        : "Added to cart!"
-                );
+                setAlertMessage(res.replaced ? "Cart replaced and item added." : "Added to cart!");
                 setAlertOpen(true);
             }
         } catch (err) {
             setAlertMessage("Failed to add item to cart.");
             setAlertOpen(true);
         }
-    };
-
-    const getCurrentTimeGreeting = () => {
-        const hour = new Date().getHours();
-        if (hour < 12) return "Good Morning! ☀️";
-        if (hour < 17) return "Good Afternoon! 🌤️";
-        return "Good Evening! 🌙";
     };
 
     const checkArrows = () => {
@@ -88,7 +77,6 @@ const TimeBasedRecommendations = () => {
     }
 
     if (error || !recommendations || recommendations.length === 0) {
-        console.log("SHOWS ERROR NULL")
         return null;
     }
 
@@ -105,27 +93,18 @@ const TimeBasedRecommendations = () => {
                 }}
             >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                    <AccessTimeIcon
-                        sx={{ fontSize: 32, color: "primary.main" }}
-                    />
+                    <WhatshotIcon sx={{ fontSize: 32, color: "primary.main" }} />
                     <Box>
-                        <Typography
-                            variant="h5"
-                            sx={{ fontWeight: 800, lineHeight: 1.2 }}
-                        >
-                            {getCurrentTimeGreeting()}
+                        <Typography variant="h5" sx={{ fontWeight: 800, lineHeight: 1.2 }}>
+                            Trending Now 🔥
                         </Typography>
-                        <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{ mt: 0.5 }}
-                        >
-                            Based on your ordering habits at this time
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                            Popular picks across all customers
                         </Typography>
                     </Box>
                 </Box>
 
-                <Tooltip title="These recommendations are personalized based on what you typically order at this time of day">
+                <Tooltip title="These items are currently popular based on recent orders across all users">
                     <IconButton size="small">
                         <InfoOutlinedIcon />
                     </IconButton>
@@ -163,9 +142,7 @@ const TimeBasedRecommendations = () => {
                         overflowX: "auto",
                         pb: 2,
                         scrollbarWidth: "none",
-                        "&::-webkit-scrollbar": {
-                            display: "none",
-                        },
+                        "&::-webkit-scrollbar": { display: "none" },
                     }}
                 >
                     {recommendations.slice(0, 8).map((product) => (
@@ -180,14 +157,11 @@ const TimeBasedRecommendations = () => {
                                 borderRadius: 3,
                                 overflow: "hidden",
                                 flexShrink: 0,
-                                boxShadow:
-                                    "0 2px 10px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)",
-                                transition:
-                                    "transform .15s ease, box-shadow .15s ease",
+                                boxShadow: "0 2px 10px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)",
+                                transition: "transform .15s ease, box-shadow .15s ease",
                                 "&:hover": {
                                     transform: "translateY(-2px)",
-                                    boxShadow:
-                                        "0 8px 20px rgba(0,0,0,0.12), 0 3px 6px rgba(0,0,0,0.06)",
+                                    boxShadow: "0 8px 20px rgba(0,0,0,0.12), 0 3px 6px rgba(0,0,0,0.06)",
                                 },
                             }}
                         >
@@ -195,15 +169,12 @@ const TimeBasedRecommendations = () => {
                                 <CardMedia
                                     component="img"
                                     height="160"
-                                    image={
-                                        product.imageUrl ||
-                                        "https://via.placeholder.com/400x160?text=Food"
-                                    }
+                                    image={product.imageUrl || "https://via.placeholder.com/400x160?text=Food"}
                                     alt={product.name}
                                     sx={{ objectFit: "cover" }}
                                 />
                                 <Chip
-                                    label="Recommended"
+                                    label="Trending"
                                     size="small"
                                     color="primary"
                                     sx={{
@@ -255,21 +226,9 @@ const TimeBasedRecommendations = () => {
                                     {product.description}
                                 </Typography>
 
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: 1,
-                                        minHeight: 32,
-                                        mt: "auto",
-                                    }}
-                                >
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 1, minHeight: 32, mt: "auto" }}>
                                     {product.category && (
-                                        <Chip
-                                            label={product.category}
-                                            size="small"
-                                            variant="outlined"
-                                        />
+                                        <Chip label={product.category} size="small" variant="outlined" />
                                     )}
                                 </Box>
                             </CardContent>
@@ -296,41 +255,25 @@ const TimeBasedRecommendations = () => {
                                 >
                                     {Number(product.price || 0).toFixed(0)} ден
                                 </Typography>
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        gap: 1,
-                                        width: "100%",
-                                    }}
-                                >
+
+                                <Box sx={{ display: "flex", gap: 1, width: "100%" }}>
                                     <Button
                                         size="small"
                                         variant="outlined"
                                         component={Link}
                                         to={`/products/${product.id}`}
-                                        sx={{
-                                            flex: 1,
-                                            borderRadius: 2,
-                                            textTransform: "none",
-                                        }}
+                                        sx={{ flex: 1, borderRadius: 2, textTransform: "none" }}
                                     >
                                         Details
                                     </Button>
+
                                     <Button
                                         size="small"
                                         variant="contained"
                                         onClick={() => handleAddToCart(product.id)}
-                                        disabled={
-                                            !product.isAvailable ||
-                                            product.quantity <= 0
-                                        }
+                                        disabled={!product.isAvailable || product.quantity <= 0}
                                         startIcon={<ShoppingCartIcon />}
-                                        sx={{
-                                            flex: 1,
-                                            borderRadius: 2,
-                                            textTransform: "none",
-                                            fontWeight: 700,
-                                        }}
+                                        sx={{ flex: 1, borderRadius: 2, textTransform: "none", fontWeight: 700 }}
                                     >
                                         Add
                                     </Button>
@@ -364,11 +307,12 @@ const TimeBasedRecommendations = () => {
 
             <Alert
                 open={alertOpen}
-                onClose={() => setAlertOpen(false)}
                 message={alertMessage}
+                severity="success"
+                onClose={() => setAlertOpen(false)}
             />
         </Box>
     );
 };
 
-export default TimeBasedRecommendations;
+export default PopularRecommendations;

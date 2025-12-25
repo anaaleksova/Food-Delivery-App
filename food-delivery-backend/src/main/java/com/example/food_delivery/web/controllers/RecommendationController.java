@@ -2,6 +2,7 @@ package com.example.food_delivery.web.controllers;
 
 import com.example.food_delivery.dto.domain.DisplayProductDto;
 import com.example.food_delivery.model.domain.User;
+import com.example.food_delivery.service.application.PopularRecommendationApplicationService;
 import com.example.food_delivery.service.application.RecommendationApplicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,21 +13,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/recommendations")
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class RecommendationController {
-
+    private final PopularRecommendationApplicationService popularRecommendationApplicationService;
     private final RecommendationApplicationService recommendationApplicationService;
 
-    /**
-     * Smart recommendations with 5-step fallback strategy:
-     * 1. My orders - exact hour
-     * 2. My orders - ±2 hours window
-     * 3. My most popular products (whole day)
-     * 4. What OTHER users order at this time (collaborative)
-     * 5. Global most popular products
-     *
-     * All logic is handled in the service layer!
-     */
+    public RecommendationController(PopularRecommendationApplicationService popularRecommendationApplicationService, RecommendationApplicationService recommendationApplicationService) {
+        this.popularRecommendationApplicationService = popularRecommendationApplicationService;
+        this.recommendationApplicationService = recommendationApplicationService;
+    }
+
+
     @GetMapping("/time-based")
     public ResponseEntity<List<DisplayProductDto>> getSmartTimeBasedRecommendations(
             @AuthenticationPrincipal User user) {
@@ -54,4 +51,15 @@ public class RecommendationController {
 
         return ResponseEntity.ok(recommendations);
     }
+
+    @GetMapping("/popular")
+    public ResponseEntity<List<DisplayProductDto>> getPopularRecommendations(
+            @AuthenticationPrincipal User user) {
+
+        List<DisplayProductDto> recommendations =
+                popularRecommendationApplicationService.getPopularRecommendations(user.getUsername());
+
+        return ResponseEntity.ok(recommendations);
+    }
+
 }
