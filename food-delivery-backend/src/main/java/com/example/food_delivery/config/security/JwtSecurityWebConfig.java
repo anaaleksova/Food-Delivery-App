@@ -107,7 +107,8 @@ public class JwtSecurityWebConfig {
                                         "/api/orders/my-orders",
                                         "/api/orders/track/{id}",
                                         "/api/payments/**",
-                                        "/api/recommendations/**"
+                                        "/api/recommendations/**",
+                                        "/api/recommendations/advanced/**"
                                 )
                                 .hasAnyRole("CUSTOMER", "ADMIN")
                                 .requestMatchers(

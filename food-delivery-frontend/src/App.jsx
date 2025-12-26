@@ -14,6 +14,7 @@ import ProfilePage from "./ui/pages/ProfilePage";
 import MyOrdersPage from './ui/pages/MyOrdersPage/MyOrdersPage.jsx'
 import ForgotPasswordPage from './ui/pages/ForgotPasswordPage.jsx'
 import CourierDashboard from './ui/pages/Courier/CourierDashboard/CourierDashboard.jsx'
+import RecommendationsPage from './ui/pages/RecommendationsPage.jsx'
 
 // Admin pages
 import AdminDashboard from './ui/pages/Admin/AdminDashboard/AdminDashboard.jsx'
@@ -62,6 +63,8 @@ App.routes = createRoutesFromElements(
 
         {/* User routes */}
         <Route path="/user/me" element={<ProfilePage />} />
+
+        <Route path="/recommendations" element={<RecommendationsPage />} />
     </Route>
 )
 

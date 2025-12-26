@@ -18,7 +18,7 @@ const ProductDetails = ({details, onAdd, onRemove}) => {
         )}
         <Box sx={{display:'flex', gap:1, mt:2}}>
           <Button variant="contained" onClick={onAdd}>Add to cart</Button>
-          <Button onClick={onRemove}>Remove</Button>
+          {/*<Button onClick={onRemove}>Remove</Button>*/}
         </Box>
       </CardContent>
     </Card>
